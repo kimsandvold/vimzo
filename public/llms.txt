@@ -1,0 +1,131 @@
+# Vimzo
+
+> Vimzo lager hele nettsiden for små og mellomstore bedrifter i Norge – inkludert
+> domene, tekst, bilder, design og publisering. Kunden bruker omtrent to timer på
+> hele prosjektet. Sidene er håndkodet og leveres som ferdig HTML fra CDN, så de
+> er raske, billige i drift og lette å finne både i søkemotorer og i AI-assistenter.
+
+Sted: Lillehammer, Norge. Leverer i hele Norge.
+Nettsted: https://vimzo.no
+Språk: norsk (bokmål)
+
+## Priser (NOK, eks. mva.)
+
+- Start: 14 900 kr samlet, eller 1 290 kr/mnd i 12 måneder — opptil 3 sider. For deg som bare må finnes på nett, og helst i går.
+- Bedrift: 29 900 kr samlet, eller 2 590 kr/mnd i 12 måneder — opptil 8 sider. For bedriften som skal selge tjenestene sine, ikke bare vises fram.
+- Vekst: pris etter avtale — omfang etter avtale. For deg som vil at nettsiden skal skaffe kunder, ikke bare stå der.
+- Drift: 449 kr per måned — Én pris, enten siden bare står der eller tar imot bestillinger. Ingen bindingstid.
+- Timepris for endringer: 1 150 kr
+- Regneverktøy eller kalkulator: fra 4 900 kr
+- Logo: 2 900 kr
+- Visuell profil: 5 900 kr
+- Foto og dronevideo: fra 6 900 kr
+- Ekstra side: fra 2 900 kr
+- Fagartikkel: 2 400 kr per artikkel
+
+Første års domene er inkludert i alle pakkene. Deretter ca. 169 kr/år, som Vimzo fornyer.
+
+## Tjenester
+
+- Hele nettsiden, ferdig laget: Vi ordner alt – også domenet. Du svarer på noen spørsmål.
+- Tekst og innhold: Du slipper å skrive. Vi intervjuer deg og gjør resten.
+- Foto og dronevideo: Ekte bilder av din bedrift. Ikke arkivbilder av noen andres.
+- Logo og visuell profil: Mangler du logo? Vi tegner en – eller du lager den selv i verktøyet vårt.
+- Kalkulatorer og regneverktøy: La kunden regne ut prisen selv – og sende forespørselen ferdig utfylt.
+- Bli funnet i Google: Riktig oppsett fra dag én, og en Google-profil som står ferdig.
+- Bli funnet i ChatGPT: Stadig flere spør en AI-assistent i stedet for å google.
+- Domene, e-post og drift: Vi passer på at alt virker. Du slipper å tenke på det.
+
+## Hva kunden selv må gjøre
+
+Omtrent to timer til sammen: én samtale i starten om hva bedriften gjør, og én
+gjennomlesing før publisering. Vimzo ordner domene, tekst, bilder, design,
+publisering og innmelding hos Google.
+
+## Slik er sidene bygget
+
+- Hver URL leveres som ferdig HTML. Ingen JavaScript må kjøres for å lese innholdet.
+- Ingen WordPress, ingen plugins, ingen database å vedlikeholde.
+- Strukturerte data etter schema.org på hver side.
+- Universell utforming etter WCAG 2.1 AA.
+- Kunden eier kildekoden, domenet og innholdet.
+- Enkle fakta (kontaktinfo, åpningstider, priser) kan kunden endre selv i et lite panel. Det krever database og koster 200 kr mer i måneden i drift.
+- Regneverktøy og kalkulatorer bygges inn i siden, uten månedsavgift til tredjeparter.
+- Alt arbeid gjøres i Norge, på norsk, av Kim Sandvold på Lillehammer.
+
+## Viktige sider
+
+- [Tjenester](https://vimzo.no/tjenester): hva som inngår i hver tjeneste
+- [Priser](https://vimzo.no/priser): pakkepriser, drift og tillegg
+- [Arbeid](https://vimzo.no/arbeid): leverte prosjekter
+- [Guider](https://vimzo.no/guider): fagartikler om nettsider, pris og AI-synlighet
+- [Lag logo](https://vimzo.no/logo): gratis logoverktøy, last ned SVG og PNG
+- [Slik blir bedriften din synlig når kundene spør ChatGPT](https://vimzo.no/guider/synlig-i-ai-sok): Stadig flere starter søket i en AI-assistent i stedet for i Google. Her er hva som faktisk avgjør om bedriften din blir nevnt i svaret.
+- [Hva koster en nettside for en liten bedrift i Norge?](https://vimzo.no/guider/hva-koster-en-nettside): Fra null til et par hundre tusen. Her er hva som faktisk ligger bak prislappen, og hva en liten bedrift bør regne med å betale – både i oppstart og per år.
+- [WordPress eller håndkodet nettside – hva passer en liten bedrift?](https://vimzo.no/guider/wordpress-eller-handkodet): WordPress driver rundt 40 % av verdens nettsteder. Det betyr ikke at det er riktig for en bedrift med fem ansatte og ti sider.
+- [Kontakt](https://vimzo.no/kontakt): be om tilbud
+
+## Vanlige spørsmål
+
+### Hva koster en nettside hos Vimzo?
+Fra 14 900 kroner eks. mva. for opptil tre sider, og 29 900 kroner for en bedriftsside med opptil åtte sider. Større jobber avtaler vi én og én, så der får du pris etter en prat. Du kan dele beløpet over tolv måneder – da er det 0 kroner i oppstart, og det starter på 1 290 kroner i måneden. Prisen avtales skriftlig før vi begynner, og den endrer seg ikke underveis.
+
+### Kommer det løpende kostnader i tillegg?
+Drift koster 449 kroner i måneden – én pris uansett hva siden gjør. Den dekker at siden er oppe, sikkerhetskopi hver dag, fornyelse av domenet og småendringer underveis, og den dekker også databasen når siden tar imot bestillinger eller saker fra kundene dine. Første års domene er inkludert i prisen; etter det koster det rundt 169 kroner i året. Det finnes ingen lisenser eller tilleggsprogrammer å betale for.
+
+### Hvor lang tid tar det å få siden på nett?
+To uker for en Start-side, tre uker for en bedriftsside og fem uker når innhold skal produseres. Tiden regnes fra du har godkjent tilbudet. Det som oftest forsinker et prosjekt er bilder og godkjenning av tekst, så vi avtaler frister for begge deler i første møte.
+
+### Hvor mye må jeg gjøre selv?
+Omtrent to timer til sammen. Du tar én prat med oss i starten om hva bedriften gjør, og leser gjennom før vi publiserer. Resten ordner vi: domene, tekst, bilder, design, publisering og Google. Du trenger ikke skrive noe, og du trenger ikke kunne noe teknisk.
+
+### Ordner dere domenet, eller må jeg kjøpe det selv?
+Vi ordner det. Vi finner et ledig domenenavn sammen med deg, kjøper det og registrerer det i ditt navn – ikke i vårt. Første år er inkludert i prisen, og etter det fornyer vi det for deg til omtrent 169 kroner i året. Vi setter også opp e-post på domenet.
+
+### Kan jeg dele opp betalingen?
+Ja. Alle pakkene kan deles over tolv måneder, fra 1 290 kroner i måneden. Det er ingen renter og ingen kredittsjekk, men totalsummen blir litt høyere enn om du betaler alt på én gang. Begge tallene står på prissiden, så du ser nøyaktig hva forskjellen er.
+
+### Kan dere lage en priskalkulator eller et bookingskjema?
+Ja. Vi bygger regneverktøy rett inn i siden fra 4 900 kroner – priskalkulator, tilbudsskjema i flere steg, eller booking med bekreftelse på e-post. Det ligger i din egen side, så du slipper månedsavgift til en tredjepart. Opplysninger kundene dine sender inn lagres i Europa.
+
+### Lager dere nettbutikker?
+Nei. Vi lager sider for bedrifter som selger tjenester – håndverkere, frisører, fotpleiere, verksteder, renholdere og rådgivere. Skal du selge varer med lager, frakt og betaling på nett, trenger du en ekte nettbutikkløsning, og det sier vi med én gang i stedet for å bygge noe halvveis. Timebestilling, befaring og forespørsler ordner vi gjerne – det er varehandelen vi holder oss unna.
+
+### Er dere norske?
+Ja, helt igjennom. Vimzo drives fra Lillehammer av Kim Sandvold. Det er han som tar praten, skriver tekstene og koder siden – ingenting settes ut til utlandet. All kommunikasjon, alle tekster og all support er på norsk.
+
+### Må jeg skrive tekstene selv?
+Nei. Vi intervjuer deg i omtrent en time om hva bedriften gjør, og skriver sidene ferdig på norsk. Du leser gjennom og godkjenner alt før det publiseres. Vil du skrive selv, trekker vi det fra prisen.
+
+### Hva koster det å endre noe etterpå?
+Småendringer koster ingenting – nytt telefonnummer, nye åpningstider, en pris eller en setning. Du sender en e-post, vi retter det, og det inngår i driften. Skal du ha noe nytt, får du fast pris før vi gjør det: en ny side koster 2 900 kroner, en fagartikkel 2 400. Timepris på 1 150 bruker vi bare når ingenting annet passer, og du får alltid et anslag først. Vi oppdaterer også siden av oss selv når noe endrer seg hos deg.
+
+### Hvorfor får vi ikke et fullt publiseringssystem som WordPress?
+Fordi det sjelden gjør siden bedre, og alltid gjør den dyrere. Å skrive innhold som både leser godt og rangerer er et fag, og en nettside eieren skal fylle selv mellom alt annet, forfaller nesten alltid. Derfor skriver og oppdaterer vi innholdet – du betaler bare for timene som faktisk brukes, i stedet for lisens og vedlikehold hver måned for et system du bruker to ganger i året. Siden blir også raskere og tryggere av å være rene filer uten innlogging.
+
+### Hva betyr det at nettsiden er headless?
+At innhold og presentasjon er skilt fra hverandre. Selve sidene leveres som ferdig HTML fra et globalt CDN, mens de få feltene du kan endre selv – kontaktinfo, åpningstider, priser – ligger i en database (Firebase). Siden henter dem når den vises, og den forhåndsrendrede HTML-en inneholder alltid siste kjente verdi. Dermed ser både Google og AI-assistenter riktig innhold selv uten å kjøre JavaScript, og du slipper en server som skal holdes i live.
+
+### Hvorfor ikke WordPress?
+WordPress bygger siden på nytt for hver besøkende og er avhengig av plugins som må oppdateres, koster penger og er den vanligste årsaken til at norske bedriftssider blir hacket. Vi bygger siden ferdig én gang og leverer den som statiske filer. Det gir raskere sider, lavere drift og ingenting å vedlikeholde.
+
+### Hvem eier nettsiden når den er ferdig?
+Du gjør. Du får all kildekode, domenet står i ditt navn, og innholdet er ditt. Du kan ta med deg hele siden til en annen leverandør når som helst, uten å be oss om tillatelse og uten å miste noe.
+
+### Hvor rask blir siden?
+Målet vårt er under ett sekund til innholdet vises, og minst 95 poeng på alle fire områder i Google Lighthouse. Vi måler før lansering og sender deg rapporten. Ligger tallene under, retter vi det uten ekstra kostnad før siden går live.
+
+### Hva vil det si at siden er optimalisert for AI-agenter?
+AI-assistenter som ChatGPT, Claude, Perplexity og Google AI leser rå HTML og kjører som regel ikke JavaScript. Siden vi leverer ferdig rendret HTML, ser de alt innholdet. I tillegg merker vi opp fakta med schema.org, legger ved en llms.txt som forklarer hva bedriften tilbyr, og skriver svarene dine slik at de kan siteres ordrett.
+
+### Kan dere garantere at vi kommer først på Google?
+Nei, og ingen seriøs leverandør kan det. Det vi garanterer er grunnlaget: riktig teknisk oppsett, innhold som svarer på det folk faktisk søker etter, og måling som viser hva som virker. Garanterer noen førsteplass, bør du spørre hvilket søkeord – svaret er som regel bedriftens eget navn.
+
+### Må vi skaffe bildene selv?
+Nei. Vi kommer gjerne ut og fotograferer bedriften, lokalene, produktene og folkene som jobber der, og filmer med drone når motivet fortjener det. Egne bilder gjør mer for troverdigheten enn noe annet på en bedriftsside, og de gir i tillegg bildetreff i Google som en kjøpt arkivbilde aldri gir.
+
+### Jobber dere bare på Lillehammer?
+Nei. Vi holder til på Lillehammer og møter gjerne kunder i Innlandet ansikt til ansikt, men hele prosessen fungerer på video og e-post. Vi leverer til bedrifter i hele Norge.
+
+---
+Generert fra kildekoden 2026-11-06. Oppdateres automatisk ved hvert bygg.

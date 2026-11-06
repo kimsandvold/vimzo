@@ -1,0 +1,13 @@
+# vimzo.no
+#
+# Alt innhold er åpent for indeksering, også for robotene som henter innhold
+# til AI-assistenter. Det er et bevisst valg: vi selger synlighet, og da kan vi
+# vanskelig stenge døra for den raskest voksende kanalen.
+
+User-agent: *
+Allow: /
+
+# Et kort sammendrag av hva nettstedet handler om, for språkmodeller:
+# https://vimzo.no/llms.txt
+
+Sitemap: https://vimzo.no/sitemap.xml

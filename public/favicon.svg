@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-label="Vimzo">
+  <rect width="1024" height="1024" rx="150" fill="#080808"/>
+  <g fill="#fff">
+    <path d="M350 380H515L476 447H393L447 548L620 264L661 337L445 691L310 442Z"/>
+    <path d="M678 367L718 435L500 795L461 721Z"/>
+  </g>
+</svg>
