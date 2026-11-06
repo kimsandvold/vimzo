@@ -274,7 +274,7 @@ const Mobillenke = styled(NavLink)`
   text-decoration: none;
 
   svg {
-    color: ${({ theme }) => theme.colors.neutral[400]};
+    color: ${({ theme }) => theme.colors.inkSubtle};
   }
 
   &.active {

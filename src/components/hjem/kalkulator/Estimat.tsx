@@ -2,7 +2,7 @@ import styled from 'styled-components'
 import Belop from '../../shared/Belop'
 import Icon from '../../shared/Icon'
 import { ANTALL_AVDRAG } from '../../../data/pakker'
-import type { Estimat as EstimatData, Svar } from '../../../data/kalkulator'
+import { foreslaDomene, type Estimat as EstimatData, type Svar } from '../../../data/kalkulator'
 
 /**
  * Estimatet ved siden av kalkulatoren.
@@ -28,9 +28,30 @@ export default function Estimat({
   onSend: () => void
 }) {
   const betalte = estimat.tillegg.filter((t) => !t.dekket)
+  const adresse = svar.domene.trim() || foreslaDomene(svar.navn) || 'hansen-ror.no'
 
   return (
     <Flate aria-live="polite">
+      {/*
+        Adresselinja gjør at kortet leser som en nettside.
+        Uten den kunne hele helten vært en lånekalkulator – ingenting sa at
+        dette handler om nettsider i det hele tatt. En URL er det mest
+        gjenkjennelige bildet av en nettside som finnes, og vi spør allerede
+        om domenet to felt lenger opp. Den skriver seg selv mens kunden
+        fyller ut.
+      */}
+      <Adresselinje aria-hidden="true">
+        <Prikker>
+          <i />
+          <i />
+          <i />
+        </Prikker>
+        <Felt>
+          <Icon navn="skjold" storrelse={11} tykkelse={2.4} />
+          {adresse}
+        </Felt>
+      </Adresselinje>
+
       <Topp>
         <Stikkord>{svar.navn.trim() ? `Estimat for ${svar.navn.trim()}` : 'Ditt estimat'}</Stikkord>
         <Merke>{estimat.pakke.navn}</Merke>
@@ -196,6 +217,61 @@ const Flate = styled.aside`
 
   @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
     padding: 1.25rem;
+  }
+`
+
+/**
+ * Nettleserlinja på toppen av kortet.
+ *
+ * Holdt bevisst nøktern: tre prikker og et adressefelt, ingen knapper,
+ * faner eller skygger. Den skal gi gjenkjennelse på et halvt sekund og så
+ * komme seg ut av veien – det er tallet under som er innholdet.
+ */
+const Adresselinje = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin: calc(-1 * clamp(1.5rem, 2vw, 1.9rem)) calc(-1 * clamp(1.5rem, 2vw, 1.9rem)) clamp(1.3rem, 2vw, 1.7rem);
+  padding: 0.75rem clamp(1.5rem, 2vw, 1.9rem);
+  border-bottom: 1px solid ${({ theme }) => theme.colors.borderInverted};
+  border-radius: ${({ theme }) => theme.borderRadius.xxl} ${({ theme }) => theme.borderRadius.xxl} 0 0;
+  background: rgba(252, 252, 250, 0.045);
+`
+
+const Prikker = styled.span`
+  display: inline-flex;
+  gap: 0.3rem;
+  flex-shrink: 0;
+
+  i {
+    width: 8px;
+    height: 8px;
+    border-radius: ${({ theme }) => theme.borderRadius.round};
+    background: rgba(252, 252, 250, 0.18);
+  }
+`
+
+/** Selve adressefeltet. Mono, fordi et domene er en adresse og ikke en tittel. */
+const Felt = styled.span`
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-width: 0;
+  padding: 0.3rem 0.7rem;
+  border-radius: ${({ theme }) => theme.borderRadius.pill};
+  background: rgba(252, 252, 250, 0.07);
+  font-family: ${({ theme }) => theme.fonts.mono};
+  font-size: 0.75rem;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: rgba(252, 252, 250, 0.62);
+
+  svg {
+    flex-shrink: 0;
+    color: ${({ theme }) => theme.colors.accentLight};
+    opacity: 0.8;
   }
 `
 

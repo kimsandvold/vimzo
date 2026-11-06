@@ -602,7 +602,7 @@ const Merkelapp = styled.label`
     transition: all ${({ theme }) => theme.transitions.default};
 
     &::placeholder {
-      color: ${({ theme }) => theme.colors.neutral[400]};
+      color: ${({ theme }) => theme.colors.inkSubtle};
     }
 
     &:focus {
@@ -633,7 +633,7 @@ const Valgfritt = styled.span`
   font-weight: 500;
   letter-spacing: 0.04em;
   text-transform: none;
-  color: ${({ theme }) => theme.colors.neutral[400]};
+  color: ${({ theme }) => theme.colors.inkSubtle};
 `
 
 /**
@@ -697,7 +697,7 @@ const Domenefelt = styled.input`
   color: ${({ theme }) => theme.colors.ink};
 
   &::placeholder {
-    color: ${({ theme }) => theme.colors.neutral[400]};
+    color: ${({ theme }) => theme.colors.inkSubtle};
   }
 
   &:focus {
@@ -892,7 +892,7 @@ const Verktoykort = styled.button<{ $valgt: boolean }>`
   transition: all ${({ theme }) => theme.transitions.default};
 
   svg {
-    color: ${({ theme, $valgt }) => ($valgt ? theme.colors.accentInk : theme.colors.neutral[400])};
+    color: ${({ theme, $valgt }) => ($valgt ? theme.colors.accentInk : theme.colors.inkSubtle)};
     transition: color ${({ theme }) => theme.transitions.default};
   }
 

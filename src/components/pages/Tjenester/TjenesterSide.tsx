@@ -181,7 +181,7 @@ const Nummer = styled.span`
   font-family: ${({ theme }) => theme.fonts.mono};
   font-size: 0.78rem;
   letter-spacing: 0.06em;
-  color: ${({ theme }) => theme.colors.neutral[400]};
+  color: ${({ theme }) => theme.colors.inkSubtle};
 `
 
 const Midt = styled.div`

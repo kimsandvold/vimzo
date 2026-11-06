@@ -148,6 +148,16 @@ export const tilleggstjenester: readonly Tillegg[] = [
       'og én kortvideo til forsiden. Ferdig redigert. Du eier bildene.',
   },
   {
+    navn: '3D-visning og designverktøy',
+    pris: 12900,
+    fraPris: true,
+    beskrivelse:
+      'Produktet ditt bygget i 3D i nettleseren: kunden snur på det, velger mål og materiale, ' +
+      'og ser pris og materialliste endre seg med valgene. Spennet er stort – en enkel ' +
+      'produktvisning er én jobb, et fullt designverktøy som det på minio.no er en annen – ' +
+      'så her settes prisen etter en prat.',
+  },
+  {
     navn: 'Ekstra side',
     pris: 2900,
     fraPris: true,

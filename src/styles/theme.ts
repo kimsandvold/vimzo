@@ -178,8 +178,16 @@ const theme = {
   },
 
   /**
-   * Skygger, ikke kanter. Alle er lange og svake – det er det som gjør at en
-   * hvit flate kan ligge på en nesten hvit flate og likevel leses som hevet.
+   * Skygger brukes nå sparsomt.
+   *
+   * Regelen var «skygge, ikke kant», og resultatet ble en side der alt svevde:
+   * steg-kort, priskort, tillitsbånd – alle løftet fra flaten. Seks svevende
+   * ting er uroligere enn seks rolige.
+   *
+   * Nå ligger kortene flatt med en hårfin kant, og skygge er reservert for de
+   * få tingene som FAKTISK skal ligge over siden – estimatkortet først og
+   * fremst. Kontrasten flyttes dermed fra flatene til typografien, der den
+   * gjør mer nytte.
    */
   shadows: {
     xs: '0 1px 2px rgba(12, 13, 12, 0.05)',

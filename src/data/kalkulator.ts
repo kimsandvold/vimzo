@@ -178,6 +178,7 @@ export const VERKTOY: readonly Verktoy[] = [
   { id: 'kalkulator', navn: 'Priskalkulator', ikon: 'graf', hint: 'Kunden regner ut prisen sin selv, før han ringer', pris: 4900, fraPris: true },
   { id: 'omtaler', navn: 'Google-omtaler', ikon: 'gnist', hint: 'Stjernene hentes inn og bakes rett i siden', pris: 2900 },
   { id: 'stillinger', navn: 'Ledige stillinger', ikon: 'samtale', hint: 'Jobbsøkere søker på siden, med CV vedlagt', pris: 4900, fraPris: true, lagrerData: true },
+  { id: 'tredim', navn: '3D-visning av produkt', ikon: 'kode', hint: 'Kunden snur på produktet, velger mål og ser prisen endre seg', pris: 12900, fraPris: true },
   { id: 'dognvakt', navn: 'Døgnvakt og «åpent nå»', ikon: 'lyn', hint: 'Viser om du er på vakt akkurat nå, med riktig nummer', pris: 1900 },
   { id: 'reklamasjon', navn: 'Reklamasjon og klage', ikon: 'skjold', hint: 'Saksnummer og vedlegg, så du har papirene i orden', pris: 2900, fraPris: true, lagrerData: true },
 ]

@@ -425,7 +425,7 @@ const Innholdsfortegnelse = styled.nav`
     content: counter(punkt, decimal-leading-zero);
     font-family: ${({ theme }) => theme.fonts.mono};
     font-size: 0.75rem;
-    color: ${({ theme }) => theme.colors.neutral[400]};
+    color: ${({ theme }) => theme.colors.inkSubtle};
     padding-top: 0.15em;
   }
 

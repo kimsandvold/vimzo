@@ -1,8 +1,8 @@
 import styled, { css } from 'styled-components'
-import { Hode, Innsig, Knapp, Pil, Seksjon, Stikkord, Tittel, Wrap } from '../../ui'
+import { Hode, Innsig, Knapp, Pil, Seksjon, Tittel, Wrap } from '../../ui'
 import Belop from '../shared/Belop'
 import Icon from '../shared/Icon'
-import { pakker, driftsnivaer, drift, ANTALL_AVDRAG } from '../../data/pakker'
+import { pakker, driftsnivaer, ANTALL_AVDRAG } from '../../data/pakker'
 
 /**
  * Prisene. Månedsbeløpet står størst, fordi det er den summen en liten
@@ -19,7 +19,6 @@ export default function Priser() {
         <Innsig>
           <Hode>
             <div>
-              <Stikkord>Priser</Stikkord>
               <Tittel>Fast pris. Alt inkludert.</Tittel>
             </div>
             <Pil til="/priser">Alle priser og tillegg</Pil>
@@ -56,11 +55,6 @@ export default function Priser() {
                   </>
                 )}
 
-                {/* Avdraget stopper. Det er hele forskjellen på oss og et
-                    abonnement, og det må stå på kortet – ikke i en fotnote. */}
-                <Deretter>
-                  Deretter <strong><Belop verdi={drift.pris} /> kr/mnd</strong> i drift
-                </Deretter>
 
                 <Punkter>
                   {p.punkter.map((punkt) => (
@@ -123,23 +117,23 @@ const Kort = styled.article<{ $fremhevet: boolean }>`
   height: 100%;
   padding: 2rem 1.75rem;
   border-radius: ${({ theme }) => theme.borderRadius.xl};
-  /* Lett gjennomsiktig med frost: kortene ligger på sandflaten, og blur-en
-     gjør at de leser som ark løftet fra den – ikke som utklipp limt på. */
-  background: rgba(255, 255, 255, 0.82);
-  backdrop-filter: saturate(140%) blur(14px);
-  -webkit-backdrop-filter: saturate(140%) blur(14px);
+  /* Flatt og ugjennomsiktig, med en hårfin kant. Frosten og gjennomsikten
+     som lå her før var enda et lag å se gjennom – kortene skal lese som
+     rolige felt på sandflaten, ikke som ark som svever over den. */
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  background: ${({ theme }) => theme.colors.surface};
   scroll-margin-top: 7rem;
 
   ${({ $fremhevet, theme }) =>
     $fremhevet
       ? css`
-          box-shadow: ${theme.shadows.xl};
+          border-color: ${theme.colors.borderStrong};
           @media (min-width: 901px) {
             transform: translateY(-14px);
           }
         `
       : css`
-          box-shadow: ${theme.shadows.sm};
+          border-color: ${theme.colors.border};
         `}
 `
 
@@ -185,24 +179,13 @@ const Pris = styled.p`
   }
 `
 
+
 /** Ord, ikke beløp – skal ikke arve mono og sifferstørrelse fra <Pris>. */
 const Avtale = styled.span`
   font-family: ${({ theme }) => theme.fonts.body};
   font-size: ${({ theme }) => theme.fontSizes.xl};
   font-weight: 600;
   letter-spacing: -0.025em;
-`
-
-const Deretter = styled.p`
-  margin: 0.55rem 0 0;
-  font-size: 0.875rem;
-  color: ${({ theme }) => theme.colors.accent};
-
-  strong {
-    font-family: ${({ theme }) => theme.fonts.mono};
-    font-weight: 600;
-    letter-spacing: -0.03em;
-  }
 `
 
 const Samlet = styled.p`

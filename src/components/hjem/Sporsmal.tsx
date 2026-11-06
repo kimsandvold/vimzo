@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Innsig, Knapp, Seksjon, Stikkord, Tittel, Wrap } from '../../ui'
+import { Innsig, Knapp, Seksjon, Tittel, Wrap } from '../../ui'
 import Sporsmalsliste from '../shared/Sporsmalsliste'
 import { faq } from '../../data/faq'
 
@@ -15,7 +15,6 @@ export default function Sporsmal() {
         <Oppsett>
           <Innsig>
             <Venstre>
-              <Stikkord>Spørsmål</Stikkord>
               <Tittel $niva="medium">Det folk pleier å lure på.</Tittel>
               <Knapp til="/kontakt" variant="myk">
                 Spør om noe annet

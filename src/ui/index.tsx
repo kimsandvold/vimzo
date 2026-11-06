@@ -173,7 +173,7 @@ const knappStil = css<{ $variant: KnappVariant; $stor?: boolean }>`
           color: ${theme.colors.ink};
           box-shadow: ${theme.shadows.md};
           &:hover {
-            box-shadow: ${theme.shadows.lg};
+            border-color: ${theme.colors.borderStrong};
           }
         `
       case 'glass':
@@ -317,7 +317,7 @@ export function Pil({ til, children, lys }: { til: string; children: ReactNode; 
 export const Kort = styled.div<{ $klikkbar?: boolean }>`
   border-radius: ${({ theme }) => theme.borderRadius.xl};
   background: ${({ theme }) => theme.colors.surface};
-  box-shadow: ${({ theme }) => theme.shadows.md};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   transition:
     box-shadow ${({ theme }) => theme.transitions.soft},
     transform ${({ theme }) => theme.transitions.soft};
@@ -327,7 +327,7 @@ export const Kort = styled.div<{ $klikkbar?: boolean }>`
     css`
       &:hover {
         transform: translateY(-4px);
-        box-shadow: ${theme.shadows.lg};
+        border-color: ${theme.colors.borderStrong};
       }
     `}
 `

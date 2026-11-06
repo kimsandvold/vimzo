@@ -28,8 +28,8 @@ export default function Helt() {
             <Uthevet>Og hva det koster.</Uthevet>
           </h1>
           <Sidelinje>
-            Fire spørsmål, så står prisen der – sammen med lista over hva som inngår. Ingen e-post, ingen
-            selger, ingenting sendes før du vil.
+            Fire spørsmål, så står prisen på nettsiden din der – sammen med lista over hva som inngår.
+            Ingen e-post, ingen selger, ingenting sendes før du vil.
           </Sidelinje>
         </Topp>
 
@@ -185,7 +185,7 @@ const Loftene = styled.ul`
   padding: 0.95rem 1.4rem;
   border-radius: ${({ theme }) => theme.borderRadius.pill};
   background: ${({ theme }) => theme.colors.surface};
-  box-shadow: ${({ theme }) => theme.shadows.sm};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   list-style: none;
 
   li {

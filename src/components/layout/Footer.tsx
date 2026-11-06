@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { Wrap } from '../../ui'
 import Logo from '../shared/Logo'
 import Icon from '../shared/Icon'
-import { firma, epost } from '../../data/firma'
+import { firma } from '../../data/firma'
 import { tjenester } from '../../data/tjenester'
 
 /**
@@ -12,14 +12,19 @@ import { tjenester } from '../../data/tjenester'
  * bedriftssider skal ha dem, og fordi det er nøyaktig den typen entydige
  * fakta en AI-assistent kan feste en setning til.
  *
+ * E-postadressen står IKKE her. En adresse i klartekst i foten er det
+ * letteste en høstebot finner, og den står på hver eneste side. Veien inn
+ * er kontaktskjemaet; adressen oppgir vi i svaret.
+ *
+ * Postnummeret er også ute – det sier ingenting en leser trenger når
+ * poststedet står der, og foten skal ikke være et firmaattest.
+ *
  * Felter som ikke er fylt ut i `firma.ts` skjuler seg selv. Siden skal aldri
  * publisere en opplysning vi ikke har.
  */
 export default function Footer() {
   const ar = new Date().getFullYear()
-  const adresselinje = [firma.adresse, [firma.postnr, firma.poststed].filter(Boolean).join(' ')]
-    .filter(Boolean)
-    .join(', ')
+  const sted = [firma.poststed, firma.land].filter(Boolean).join(', ')
 
   return (
     <Fot data-surface="dark">
@@ -35,22 +40,20 @@ export default function Footer() {
               AI-assistenter.
             </p>
             <Kontaktrad>
-              <a href={`mailto:${epost()}`}>
+              <Link to="/kontakt">
                 <Icon navn="epost" storrelse={17} />
-                <span>{epost()}</span>
-              </a>
+                <span>Send oss en melding</span>
+              </Link>
               {firma.telefon && (
                 <a href={`tel:${firma.telefon}`}>
                   <Icon navn="samtale" storrelse={17} />
                   <span>{firma.telefonVist || firma.telefon}</span>
                 </a>
               )}
-              {firma.poststed && (
+              {sted && (
                 <span className="sted">
                   <Icon navn="kart" storrelse={17} />
-                  <span>
-                    {firma.poststed}, {firma.land}
-                  </span>
+                  <span>{sted}</span>
                 </span>
               )}
             </Kontaktrad>
@@ -89,6 +92,9 @@ export default function Footer() {
                 <li>
                   <Link to="/kontakt">Kontakt</Link>
                 </li>
+                <li>
+                  <Link to="/personvern">Personvern</Link>
+                </li>
               </ul>
             </Spalte>
 
@@ -104,9 +110,6 @@ export default function Footer() {
                 <li>
                   <a href="/robots.txt">robots.txt</a>
                 </li>
-                <li>
-                  <Link to="/personvern">Personvern</Link>
-                </li>
               </ul>
             </Spalte>
           </Spalter>
@@ -116,7 +119,7 @@ export default function Footer() {
           <p>
             © {ar} {firma.juridiskNavn || firma.merke}
             {firma.orgNr && ` · Org.nr ${firma.orgNr}`}
-            {adresselinje && ` · ${adresselinje}`}
+            {sted && ` · ${sted}`}
           </p>
           <p className="sitat">
             Denne siden er bygget på samme måte som dem vi selger: håndkodet, forhåndsrendret og
@@ -205,7 +208,9 @@ const Spalte = styled.div`
     font-weight: 500;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: ${({ theme }) => theme.colors.neutral[400]};
+    /* Foten står på den mørke flaten: inkSubtle er en tone for LYS bakgrunn
+       og målte 3.7:1 her. Den inverterte varianten gir 8.7:1. */
+    color: ${({ theme }) => theme.colors.inkInvertedMuted};
     margin-bottom: 1.1rem;
   }
 
@@ -238,7 +243,8 @@ const Bunn = styled.div`
 
   p {
     font-size: 0.8125rem;
-    color: ${({ theme }) => theme.colors.neutral[400]};
+    /* Mørk flate – samme grunn som overskriftene over. */
+    color: ${({ theme }) => theme.colors.inkInvertedMuted};
   }
 
   .sitat {

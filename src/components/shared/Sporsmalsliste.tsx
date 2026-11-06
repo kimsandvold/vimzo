@@ -84,7 +84,7 @@ const Tegn = styled.span<{ $apen: boolean }>`
   display: inline-flex;
   flex-shrink: 0;
   margin-top: 0.2rem;
-  color: ${({ theme, $apen }) => ($apen ? theme.colors.accent : theme.colors.neutral[400])};
+  color: ${({ theme, $apen }) => ($apen ? theme.colors.accent : theme.colors.inkSubtle)};
   transform: rotate(${({ $apen }) => ($apen ? '45deg' : '0deg')});
   transition: transform ${({ theme }) => theme.transitions.soft}, color ${({ theme }) => theme.transitions.default};
 `

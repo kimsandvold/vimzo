@@ -80,12 +80,13 @@ const Kort = styled.article<{ $fremhevet: boolean }>`
   height: 100%;
   padding: 2rem 1.75rem;
   border-radius: ${({ theme }) => theme.borderRadius.xl};
+  border: 1px solid ${({ theme }) => theme.colors.border};
   background: ${({ theme }) => theme.colors.surface};
   scroll-margin-top: 7rem;
   ${({ $fremhevet, theme }) =>
     $fremhevet
-      ? css`box-shadow: ${theme.shadows.xl};`
-      : css`box-shadow: ${theme.shadows.sm};`}
+      ? css`border-color: ${theme.colors.borderStrong};`
+      : css`border-color: ${theme.colors.border};`}
 `
 
 const Merke = styled.span`

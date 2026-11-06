@@ -120,6 +120,26 @@ export const tjenester: readonly Tjeneste[] = [
     ],
   },
   {
+    id: 'tredim',
+    ikon: 'kode',
+    navn: '3D-visning og designverktøy',
+    kort: 'La kunden snu på produktet, eller tegne sitt eget og få mål og pris.',
+    lang:
+      'Produkter som lages etter mål er vanskelige å selge med et flatt bilde. Vi bygger ' +
+      'produktet i 3D i nettleseren, så kunden kan snu på det, bytte materiale og se hva ' +
+      'valgene gjør med prisen. Det kjøres lokalt i nettleseren uten abonnement til noen, og ' +
+      'det er levert i praksis – se Minio, der kunden tegner hageproduktet sitt og får ' +
+      'materialliste og pris ut.',
+    punkter: [
+      'Produktet i 3D, som kunden kan snu og se fra alle kanter',
+      'Velg materiale, mål og tilvalg – modellen følger med',
+      'Materialliste og pris regnet ut fra valgene',
+      'Forespørselen kommer inn med hele tegningen lagret',
+      'Kjører i nettleseren, uten tung last eller månedsleie',
+      'Passer trevare, møbler, bygg og alt som lages etter mål',
+    ],
+  },
+  {
     id: 'synlighet',
     ikon: 'sok',
     navn: 'Bli funnet i Google',
