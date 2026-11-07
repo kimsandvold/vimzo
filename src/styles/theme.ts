@@ -164,7 +164,7 @@ const theme = {
     proseMax: '66ch',
   },
 
-  zIndex: { nav: 1000, menyBakgrunn: 900, heroInnhold: 20 },
+  zIndex: { nav: 1000, menyBakgrunn: 900, kontaktknapp: 800, heroInnhold: 20 },
 
   /** Store radier. Myke hjørner leser som lett; skarpe leser som systemverktøy. */
   borderRadius: {

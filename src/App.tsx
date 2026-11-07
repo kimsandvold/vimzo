@@ -7,6 +7,7 @@ import SkipLink from './components/shared/SkipLink'
 import Navbar from './components/layout/Navbar'
 import Footer from './components/layout/Footer'
 import Laster from './components/shared/Laster'
+import Kontaktknapp from './components/shared/Kontaktknapp'
 import ForsideSide from './components/pages/Forside/ForsideSide'
 import IkkeFunnetSide from './components/pages/IkkeFunnet/IkkeFunnetSide'
 import { LAZY_RUTER } from './routes'
@@ -32,6 +33,7 @@ export default function App() {
           </Suspense>
         </main>
         <Footer />
+        <Kontaktknapp />
       </BrowserRouter>
     </ThemeProvider>
   )

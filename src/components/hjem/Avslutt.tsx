@@ -1,6 +1,5 @@
 import styled from 'styled-components'
 import { Knapp, Wrap } from '../../ui'
-import { epost } from '../../data/firma'
 
 /**
  * Siste skjerm før foten. Én stor setning, to veier videre.
@@ -25,10 +24,10 @@ export default function Avslutt({
           <p>{tekst}</p>
           <Knapper>
             <Knapp til="/kontakt" variant="hvit" stor>
-              Få et tilbud
+              Ta en prat
             </Knapp>
-            <Knapp href={`mailto:${epost()}`} variant="glass" stor>
-              {epost()}
+            <Knapp til="/priser" variant="glass" stor>
+              Se prisene
             </Knapp>
           </Knapper>
         </Innhold>

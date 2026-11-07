@@ -83,12 +83,14 @@ ikonbibliotek ville kostet titalls kilobyte JavaScript for å tegne ti streker.
 
 ## Før lansering
 
-1. Fyll inn `orgNr`, `juridiskNavn`, `adresse` og `telefon` i `src/data/firma.ts`.
+1. Fyll inn `orgNr` og `juridiskNavn` i `src/data/firma.ts`. Telefon, adresse og
+   e-post skal ikke vises noe sted – all kontakt går via kontaktskjemaet.
    Alt som leser dem skjuler seg selv så lenge de er tomme.
 2. Juster beløpene i `src/data/pakker.ts` til det du faktisk vil ta.
-3. Sett opp et mottak for kontaktskjemaet og legg endepunktet i
-   `VITE_KONTAKT_ENDPOINT` (se `.env.example`). Uten det åpner skjemaet en
-   ferdig utfylt e-post i stedet.
+3. Sett opp EmailJS og legg de tre `VITE_EMAILJS_*`-verdiene i `.env` (se
+   `.env.example`). Både kontaktskjemaet og kalkulatoren sender via den. Uten
+   dem åpner skjemaene en ferdig utfylt e-post i stedet. Fyll også inn
+   databehandler-TODO-en i `PersonvernSide.tsx`.
 4. Legg inn flere prosjekter i `src/data/cases.ts` etter hvert som de lanseres –
    og bare med tall som er målt.
 5. Meld `https://vimzo.no/sitemap.xml` inn i Google Search Console.

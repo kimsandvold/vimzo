@@ -12,12 +12,9 @@ import { tjenester } from '../../data/tjenester'
  * bedriftssider skal ha dem, og fordi det er nøyaktig den typen entydige
  * fakta en AI-assistent kan feste en setning til.
  *
- * E-postadressen står IKKE her. En adresse i klartekst i foten er det
- * letteste en høstebot finner, og den står på hver eneste side. Veien inn
- * er kontaktskjemaet; adressen oppgir vi i svaret.
- *
- * Postnummeret er også ute – det sier ingenting en leser trenger når
- * poststedet står der, og foten skal ikke være et firmaattest.
+ * Ingen e-post, ingen telefon, ingen adresse – verken her eller noe annet
+ * sted. Alt går gjennom kontaktskjemaet. Bare poststedet står, i bunnlinja,
+ * fordi «hvor holder de til» er en del av svaret på hvem vi er.
  *
  * Felter som ikke er fylt ut i `firma.ts` skjuler seg selv. Siden skal aldri
  * publisere en opplysning vi ikke har.
@@ -44,18 +41,6 @@ export default function Footer() {
                 <Icon navn="epost" storrelse={17} />
                 <span>Send oss en melding</span>
               </Link>
-              {firma.telefon && (
-                <a href={`tel:${firma.telefon}`}>
-                  <Icon navn="samtale" storrelse={17} />
-                  <span>{firma.telefonVist || firma.telefon}</span>
-                </a>
-              )}
-              {sted && (
-                <span className="sted">
-                  <Icon navn="kart" storrelse={17} />
-                  <span>{sted}</span>
-                </span>
-              )}
             </Kontaktrad>
           </Merke>
 
@@ -63,11 +48,16 @@ export default function Footer() {
             <Spalte>
               <h3>Tjenester</h3>
               <ul>
-                {tjenester.map((t) => (
-                  <li key={t.id}>
-                    <Link to={`/tjenester#${t.id}`}>{t.navn}</Link>
-                  </li>
-                ))}
+                {tjenester
+                  .filter((t) => t.gruppe === 'inngar')
+                  .map((t) => (
+                    <li key={t.id}>
+                      <Link to={`/tjenester#${t.id}`}>{t.navn}</Link>
+                    </li>
+                  ))}
+                <li>
+                  <Link to="/tjenester#tillegg">Tillegg med fast pris</Link>
+                </li>
               </ul>
             </Spalte>
 
@@ -170,8 +160,7 @@ const Kontaktrad = styled.div`
   gap: 0.6rem;
   margin-top: 1.5rem;
 
-  a,
-  .sted {
+  a {
     display: inline-flex;
     align-items: center;
     gap: 0.6rem;
