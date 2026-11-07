@@ -7,9 +7,10 @@ import Kalkulator from './kalkulator/Kalkulator'
 /**
  * Forsidens åpning.
  *
- * Én setning, og så får du regne. Du ser omtrent hva siden vil koste, på
- * fire spørsmål, uten å oppgi e-post – og ingressen sier rett ut at det er et
- * anslag. Siden lages for én bedrift; prisen blir din egen etter en prat.
+ * Først hva Vimzo er – nettsider for små bedrifter – og så kalkulatoren.
+ * Overskriften sa en stund bare «se hva det koster», og da var det ingenting
+ * på forsiden som fortalte hva «det» var. Nå står både fagområdet og
+ * målgruppen der før noe annet, også for søkemotorene.
  *
  * Flaten er lys. Den var mørk før, med et vinterfoto under, og det så
  * håndlaget ut – men det så også ut som noe som ble laget i 2015. Et skjema
@@ -23,13 +24,15 @@ export default function Helt() {
       <Bakglod aria-hidden="true" />
       <Innhold>
         <Topp>
+          <Stikkord>Webutvikling og design · Lillehammer</Stikkord>
           <h1>
-            Se hva det koster.
-            <Uthevet>Før du spør noen.</Uthevet>
+            Nettsider for små bedrifter.
+            <Uthevet>Med åpne priser.</Uthevet>
           </h1>
           <Sidelinje>
-            Fire spørsmål gir deg et ærlig anslag og lista over hva som pleier å inngå. Siden lages
-            for din bedrift, så den endelige prisen setter vi etter en prat – skriftlig, og da står den.
+            Vi lager hele nettsiden – tekst, bilder, design og det tekniske – for håndverkere, frisører,
+            rådgivere og andre som heller vil drive bedriften sin. Svar på fire spørsmål under, så ser du
+            omtrent hva din vil koste.
           </Sidelinje>
         </Topp>
 
@@ -146,7 +149,9 @@ const Topp = styled.div`
     font-weight: 700;
     line-height: 0.98;
     letter-spacing: -0.042em;
-    max-width: 14ch;
+    /* Bredt nok til at «Nettsider for små bedrifter.» står på én linje på
+       en vanlig skjerm – to linjer totalt, så kalkulatoren holder seg oppe. */
+    max-width: 20ch;
   }
 
 `
@@ -160,6 +165,18 @@ const Topp = styled.div`
  */
 const Uthevet = styled.span`
   display: block;
+  color: ${({ theme }) => theme.colors.accent};
+`
+
+/**
+ * Hva Vimzo er, før noe annet. Uten den sa forsiden hva kalkulatoren gjør,
+ * men ikke at dette er en som lager nettsider.
+ */
+const Stikkord = styled.p`
+  margin: 0;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  letter-spacing: -0.005em;
   color: ${({ theme }) => theme.colors.accent};
 `
 
