@@ -29,9 +29,8 @@ export default function ForsideSide() {
   useSEO({
     title: 'Vimzo – nettsider laget for din bedrift, med åpne priser',
     description:
-      'Se omtrent hva nettsiden din vil koste før du snakker med noen. Vi lager resten – ' +
-      'domene, tekst, bilder og publisering – og du får fast pris skriftlig etter en prat. ' +
-      'Håndlaget i Norge.',
+      'Nettsider for små bedrifter, med åpne priser. Se hva din vil koste før du tar kontakt – ' +
+      'vi ordner domene, tekst, bilder og publisering.',
     jsonLd: [organisasjon(), nettsted(), faqLd(faq.slice(0, 6))],
   })
 

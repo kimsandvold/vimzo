@@ -149,6 +149,7 @@ publisering og innmelding hos Google.
 - [Lag logo](${SITE_URL}/logo): gratis logoverktøy, last ned SVG og PNG
 ${guider.map((g) => `- [${g.tittel}](${SITE_URL}/guider/${g.slug}): ${g.ingress}`).join('\n')}
 - [Kontakt](${SITE_URL}/kontakt): be om tilbud
+- [Fullt innhold](${SITE_URL}/llms-full.txt): alle guidene og svarene i ren tekst
 
 ## Vanlige spørsmål
 
@@ -159,6 +160,49 @@ Generert fra kildekoden ${idag}. Oppdateres automatisk ved hvert bygg.
 `
 
 await writeFile('public/llms.txt', llms, 'utf-8')
+
+// --- 3. llms-full.txt -------------------------------------------------------
+//
+// Hele innholdet i guidene, som ren tekst. llms.txt er sammendraget; denne er
+// det en språkmodell faktisk kan sitere fra, uten å måtte tolke HTML.
+
+const blokkTilTekst = (b) => {
+  if (b.type === 'p') return b.tekst
+  if (b.type === 'liste') return b.punkter.map((p) => `- ${p}`).join('\n')
+  if (b.type === 'nummerert') return b.punkter.map((p, i) => `${i + 1}. ${p}`).join('\n')
+  if (b.type === 'faktaboks') return `> **${b.tittel}**\n> ${b.tekst}`
+  if (b.type === 'tabell')
+    return [
+      `| ${b.kolonner.join(' | ')} |`,
+      `| ${b.kolonner.map(() => '---').join(' | ')} |`,
+      ...b.rader.map((r) => `| ${r.join(' | ')} |`),
+    ].join('\n')
+  return ''
+}
+
+const llmsFull = `${llms.replace(/\n---\nGenerert fra kildekoden[\s\S]*$/, '')}
+
+# Guider i fulltekst
+
+${guider
+  .map(
+    (g) => `## ${g.tittel}
+
+Kilde: ${SITE_URL}/guider/${g.slug}
+Forfatter: Kim Sandvold, Vimzo · Publisert ${g.publisert}${g.oppdatert ? ` · Oppdatert ${g.oppdatert}` : ''}
+
+**Kort svar:** ${g.kortsvar}
+
+${g.seksjoner.map((sek) => `### ${sek.overskrift}\n\n${sek.innhold.map(blokkTilTekst).join('\n\n')}`).join('\n\n')}`,
+  )
+  .join('\n\n---\n\n')}
+
+---
+Generert fra kildekoden ${idag}. Oppdateres automatisk ved hvert bygg.
+`
+
+await writeFile('public/llms-full.txt', llmsFull, 'utf-8')
+console.log(`[llms] public/llms-full.txt oppdatert (${(Buffer.byteLength(llmsFull) / 1024).toFixed(1)} kB)`)
 
 const antall = faste.length + guider.length + cases.length
 console.log(`[sitemap] ${antall} URL-er skrevet til public/sitemap.xml`)

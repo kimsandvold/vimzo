@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 import { Ingress, Innsig, Seksjon, Stikkord, Tittel, Wrap } from '../../../ui'
 import { useSEO } from '../../../hooks/useSEO'
-import { brodsmuler, faqLd, organisasjon } from '../../../lib/jsonLd'
+import { brodsmuler, faqLd, nettside, organisasjon } from '../../../lib/jsonLd'
 import Sidehode from '../../layout/Sidehode'
 import Pakkekort from '../../shared/Pakkekort'
 import Sporsmalsliste from '../../shared/Sporsmalsliste'
@@ -20,6 +20,7 @@ import {
   delbetalingsnotat,
   endringsnotat,
   formaterRamme,
+  PRISER_OPPDATERT,
 } from '../../../data/pakker'
 import { faqFor } from '../../../data/faq'
 
@@ -53,10 +54,14 @@ export default function PriserSide() {
   useSEO({
     title: 'Priser – hva en nettside koster for en liten bedrift | Vimzo',
     description:
-      `En liten side lander typisk på ${formaterRamme(start.pris)} kr, en bedriftsside på ` +
-      `${formaterRamme(bedrift.pris)} kr. Endelig pris avtales etter en prat, skriftlig. ` +
-      `Drift ${drift.pris} kr/mnd, eks. mva.`,
-    jsonLd: [brodsmuler([{ navn: 'Priser', sti: '/priser' }]), organisasjon(), faqLd(sporsmal)],
+      `Liten side typisk ${formaterRamme(start.pris)} kr, bedriftsside ${formaterRamme(bedrift.pris)} kr. ` +
+      `Fast pris skriftlig etter en prat. Drift ${drift.pris} kr/mnd. Eks. mva.`,
+    jsonLd: [
+      brodsmuler([{ navn: 'Priser', sti: '/priser' }]),
+      nettside('/priser', 'Priser – hva en nettside koster hos Vimzo', PRISER_OPPDATERT),
+      organisasjon(),
+      faqLd(sporsmal),
+    ],
   })
 
   return (
@@ -77,6 +82,13 @@ export default function PriserSide() {
           </Gitter>
           <Notat>{prisnotat}</Notat>
           <Notat>{delbetalingsnotat}</Notat>
+          <Notat>
+            Prisene er sist gjennomgått{' '}
+            <time dateTime={PRISER_OPPDATERT}>
+              {new Date(`${PRISER_OPPDATERT}T12:00:00`).toLocaleDateString('nb-NO', { day: 'numeric', month: 'long', year: 'numeric' })}
+            </time>
+            .
+          </Notat>
         </Wrap>
       </Seksjon>
 

@@ -22,6 +22,45 @@ const URL_BASE = firma.url
 /** Felles `@id` slik at alle sider peker på den samme virksomheten. */
 export const ORG_ID = `${URL_BASE}/#organisasjon`
 const NETTSTED_ID = `${URL_BASE}/#nettsted`
+/** Personen bak – én node som organisasjonen og hver guide peker på. */
+export const PERSON_ID = `${URL_BASE}/om#person`
+
+/**
+ * Personen bak Vimzo.
+ *
+ * En navngitt fagperson veier tyngre enn et foretaksnavn – for Google
+ * (erfaring og ekspertise) og for AI-assistenter, som helst siterer kilder
+ * med en tydelig avsender. Publiseres på /om, og guidene peker hit som
+ * forfatter.
+ */
+export function person(): Record<string, unknown> {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    '@id': PERSON_ID,
+    name: firma.grunnlegger,
+    jobTitle: firma.grunnleggerTittel,
+    url: `${URL_BASE}/om`,
+    worksFor: { '@id': ORG_ID },
+    knowsAbout: [...firma.fagomrader],
+    knowsLanguage: ['nb', 'en'],
+  }
+}
+
+/** En side med dato for siste endring – priser siteres oftere når de er datert. */
+export function nettside(sti: string, navn: string, sistEndret: string): Record<string, unknown> {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    '@id': `${URL_BASE}${sti}`,
+    url: `${URL_BASE}${sti}`,
+    name: navn,
+    inLanguage: 'nb-NO',
+    isPartOf: { '@id': NETTSTED_ID },
+    about: { '@id': ORG_ID },
+    dateModified: sistEndret,
+  }
+}
 
 export function organisasjon(): Record<string, unknown> {
   const adresse: Record<string, string> = {
@@ -45,11 +84,7 @@ export function organisasjon(): Record<string, unknown> {
     address: adresse,
     areaServed: firma.dekningsomrade.map((omrade) => ({ '@type': 'AdministrativeArea', name: omrade })),
     knowsAbout: [...firma.fagomrader],
-    founder: {
-      '@type': 'Person',
-      name: firma.grunnlegger,
-      jobTitle: firma.grunnleggerTittel,
-    },
+    founder: { '@id': PERSON_ID, '@type': 'Person', name: firma.grunnlegger },
     priceRange: `NOK ${pakker[0].pris.fra}–${pakker[1].pris.til ?? pakker[1].pris.fra}`,
     currenciesAccepted: 'NOK',
   }
@@ -165,12 +200,7 @@ export function artikkelLd(guide: Guide): Record<string, unknown> {
     datePublished: guide.publisert,
     dateModified: guide.oppdatert || guide.publisert,
     inLanguage: 'nb-NO',
-    author: {
-      '@type': 'Person',
-      name: firma.grunnlegger,
-      jobTitle: firma.grunnleggerTittel,
-      url: `${URL_BASE}/om`,
-    },
+    author: { '@id': PERSON_ID, '@type': 'Person', name: firma.grunnlegger, url: `${URL_BASE}/om` },
     publisher: { '@id': ORG_ID },
     mainEntityOfPage: { '@type': 'WebPage', '@id': `${URL_BASE}/guider/${guide.slug}` },
     articleSection: guide.kategori,

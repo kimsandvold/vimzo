@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 import { Ingress, Innsig, Seksjon, Stikkord, Tittel, Wrap } from '../../../ui'
 import { useSEO } from '../../../hooks/useSEO'
-import { brodsmuler, organisasjon } from '../../../lib/jsonLd'
+import { brodsmuler, organisasjon, person } from '../../../lib/jsonLd'
 import Sidehode from '../../layout/Sidehode'
 import Icon from '../../shared/Icon'
 import Avslutt from '../../hjem/Avslutt'
@@ -45,7 +45,7 @@ export default function OmSide() {
     description:
       'Vimzo lager håndkodede, forhåndsrendrede nettsider for små og mellomstore bedrifter. ' +
       `Drevet av ${firma.grunnlegger}, med åpne priser og fast pris etter en prat.`,
-    jsonLd: [brodsmuler([{ navn: 'Om oss', sti: '/om' }]), organisasjon()],
+    jsonLd: [brodsmuler([{ navn: 'Om oss', sti: '/om' }]), organisasjon(), person()],
   })
 
   return (

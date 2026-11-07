@@ -30,7 +30,7 @@ export default function TjenesterSide() {
   const { hash } = useLocation()
 
   useSEO({
-    title: 'Tjenester – hva som inngår i en nettside, og hva som koster ekstra | Vimzo',
+    title: 'Tjenester – hva som inngår, og hva som koster ekstra | Vimzo',
     description:
       'Domene, design, tekster, Google-oppsett og drift inngår alltid. Foto, logo, kalkulator ' +
       'og 3D er tillegg med pris på forhånd. Endelig pris avtales etter en prat.',

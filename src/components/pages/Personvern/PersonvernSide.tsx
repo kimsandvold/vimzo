@@ -22,7 +22,7 @@ export default function PersonvernSide() {
     description:
       'Hvilke opplysninger vimzo.no samler inn, hvorfor, hvor lenge de lagres og hvilke ' +
       (analyseKlar
-        ? 'rettigheter du har. Statistikk med Google Analytics brukes bare hvis du samtykker.'
+        ? 'rettigheter du har. Google Analytics brukes bare med samtykke.'
         : 'rettigheter du har. Nettstedet bruker ingen informasjonskapsler og ingen analyseverktøy.'),
     jsonLd: [brodsmuler([{ navn: 'Personvern', sti: '/personvern' }])],
   })

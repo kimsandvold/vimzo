@@ -78,6 +78,7 @@ publisering og innmelding hos Google.
 - [Hva koster en nettside for en liten bedrift i Norge?](https://vimzo.no/guider/hva-koster-en-nettside): Fra null til et par hundre tusen. Her er hva som faktisk ligger bak prislappen, og hva en liten bedrift bør regne med å betale – både i oppstart og per år.
 - [WordPress eller håndkodet nettside – hva passer en liten bedrift?](https://vimzo.no/guider/wordpress-eller-handkodet): WordPress driver rundt 40 % av verdens nettsteder. Det betyr ikke at det er riktig for en bedrift med fem ansatte og ti sider.
 - [Kontakt](https://vimzo.no/kontakt): be om tilbud
+- [Fullt innhold](https://vimzo.no/llms-full.txt): alle guidene og svarene i ren tekst
 
 ## Vanlige spørsmål
 

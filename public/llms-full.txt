@@ -1,0 +1,348 @@
+# Vimzo
+
+> Vimzo lager hele nettsiden for små og mellomstore bedrifter i Norge – inkludert
+> domene, tekst, bilder, design og publisering. Kunden bruker omtrent to timer på
+> hele prosjektet. Hver side lages for én bedrift og leveres som ferdig HTML, så den
+> er rask, billig å drifte og lett å finne både i søkemotorer og i AI-assistenter.
+
+Leverer i hele Norge. Alt arbeid skjer digitalt.
+Nettsted: https://vimzo.no
+Språk: norsk (bokmål)
+
+## Priser (NOK, eks. mva.)
+
+Typiske prosjekter og hvor de fleste lander. Den endelige prisen avtales etter en
+samtale og gis skriftlig før arbeidet starter – da står den.
+
+- Start: typisk 19 900–28 900 kr — 1–3 sider. For deg som skal være lett å finne og lett å ringe – en håndverker, en frisør, en rådgiver.
+- Bedrift: typisk 34 900–48 900 kr — 4–8 sider. For bedriften som skal selge tjenestene sine, ikke bare vises fram.
+- Vekst: fra 59 900 kr — etter behov. For deg som vil at nettsiden skal gjøre en jobb – regne ut priser, ta imot bestillinger.
+- Arrangement: typisk 11 900–17 900 kr — én side · 3 måneder drift inkludert. For en messe, en konferanse, en lansering eller en kampanje – en side som skal se ordentlig ut den perioden den gjelder.
+- Beløpet kan deles over 12 måneder.
+- Drift: 449 kr per måned — Det som holder siden i live. Endringer på innholdet faktureres for seg. Ingen bindingstid.
+- Timepris for endringer: 1 250 kr
+- Regneverktøy eller kalkulator: fra 9 900 kr
+- Logo: 4 900 kr
+- Visuell profil: 9 900 kr
+- Foto og dronevideo: fra 7 900 kr
+- 3D-visning og designverktøy: fra 24 900 kr
+- Ekstra side: fra 3 900 kr
+- Fagartikkel: 3 400 kr per artikkel
+- Påmelding til arrangement: fra 4 900 kr
+- Ny utgave av arrangementsside: fra 6 000 kr
+
+Første års domene er inkludert i alle pakkene. Deretter ca. 169 kr/år, som Vimzo fornyer.
+
+## Tjenester
+
+- Hele nettsiden, ferdig laget: Vi kjøper domenet i ditt navn, finner ut hvilke sider du trenger, designer siden og setter den på nett. Du bruker rundt to timer til sammen: én prat i starten og én gjennomlesing før vi publiserer.
+- Tekstene skriver vi: Det som stopper de fleste nettsider er teksten. Vi tar en prat om hva bedriften gjør og hva kundene pleier å spørre om, og skriver sidene ferdig på norsk. Du leser gjennom og sier ja.
+- Synlig på Google og Google Maps: At siden finnes er ikke det samme som at noen finner den. Vi setter den opp slik Google forstår den fra dag én, og bedriftsprofilen med kart og åpningstider står klar når siden går live.
+- Synlig i AI-assistenter: Spør noen ChatGPT hvem som kan hjelpe dem i Innlandet, får de ett svar med to navn – ikke ti lenker. Vi skriver og merker opp siden slik at den kan leses og siteres, og sjekker hva assistentene faktisk svarer om deg.
+- Drift, domene og sikkerhet: Webhotell, domene, sikkerhetskopi hver dag og automatisk varsling hvis siden går ned. Én pris: 449 kr i måneden, uten bindingstid. Endringer på innholdet faktureres for seg.
+- Du eier alt: Domenet, koden, tekstene og bildene står i ditt navn. Vil du bytte leverandør, tar du med deg alt – uten å spørre oss.
+- Foto og dronevideo (tillegg): Lokalene, produktene, arbeidet og folkene – og fra lufta når motivet fortjener det. Egne bilder er det enkleste grepet som skiller en troverdig side fra en som ser ut som alle andre.
+- Logo og visuell profil (tillegg): Har du ikke en logo – eller en som ble laget i Word i 2011 – tegner vi en ny, med farger og skrifttyper som hører sammen. Vil du prøve selv først, er logoverktøyet vårt gratis.
+- Kalkulator eller booking (tillegg): Kunden regner ut prisen selv eller booker en tid, og du får henvendelsen ferdig utfylt i stedet for en telefon. Bygget inn i siden, uten månedsleie til andre.
+- 3D-visning og designverktøy (tillegg): Kunden snur på produktet, velger mål og materiale, og ser pris og materialliste endre seg. Levert i praksis på minio.no. Spennet er stort, så prisen settes etter en prat.
+- Ekstra side (tillegg): En ny tjeneste-, produkt- eller stedsside utover det pakken dekker, ferdig skrevet av oss. Du får prisen før vi begynner.
+- Fagartikler (tillegg): En artikkel på 800–1 200 ord som svarer på noe kundene dine faktisk googler. Det er den typen innhold både Google og AI-assistenter siterer.
+
+## Hva kunden selv må gjøre
+
+Omtrent to timer til sammen: én samtale i starten om hva bedriften gjør, og én
+gjennomlesing før publisering. Vimzo ordner domene, tekst, bilder, design,
+publisering og innmelding hos Google.
+
+## Slik er sidene bygget
+
+- Hver URL leveres som ferdig HTML. Ingen JavaScript må kjøres for å lese innholdet.
+- Ingen WordPress, ingen plugins, ingen database å vedlikeholde.
+- Strukturerte data etter schema.org på hver side.
+- Universell utforming etter WCAG 2.1 AA.
+- Kunden eier kildekoden, domenet og innholdet.
+- Driften er én pris uansett hva siden gjør, og dekker webhotell, domene, sikkerhetskopi og overvåking.
+- Endringer etter lansering faktureres med 1 250 kr timen, per påbegynte halvtime.
+- Regneverktøy og kalkulatorer bygges for den enkelte bedriften og legges inn i siden, uten lisens eller abonnement på selve verktøyet.
+- Alt arbeid gjøres i Norge, på norsk, av Kim Sandvold.
+
+## Viktige sider
+
+- [Tjenester](https://vimzo.no/tjenester): hva som inngår i hver tjeneste
+- [Priser](https://vimzo.no/priser): pakkepriser, drift og tillegg
+- [Arrangementssider](https://vimzo.no/arrangement): kortvarige sider til messer, konferanser og kampanjer
+- [Arbeid](https://vimzo.no/arbeid): leverte prosjekter
+- [Guider](https://vimzo.no/guider): fagartikler om nettsider, pris og AI-synlighet
+- [Lag logo](https://vimzo.no/logo): gratis logoverktøy, last ned SVG og PNG
+- [Slik blir bedriften din synlig når kundene spør ChatGPT](https://vimzo.no/guider/synlig-i-ai-sok): Stadig flere starter søket i en AI-assistent i stedet for i Google. Her er hva som faktisk avgjør om bedriften din blir nevnt i svaret.
+- [Hva koster en nettside for en liten bedrift i Norge?](https://vimzo.no/guider/hva-koster-en-nettside): Fra null til et par hundre tusen. Her er hva som faktisk ligger bak prislappen, og hva en liten bedrift bør regne med å betale – både i oppstart og per år.
+- [WordPress eller håndkodet nettside – hva passer en liten bedrift?](https://vimzo.no/guider/wordpress-eller-handkodet): WordPress driver rundt 40 % av verdens nettsteder. Det betyr ikke at det er riktig for en bedrift med fem ansatte og ti sider.
+- [Kontakt](https://vimzo.no/kontakt): be om tilbud
+- [Fullt innhold](https://vimzo.no/llms-full.txt): alle guidene og svarene i ren tekst
+
+## Vanlige spørsmål
+
+### Hva koster en nettside hos Vimzo?
+En liten side på én til tre sider lander typisk på 19 900–28 900 kroner eks. mva., og en bedriftsside på fire til åtte sider på 34 900–48 900. Sider med kalkulator, booking eller andre verktøy starter på 59 900. Hver side lages for én bedrift, så den endelige prisen avtaler vi etter en prat – skriftlig, og den endrer seg ikke underveis. Beløpet kan deles over tolv måneder.
+
+### Kommer det løpende kostnader i tillegg?
+Drift koster 449 kroner i måneden – én pris uansett hva siden gjør. Den dekker webhotell, fornyelse av domenet, sikkerhetskopi hver dag og varsling hvis siden går ned. Endringer på innholdet faktureres for seg. Driften er lav fordi det er lite å drifte: siden er ferdige filer uten database eller tillegg som må oppdateres. Første års domene er inkludert; etter det koster det rundt 169 kroner i året. Det finnes ingen lisenser å betale for.
+
+### Hvor lang tid tar det å få siden på nett?
+Typisk to til tre uker for en liten side, og tre til fem uker for en bedriftsside. Den nøyaktige leveringsdatoen står i tilbudet, og tiden regnes fra du har godkjent det. Det som oftest forsinker et prosjekt er bilder og godkjenning av tekst, så vi avtaler frister for begge deler i første møte.
+
+### Hvor mye må jeg gjøre selv?
+Omtrent to timer til sammen. Du tar én prat med oss i starten om hva bedriften gjør, og leser gjennom før vi publiserer. Resten ordner vi: domene, tekst, bilder, design, publisering og Google. Du trenger ikke skrive noe, og du trenger ikke kunne noe teknisk.
+
+### Ordner dere domenet, eller må jeg kjøpe det selv?
+Vi ordner det. Vi finner et ledig domenenavn sammen med deg, kjøper det og registrerer det i ditt navn – ikke i vårt. Første år er inkludert i prisen, og etter det fornyer vi det for deg til omtrent 169 kroner i året. Vi setter også opp e-post på domenet.
+
+### Kan jeg dele opp betalingen?
+Ja. Beløpet kan deles over tolv måneder, med 0 kroner i oppstart. Det er ingen renter og ingen kredittsjekk; påslaget er 4 %, og det står i tilbudet, så du ser nøyaktig hva forskjellen er.
+
+### Kan dere lage en priskalkulator eller et bookingskjema?
+Ja. Vi bygger regneverktøy for det du selger, fra 9 900 kroner – priskalkulator, tilbudsskjema i flere steg, eller booking med bekreftelse på e-post. Verktøyet ligger i din egen side, uten lisens eller abonnement på selve verktøyet. Hva det koster avhenger av hva det skal regne ut, så prisen setter vi etter en prat.
+
+### Lager dere nettbutikker?
+Nei. Vi lager sider for bedrifter som selger tjenester – håndverkere, frisører, fotpleiere, verksteder, renholdere og rådgivere. Skal du selge varer med lager, frakt og betaling på nett, trenger du en ekte nettbutikkløsning, og det sier vi med én gang i stedet for å bygge noe halvveis. Timebestilling, befaring og forespørsler ordner vi gjerne – det er varehandelen vi holder oss unna.
+
+### Er dere norske?
+Ja, helt igjennom. Vimzo drives av Kim Sandvold. Det er han som tar praten, skriver tekstene og koder siden – ingenting settes ut til utlandet. All kommunikasjon, alle tekster og all support er på norsk.
+
+### Må jeg skrive tekstene selv?
+Nei. Vi intervjuer deg i omtrent en time om hva bedriften gjør, og skriver sidene ferdig på norsk. Du leser gjennom og godkjenner alt før det publiseres. Vil du skrive selv, trekker vi det fra prisen.
+
+### Hva koster det å endre noe etterpå?
+Endringer faktureres med 1 250 kroner timen, per påbegynte halvtime. Et nytt telefonnummer eller nye åpningstider koster altså 625 kroner. En ny side har fast pris fra 3 900 kroner, en fagartikkel 3 400. Ved større jobber får du alltid et anslag før vi begynner.
+
+### Hvorfor får vi ikke et fullt publiseringssystem som WordPress?
+Fordi det sjelden gjør siden bedre, og alltid gjør den dyrere. Å skrive innhold som både leser godt og rangerer er et fag, og en nettside eieren skal fylle selv mellom alt annet, forfaller nesten alltid. Derfor skriver og oppdaterer vi innholdet, og du betaler for timene det faktisk tar – i stedet for lisens og vedlikehold hver måned for et system du bruker to ganger i året. Siden blir også raskere og tryggere av å være rene filer uten innlogging.
+
+### Hva betyr det at nettsiden er headless?
+At innhold og presentasjon er skilt fra hverandre. Selve sidene leveres som ferdig HTML, mens de få feltene du kan endre selv – kontaktinfo, åpningstider, priser – ligger i en database (Firebase). Siden henter dem når den vises, og den forhåndsrendrede HTML-en inneholder alltid siste kjente verdi. Dermed ser både Google og AI-assistenter riktig innhold selv uten å kjøre JavaScript, og du slipper en server som skal holdes i live.
+
+### Hvorfor ikke WordPress?
+WordPress bygger siden på nytt for hver besøkende og er avhengig av plugins som må oppdateres, koster penger og er den vanligste årsaken til at norske bedriftssider blir hacket. Vi bygger siden ferdig én gang og leverer den som statiske filer. Det gir raskere sider, lavere drift og ingenting å vedlikeholde.
+
+### Hvem eier nettsiden når den er ferdig?
+Du gjør. Du får all kildekode, domenet står i ditt navn, og innholdet er ditt. Du kan ta med deg hele siden til en annen leverandør når som helst, uten å be oss om tillatelse og uten å miste noe.
+
+### Hvor rask blir siden?
+Målet vårt er under ett sekund til innholdet vises, og minst 95 poeng på alle fire områder i Google Lighthouse. Vi måler før lansering og sender deg rapporten. Ligger tallene under, retter vi det uten ekstra kostnad før siden går live.
+
+### Hva vil det si at siden er optimalisert for AI-agenter?
+AI-assistenter som ChatGPT, Claude, Perplexity og Google AI leser rå HTML og kjører som regel ikke JavaScript. Siden vi leverer ferdig rendret HTML, ser de alt innholdet. I tillegg merker vi opp fakta med schema.org, legger ved en llms.txt som forklarer hva bedriften tilbyr, og skriver svarene dine slik at de kan siteres ordrett.
+
+### Kan dere garantere at vi kommer først på Google?
+Nei, og ingen seriøs leverandør kan det. Det vi garanterer er grunnlaget: riktig teknisk oppsett, innhold som svarer på det folk faktisk søker etter, og måling som viser hva som virker. Garanterer noen førsteplass, bør du spørre hvilket søkeord – svaret er som regel bedriftens eget navn.
+
+### Må vi skaffe bildene selv?
+Nei. Vi kommer gjerne ut og fotograferer bedriften, lokalene, produktene og folkene som jobber der, og filmer med drone når motivet fortjener det. Egne bilder gjør mer for troverdigheten enn noe annet på en bedriftsside, og de gir i tillegg bildetreff i Google som en kjøpt arkivbilde aldri gir.
+
+### Må vi være i nærheten av dere?
+Nei. Hele prosessen skjer digitalt: samtalen tar vi på telefon eller video, og siden følger du på en testadresse mens den lages. Vi leverer til bedrifter i hele Norge. Skal vi ta bilder hos deg, avtaler vi det.
+
+### Hva koster en nettside til et arrangement?
+En arrangementsside lander typisk på 11 900–17 900 kroner eks. mva., med 3 måneders drift inkludert. Egen påmelding kommer i tillegg, fra 4 900 kroner. Den endelige prisen avtaler vi etter en kort prat, skriftlig.
+
+### Hvor fort kan dere lage en side til messen eller konferansen vår?
+Vanligvis på én til to uker fra vi har snakket sammen og fått program og praktisk informasjon. Haster det mer enn det, si fra – en enkel side kan ofte stå klar raskere.
+
+### Hva skjer med siden etter arrangementet?
+Driften i 3 måneder er med i prisen. Etterpå kan siden bli en «takk for i år»-side med bilder og dato for neste gang, den kan tas ned, eller vi kan holde den oppe videre for vanlig driftspris.
+
+### Kan vi bruke siden igjen neste år?
+Ja. Designet står, så neste utgave handler om nye datoer, nytt program og nye bilder. Det koster fra 6 000 kroner.
+
+### Trenger vi eget domene?
+Nei. Har dere et domene fra før, legger vi siden på en egen adresse under det, som messe.firma.no. Vil dere ha et eget domene for arrangementet, ordner vi det.
+
+
+# Guider i fulltekst
+
+## Slik blir bedriften din synlig når kundene spør ChatGPT
+
+Kilde: https://vimzo.no/guider/synlig-i-ai-sok
+Forfatter: Kim Sandvold, Vimzo · Publisert 2026-10-14
+
+**Kort svar:** AI-assistenter siterer sider som er lette å lese maskinelt og lette å stole på. I praksis betyr det fire ting: at innholdet finnes i HTML uten at JavaScript må kjøres, at fakta som pris, sted og tjenester står entydig i teksten, at sidene er merket opp med schema.org, og at bedriften omtales likt på tvers av nettsted, Google Business og bransjeregistre. En nettside som er bygget for dette, blir sitert. En som ikke er det, blir hoppet over – uansett hvor pen den er.
+
+### Hva som faktisk har endret seg
+
+I et vanlig Google-søk er målet å bli klikket på. I et AI-søk er målet å bli sitert. Assistenten leser et knippe kilder, skriver ett svar, og nevner kanskje to–tre av dem. Er du ikke blant dem, finnes du ikke i den samtalen – og kunden ser aldri en liste med ti alternativer der du står på plass fire.
+
+Det skjerper kravene. Der Google kan gjette seg til hva en side handler om ut fra lenker og atferd over tid, må en AI-assistent klare det på ett gjennomlest dokument. Tvetydig innhold blir ikke rangert lavere – det blir utelatt.
+
+### 1. Innholdet må finnes i HTML-en
+
+De fleste indekseringsrobotene som henter innhold til AI-assistenter kjører ikke JavaScript, eller gjør det bare delvis. Er nettsiden din bygget slik at teksten settes inn av JavaScript etter at siden har lastet – det gjelder de fleste React-, Vue- og Angular-sider uten forhåndsrendring – ser roboten et tomt skall.
+
+> **Test det selv på ett minutt**
+> Åpne nettsiden din, høyreklikk og velg «Vis kildekode» (ikke «Inspiser»). Finner du ikke brødteksten din i det vinduet, finner en AI-assistent den heller ikke.
+
+Løsningen er forhåndsrendring: siden bygges ferdig til HTML før den publiseres, slik at hver URL er en komplett fil. Det er den samme teknikken som gjør siden rask for mennesker, så du får to ting for én.
+
+### 2. Fakta må stå entydig
+
+En AI-assistent gjengir det den kan feste til et konkret utsagn. «Vi leverer skreddersydde helhetsløsninger til konkurransedyktige priser» er umulig å sitere. «En liten nettside koster typisk 19 900–28 900 kroner eks. mva., og domenet står i ditt navn fra dag én» er lett.
+
+Det som bør stå i klartekst et sted på nettstedet:
+
+- Hva du selger, med ord kundene selv bruker
+- Hva det koster, eller i det minste hva det starter på
+- Hvor du holder til og hvilke områder du dekker
+- Hvor lang tid leveransen tar
+- Hvem som står bak, med navn
+- Hvordan man får tak i deg
+
+Dette er også grunnen til at en spørsmål-og-svar-seksjon virker så godt. Den tvinger fram korte, selvstendige svar – akkurat formatet en assistent kan løfte rett inn i en samtale.
+
+### 3. Merk opp sidene med schema.org
+
+Strukturerte data er en maskinlesbar oppsummering av siden, lagt inn som et lite JSON-avsnitt i koden. Den forteller rett ut at dette er en bedrift, at dette er en tjeneste, at dette er et spørsmål med tilhørende svar. Både Google og AI-assistentene bruker det til å forstå siden uten å gjette.
+
+De typene som betyr mest for en norsk småbedrift er Organization eller LocalBusiness på forsiden, Service på hver tjenesteside, FAQPage der du har spørsmål og svar, og BreadcrumbList for å vise hvor siden hører hjemme. Er nettstedet bygget riktig, settes dette opp én gang og vedlikeholder seg selv.
+
+### 4. Legg ved en llms.txt
+
+llms.txt er en enkel tekstfil på rot-nivå – samme idé som robots.txt, men skrevet for språkmodeller. Den oppsummerer hva nettstedet handler om, hvem det er for, og hvilke sider som er de viktigste. Standarden er fortsatt ung og ingen garanterer at den leses, men den koster en halvtime å lage og gjør ingen skade.
+
+Nettstedet du leser nå har en: vimzo.no/llms.txt. Det er den korteste mulige beskrivelsen av hva vi gjør og hva det koster.
+
+### 5. Si det samme overalt
+
+Modeller vekter informasjon som bekreftes flere steder. Står firmanavnet ditt med punktum i Brønnøysund, uten på Facebook og i tredje variant på egen nettside, svekkes alle tre. Det samme gjelder adresse, telefonnummer og beskrivelsen av hva du driver med.
+
+1. Bestem én skrivemåte for navn, adresse og telefonnummer
+2. Rett den opp på nettstedet først
+3. Så i Google Business-profilen
+4. Så i Brønnøysundregistrene, Proff, 1881 og bransjeregistre
+5. Til slutt i sosiale medier
+
+### Hvordan måle om det virker
+
+Det finnes ingen Search Console for AI-svar ennå. Den praktiske metoden er å spørre. Still de fem–ti spørsmålene en kunde ville stilt – «hvem lager nettsider på Lillehammer», «hva koster X i Innlandet» – i ChatGPT, Claude, Perplexity og Google AI-oversikt, og noter hvem som nevnes. Gjenta hver måned. Det er grovt, men det er den eneste målingen som faktisk teller.
+
+> **Kort oppsummert**
+> Lever innholdet som ferdig HTML, skriv fakta som kan siteres ordrett, merk opp sidene med schema.org, legg ved en llms.txt og omtal bedriften likt overalt. Det er ingen triks i dette – det er bare ryddig arbeid, gjort én gang.
+
+---
+
+## Hva koster en nettside for en liten bedrift i Norge?
+
+Kilde: https://vimzo.no/guider/hva-koster-en-nettside
+Forfatter: Kim Sandvold, Vimzo · Publisert 2026-10-28
+
+**Kort svar:** En profesjonell nettside for en liten norsk bedrift koster typisk mellom 15 000 og 60 000 kroner eks. mva., avhengig av antall sider og av om leverandøren også skriver innholdet. Løpende kostnader er normalt 1 500–6 000 kroner i året for en statisk side, og 6 000–20 000 kroner i året for en WordPress-side med lisenser og vedlikehold. Den største enkeltposten er nesten alltid innhold – tekst og bilder – ikke selve koden.
+
+### Prisnivåene i det norske markedet
+
+Grovt sagt finnes det fire nivåer. De løser ulike problemer, og det dyreste er ikke automatisk riktig for en bedrift med fire ansatte.
+
+| Nivå | Pris | Hva du får |
+| --- | --- | --- |
+| Gjør-det-selv | 0–3 000 kr/år | Squarespace, Wix eller WordPress.com. Du gjør alt selv, inkludert tekst, bilder og SEO. |
+| Mal og oppsett | 8 000–20 000 kr | En frilanser setter opp et kjøpt tema og fyller inn innholdet ditt. Rask levering, lite tilpasning. |
+| Håndkodet småbedriftsside | 15 000–60 000 kr | Egen design, egne tekster, teknisk SEO og måling. Nivået de fleste SMB-er bør ligge på. |
+| Byråprosjekt | 100 000 kr og oppover | Strategi, visuell profil, flere involverte roller. Riktig når nettsiden er hovedkanalen for salget. |
+
+### Hva prisen faktisk består av
+
+Det er lett å tro at man betaler for kode. I de fleste småbedriftsprosjekter går under halvparten av timene til programmering. Resten er dette:
+
+- Innhold: intervju, tekstarbeid og korrektur – ofte 30–40 % av prosjektet
+- Design: å finne et uttrykk som passer bedriften, ikke bare en mal
+- Bilder: fotografering, beskjæring og optimalisering
+- Teknisk SEO: struktur, strukturerte data, sitemap, Search Console
+- Testing: mobil, skjermleser, lastetid, skjemaer som faktisk kommer fram
+- Lansering: domene, sertifikat, omdirigeringer fra den gamle siden
+
+Når et tilbud er påfallende billig, er det som regel én av disse postene som er tatt bort – og nesten alltid innhold eller testing.
+
+### Den løpende kostnaden er den som overrasker
+
+Mange sammenligner tilbud på oppstartspris alene og oppdager årskostnaden etterpå. Forskjellen mellom en statisk side og en WordPress-side er særlig stor her, fordi den ene har et system som må holdes i live og den andre ikke har det.
+
+| Post | Statisk side | WordPress |
+| --- | --- | --- |
+| Domene | 100–200 kr/år | 100–200 kr/år |
+| Hosting | 0–1 200 kr/år | 1 200–4 000 kr/år |
+| Lisenser og plugins | 0 kr | 2 000–8 000 kr/år |
+| Oppdateringer og sikkerhet | Inngår eller 0 kr | 3 000–10 000 kr/år |
+| Typisk sum | 1 500–6 000 kr/år | 6 000–20 000 kr/år |
+
+> **Regn på fem år**
+> En side til 25 000 kroner med 2 000 kroner i årlig drift koster 35 000 kroner over fem år. En side til 18 000 kroner med 14 000 kroner i årlig drift koster 88 000. Oppstartsprisen er sjelden der pengene ligger.
+
+### Hva bør du spørre leverandøren om?
+
+1. Er prisen fast, eller et anslag som kan vokse?
+2. Hvem skriver tekstene – og er det med i prisen?
+3. Hva koster det å endre noe om seks måneder?
+4. Hva er den totale årlige kostnaden etter lansering?
+5. Eier jeg koden og domenet, og kan jeg flytte alt til en annen?
+6. Hvilke tall måler dere før lansering, og får jeg se dem?
+
+Spørsmål fem er det viktigste. Står domenet i leverandørens navn, eller ligger siden i et system bare de har tilgang til, har du ikke kjøpt en nettside – du har leid en.
+
+### Hva vi tar
+
+Vi legger prisene åpent ut fordi det sparer begge parter for tid. En liten side på én til tre sider lander typisk på 19 900–28 900 kroner, og en bedriftsside på fire til åtte sider på 34 900–48 900. Drift koster 449 kroner i måneden. Endringer etter lansering faktureres med 1 250 kroner timen, per påbegynte halvtime, og en ny side har fast pris. Alt eks. mva.
+
+Du får fast pris skriftlig før vi begynner, og den står selv om arbeidet tar lengre tid enn vi trodde.
+
+---
+
+## WordPress eller håndkodet nettside – hva passer en liten bedrift?
+
+Kilde: https://vimzo.no/guider/wordpress-eller-handkodet
+Forfatter: Kim Sandvold, Vimzo · Publisert 2026-11-04
+
+**Kort svar:** WordPress passer når innholdet endres ofte av flere personer, og når du trenger funksjonalitet som allerede finnes ferdig – nettbutikk, medlemssider, booking. En håndkodet, statisk side passer når nettstedet har ti til tretti sider som endres noen ganger i året, og når fart, sikkerhet og lav årlig kostnad betyr mer enn å kunne redigere selv. For de fleste norske småbedrifter er det siste tilfellet.
+
+### Forskjellen i én setning
+
+WordPress setter sammen siden på nytt for hver eneste besøkende, i en database og et PHP-program som må holdes oppdatert. En statisk side er bygget ferdig én gang og ligger som vanlige filer på et nett av servere rundt i verden. Alt annet følger av dette.
+
+|  | WordPress | Håndkodet og statisk |
+| --- | --- | --- |
+| Lastetid | Avhenger av tema og plugins | Typisk under 1 sekund |
+| Redigere selv | Ja, innebygd | Nei – leverandøren gjør endringen |
+| Angrepsflate | Database, PHP, plugins, innlogging | Ingen – det er bare filer |
+| Vedlikehold | Løpende oppdateringer | Ingenting som ruster |
+| Årlig kostnad | 6 000–20 000 kr | 1 500–6 000 kr |
+| Ferdig funksjonalitet | Enormt utvalg | Må bygges eller kobles på |
+
+### Når WordPress er riktig valg
+
+- Flere personer skal publisere innhold hver uke
+- Du driver nettbutikk med hundrevis av varer
+- Du trenger medlemsinnlogging, kurs eller bookingsystem
+- Du har noen internt som faktisk kan og vil vedlikeholde systemet
+
+Da er det dumt å bygge alt fra bunnen. Økosystemet er WordPress sin virkelige styrke, og det er en reell styrke.
+
+### Når det ikke er det
+
+Den typiske norske småbedriftssiden har en forside, noen tjenestesider, en om-side og en kontaktside. Den endres kanskje fire ganger i året. For den siden betaler du for et helt publiseringssystem du nesten ikke bruker – og du arver alle ulempene: oppdateringer, lisenser, sikkerhetshull og en side som blir tregere for hver plugin noen la til i et øyeblikks godt humør.
+
+> **Argumentet om å redigere selv**
+> Det brukes oftere enn det benyttes. Og det er ikke bare et spørsmål om tid: å skrive innhold som både leser godt og rangerer er et fag, og sider som eieren skal fylle selv mellom alt annet, forfaller nesten alltid. Vår erfaring er at det blir både billigere og bedre å betale for timene som faktisk brukes, når de brukes.
+
+### Hva med SEO?
+
+Her er myten seiglivet: at WordPress er «bra for SEO» på grunn av Yoast eller Rank Math. Disse er verktøy for å fylle inn titler og beskrivelser – de gjør ikke noe du ikke kan gjøre direkte i koden, og de retter ikke opp det som faktisk teller mest, nemlig fart og innholdskvalitet.
+
+På to punkter har en statisk side en reell fordel. Core Web Vitals – Googles målinger av hvor raskt og stabilt siden laster – er enklere å få grønne når siden allerede er ferdig bygget. Og indekseringsrobotene som henter innhold til AI-assistenter leser rå HTML, som en statisk side per definisjon leverer.
+
+### Hvordan velge
+
+1. Tell hvor mange ganger du endret nettsiden i fjor. Under ti? Du trenger ikke et CMS.
+2. Spør hvem som faktisk skal skrive. Har du ingen som gjør det, hjelper ikke verktøyet.
+3. Regn på fem år, ikke på oppstartsprisen.
+4. Sjekk om du eier koden og domenet uansett hvilken vei du går.
+
+Lander du på at du trenger WordPress, er det et godt svar. Lander du på at du har ti sider som skal være raske, trygge og billige i drift – da er det vi bygger.
+
+---
+Generert fra kildekoden 2026-11-07. Oppdateres automatisk ved hvert bygg.

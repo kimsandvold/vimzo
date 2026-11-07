@@ -45,6 +45,9 @@ export interface Pakke {
   driftInkludertMnd?: number
 }
 
+/** Når prisene sist ble gjennomgått. Vises på prissiden og i strukturerte data. */
+export const PRISER_OPPDATERT = '2026-11-07'
+
 export const ANTALL_AVDRAG = 12
 
 /**
