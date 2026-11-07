@@ -46,18 +46,19 @@ export default function Samtykke() {
   if (!analyseKlar || valg !== null || utenAnalyse(pathname)) return null
 
   return (
-    <Banner role="dialog" aria-live="polite" aria-label="Informasjonskapsler" data-fri-sone>
+    <Banner role="dialog" aria-live="polite" aria-labelledby="samtykke-tittel" data-fri-sone>
+      <Tittel id="samtykke-tittel">Litt statistikk?</Tittel>
       <p>
-        Vi vil gjerne bruke Google Analytics for å se hvilke sider som blir lest. Det setter
-        informasjonskapsler, så vi spør først. <Link to="/personvern">Les mer</Link>
+        Vi vil gjerne se hvilke sider som blir lest, med Google Analytics. Det setter
+        informasjonskapsler, så vi spør deg først. <Link to="/personvern">Les mer</Link>
       </p>
       <Knapper>
-        <button type="button" onClick={() => lagreSamtykke('nei')}>
-          Avvis
-        </button>
-        <button type="button" onClick={() => lagreSamtykke('ja')}>
-          Godta
-        </button>
+        <Knapp type="button" $variant="nei" onClick={() => lagreSamtykke('nei')}>
+          Nei takk
+        </Knapp>
+        <Knapp type="button" $variant="ja" onClick={() => lagreSamtykke('ja')}>
+          Ja, det er greit
+        </Knapp>
       </Knapper>
     </Banner>
   )
@@ -68,6 +69,10 @@ const inn = keyframes`
   to   { opacity: 1; transform: none; }
 `
 
+/**
+ * Et kort nede til venstre på store skjermer, et ark i bunnen på mobil.
+ * Det skal se ut som en del av siden – ikke som en advarsel.
+ */
 const Banner = styled.div`
   position: fixed;
   left: clamp(1rem, 2vw, 1.5rem);
@@ -75,18 +80,22 @@ const Banner = styled.div`
   z-index: ${({ theme }) => theme.zIndex.kontaktknapp + 1};
   display: flex;
   flex-direction: column;
-  gap: 0.9rem;
-  width: min(420px, calc(100vw - 2rem));
-  padding: 1.1rem 1.2rem;
-  border: 1px solid ${({ theme }) => theme.colors.border};
-  border-radius: ${({ theme }) => theme.borderRadius.large};
-  background: ${({ theme }) => theme.colors.surface};
-  box-shadow: ${({ theme }) => theme.shadows.xl};
+  gap: 0.6rem;
+  width: min(400px, calc(100vw - 2rem));
+  padding: 1.35rem 1.4rem 1.4rem;
+  border: 1px solid rgba(12, 13, 12, 0.08);
+  border-radius: ${({ theme }) => theme.borderRadius.xl};
+  background: rgba(255, 255, 255, 0.92);
+  -webkit-backdrop-filter: saturate(180%) blur(16px);
+  backdrop-filter: saturate(180%) blur(16px);
+  box-shadow:
+    0 1px 2px rgba(12, 13, 12, 0.04),
+    0 24px 60px -20px rgba(12, 13, 12, 0.28);
   animation: ${inn} ${({ theme }) => theme.transitions.soft} both;
 
   p {
     margin: 0;
-    font-size: 0.875rem;
+    font-size: 0.9rem;
     line-height: 1.55;
     color: ${({ theme }) => theme.colors.inkMuted};
   }
@@ -94,6 +103,17 @@ const Banner = styled.div`
   a {
     color: ${({ theme }) => theme.colors.ink};
     font-weight: 600;
+    text-underline-offset: 2px;
+  }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.smallMobile}) {
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    padding: 1.25rem 1.25rem calc(1.25rem + env(safe-area-inset-bottom));
+    border-radius: ${({ theme }) => theme.borderRadius.xl} ${({ theme }) => theme.borderRadius.xl} 0 0;
+    border-width: 1px 0 0;
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -101,26 +121,49 @@ const Banner = styled.div`
   }
 `
 
-/** To like knapper – avvis er ikke gjemt eller nedtonet. */
+const Tittel = styled.h2`
+  margin: 0;
+  font-family: ${({ theme }) => theme.fonts.body};
+  font-size: 1.0625rem;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+  color: ${({ theme }) => theme.colors.ink};
+`
+
 const Knapper = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 0.5rem;
+  margin-top: 0.4rem;
+`
 
-  button {
-    min-height: 44px;
-    border: 1px solid ${({ theme }) => theme.colors.ink};
-    border-radius: ${({ theme }) => theme.borderRadius.pill};
+/**
+ * To helt like knapper – samme størrelse, farge og vekt. Datatilsynet krever
+ * at det skal være like lett å si nei som ja, og en fylt «ja» ved siden av en
+ * lys «nei» er nettopp den typen dytt som ikke er lov.
+ */
+const Knapp = styled.button<{ $variant: 'ja' | 'nei' }>`
+  min-height: 46px;
+  padding: 0 0.75rem;
+  border: 1.5px solid ${({ theme }) => theme.colors.ink};
+  border-radius: ${({ theme }) => theme.borderRadius.pill};
+  background: ${({ theme }) => theme.colors.surface};
+  color: ${({ theme }) => theme.colors.ink};
+  font-family: inherit;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background ${({ theme }) => theme.transitions.default},
+    color ${({ theme }) => theme.transitions.default},
+    transform ${({ theme }) => theme.transitions.default};
+
+  &:hover {
     background: ${({ theme }) => theme.colors.ink};
     color: ${({ theme }) => theme.colors.inkInverted};
-    font-family: inherit;
-    font-size: 0.9375rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: opacity ${({ theme }) => theme.transitions.default};
+  }
 
-    &:hover {
-      opacity: 0.88;
-    }
+  &:active {
+    transform: scale(0.98);
   }
 `
