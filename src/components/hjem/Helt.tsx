@@ -24,7 +24,7 @@ export default function Helt() {
       <Bakglod aria-hidden="true" />
       <Innhold>
         <Topp>
-          <Stikkord>Webutvikling og design · Lillehammer</Stikkord>
+          <Stikkord>Webutvikling og design</Stikkord>
           <h1>
             Nettsider for små bedrifter.
             <Uthevet>Med åpne priser.</Uthevet>
@@ -174,10 +174,11 @@ const Uthevet = styled.span`
  */
 const Stikkord = styled.p`
   margin: 0;
-  font-size: 0.9375rem;
+  font-size: ${({ theme }) => theme.fontSizes.xs};
   font-weight: 600;
-  letter-spacing: -0.005em;
-  color: ${({ theme }) => theme.colors.accent};
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: ${({ theme }) => theme.colors.inkSubtle};
 `
 
 const Sidelinje = styled.p`

@@ -157,7 +157,7 @@ const Sum = styled.p`
   padding-top: 1.1rem;
   border-top: 1px solid rgba(91, 74, 232, 0.16);
   font-size: ${({ theme }) => theme.fontSizes.base};
-  color: ${({ theme }) => theme.colors.accentInk};
+  color: ${({ theme }) => theme.colors.ink};
 
   strong {
     font-family: ${({ theme }) => theme.fonts.mono};

@@ -133,8 +133,8 @@ const Meta = styled.div`
 const Kategori = styled.span`
   padding: 0.22rem 0.55rem;
   border-radius: ${({ theme }) => theme.borderRadius.small};
-  background: ${({ theme }) => theme.colors.accentSoft};
-  color: ${({ theme }) => theme.colors.accentInk};
+  background: ${({ theme }) => theme.colors.sunken};
+  color: ${({ theme }) => theme.colors.inkMuted};
   text-transform: uppercase;
   letter-spacing: 0.08em;
 `

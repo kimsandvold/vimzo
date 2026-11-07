@@ -152,9 +152,11 @@ const Gitter = styled.div`
 
 const Stikk = styled.p`
   margin-bottom: 1rem;
-  font-size: ${({ theme }) => theme.fontSizes.sm};
-  font-weight: 550;
-  color: ${({ theme }) => theme.colors.accentLight};
+  font-size: ${({ theme }) => theme.fontSizes.xs};
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: ${({ theme }) => theme.colors.inkInvertedMuted};
 `
 
 const Side = styled.div``

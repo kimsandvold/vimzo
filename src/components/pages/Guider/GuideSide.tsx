@@ -242,13 +242,13 @@ const Kortsvar = styled.div`
     font-weight: 500;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: ${({ theme }) => theme.colors.accentInk};
+    color: ${({ theme }) => theme.colors.inkSubtle};
     margin-bottom: 0.75rem;
   }
 
   p {
     margin-bottom: 0;
-    color: ${({ theme }) => theme.colors.accentInk} !important;
+    color: ${({ theme }) => theme.colors.ink} !important;
     font-size: ${({ theme }) => theme.fontSizes.md};
     line-height: 1.7;
   }

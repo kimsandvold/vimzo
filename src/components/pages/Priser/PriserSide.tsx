@@ -417,7 +417,7 @@ const Endringer = styled.p`
   background: ${({ theme }) => theme.colors.accentSoft};
   font-size: 0.875rem;
   line-height: 1.6;
-  color: ${({ theme }) => theme.colors.accentInk};
+  color: ${({ theme }) => theme.colors.ink};
 `
 
 

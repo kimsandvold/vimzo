@@ -48,12 +48,18 @@ export const Seksjon = styled.section<{ $flate?: Flate; $tett?: boolean }>`
 
 /* ---------------------------------------------------------------- typografi */
 
+/**
+ * Stikkordet over en overskrift. Grått og i små versaler – en etikett, ikke
+ * en lenke. Det sto i aksentfargen før, og da var det umulig å se forskjell på
+ * det og tekst man kunne klikke på. Aksentfargen er for lenker og knapper.
+ */
 export const Stikkord = styled.p<{ $lys?: boolean }>`
   margin: 0 0 1.1rem;
-  font-size: ${({ theme }) => theme.fontSizes.sm};
-  font-weight: 550;
-  letter-spacing: -0.005em;
-  color: ${({ theme, $lys }) => ($lys ? theme.colors.accentLight : theme.colors.accent)};
+  font-size: ${({ theme }) => theme.fontSizes.xs};
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: ${({ theme, $lys }) => ($lys ? theme.colors.inkInvertedMuted : theme.colors.inkSubtle)};
 `
 
 /**

@@ -193,7 +193,7 @@ const Spenn = styled.div`
     font-family: ${({ theme }) => theme.fonts.mono};
     font-weight: 600;
     letter-spacing: -0.03em;
-    color: ${({ theme }) => theme.colors.accentInk};
+    color: ${({ theme }) => theme.colors.ink};
   }
 
   @media (max-width: ${({ theme }) => theme.breakpoints.smallMobile}) {

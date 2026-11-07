@@ -246,7 +246,7 @@ const Pris = styled.div`
   font-size: 0.9375rem;
   font-weight: 600;
   letter-spacing: -0.03em;
-  color: ${({ theme }) => theme.colors.accentInk};
+  color: ${({ theme }) => theme.colors.ink};
 
   small {
     font-family: ${({ theme }) => theme.fonts.body};
@@ -262,8 +262,8 @@ const Merknad = styled.span`
   margin-top: 0.5rem;
   padding: 0.2rem 0.55rem;
   border-radius: ${({ theme }) => theme.borderRadius.pill};
-  background: ${({ theme }) => theme.colors.accentSoft};
-  color: ${({ theme }) => theme.colors.accentInk};
+  background: ${({ theme }) => theme.colors.sunken};
+  color: ${({ theme }) => theme.colors.inkMuted};
   font-size: 0.75rem;
   font-weight: 600;
 `

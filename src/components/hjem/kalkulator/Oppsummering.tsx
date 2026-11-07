@@ -250,7 +250,7 @@ const Stikkord = styled.p`
   font-weight: 650;
   letter-spacing: 0.07em;
   text-transform: uppercase;
-  color: ${({ theme }) => theme.colors.accent};
+  color: ${({ theme }) => theme.colors.inkSubtle};
 `
 
 const Prislinje = styled.div`
@@ -265,7 +265,7 @@ const Prislinje = styled.div`
     font-size: 1.5rem;
     font-weight: 600;
     letter-spacing: -0.04em;
-    color: ${({ theme }) => theme.colors.accentInk};
+    color: ${({ theme }) => theme.colors.ink};
   }
 
   span {

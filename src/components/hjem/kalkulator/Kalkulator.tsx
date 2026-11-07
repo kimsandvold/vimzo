@@ -659,7 +659,7 @@ const Domenesvar = styled.p<{ $status: string }>`
   font-size: 0.875rem;
   line-height: 1.45;
   color: ${({ theme, $status }) =>
-    $status === 'ledig' ? theme.colors.accent : theme.colors.inkSubtle};
+    $status === 'ledig' ? theme.colors.success : theme.colors.inkSubtle};
 
   svg {
     flex-shrink: 0;
@@ -832,7 +832,7 @@ const Valgpris = styled.span<{ $dekket?: boolean }>`
   font-weight: 600;
   letter-spacing: ${({ $dekket }) => ($dekket ? '-0.005em' : '-0.03em')};
   white-space: nowrap;
-  color: ${({ theme, $dekket }) => ($dekket ? theme.colors.accent : theme.colors.inkSubtle)};
+  color: ${({ theme, $dekket }) => ($dekket ? theme.colors.success : theme.colors.inkSubtle)};
 
   small {
     font-family: ${({ theme }) => theme.fonts.body};

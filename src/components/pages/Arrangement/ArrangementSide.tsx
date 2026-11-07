@@ -424,7 +424,7 @@ const Tillegg = styled.ul`
     font-family: ${({ theme }) => theme.fonts.mono};
     font-weight: 600;
     letter-spacing: -0.03em;
-    color: ${({ theme }) => theme.colors.accentInk};
+    color: ${({ theme }) => theme.colors.ink};
   }
 `
 
@@ -447,7 +447,7 @@ const Tidslinje = styled.ol`
     font-family: ${({ theme }) => theme.fonts.mono};
     font-size: 0.8125rem;
     font-weight: 600;
-    color: ${({ theme }) => theme.colors.accent};
+    color: ${({ theme }) => theme.colors.inkSubtle};
   }
 
   h3 {

@@ -428,7 +428,7 @@ const Forventning = styled.div`
     flex-shrink: 0;
     font-family: ${({ theme }) => theme.fonts.mono};
     font-size: 0.75rem;
-    color: ${({ theme }) => theme.colors.accent};
+    color: ${({ theme }) => theme.colors.inkSubtle};
     padding-top: 0.2em;
   }
 `

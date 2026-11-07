@@ -364,7 +364,7 @@ const Deretter = styled.p`
   gap: 0.45rem;
   margin: 0.7rem 0 0;
   font-size: 0.875rem;
-  color: ${({ theme }) => theme.colors.accentLight};
+  color: ${({ theme }) => theme.colors.inkInverted};
 
   strong {
     font-family: ${({ theme }) => theme.fonts.mono};
@@ -485,7 +485,7 @@ const Dekket = styled.span`
   font-size: 0.75rem;
   font-weight: 600;
   letter-spacing: -0.005em;
-  color: ${({ theme }) => theme.colors.accentLight};
+  color: ${({ theme }) => theme.colors.inkInverted};
 `
 
 /**

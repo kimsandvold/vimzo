@@ -128,7 +128,7 @@ const Deretter = styled.p`
   margin: 0.6rem 0 0;
   font-size: 0.875rem;
   line-height: 1.5;
-  color: ${({ theme }) => theme.colors.accent};
+  color: ${({ theme }) => theme.colors.inkMuted};
 
   strong {
     font-family: ${({ theme }) => theme.fonts.mono};
