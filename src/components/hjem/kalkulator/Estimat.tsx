@@ -305,8 +305,9 @@ const Merke = styled.span`
   flex-shrink: 0;
   padding: 0.25rem 0.6rem;
   border-radius: ${({ theme }) => theme.borderRadius.pill};
-  background: ${({ theme }) => theme.colors.accentVivid};
-  color: ${({ theme }) => theme.colors.accentOn};
+  /* Nøytral – en merkelapp, ikke en knapp. */
+  background: rgba(252, 252, 250, 0.1);
+  color: ${({ theme }) => theme.colors.inkInverted};
   font-size: 0.75rem;
   font-weight: 650;
   letter-spacing: -0.01em;

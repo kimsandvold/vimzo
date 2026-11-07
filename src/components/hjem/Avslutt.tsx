@@ -11,9 +11,12 @@ import { Knapp, Wrap } from '../../ui'
 export default function Avslutt({
   tittel = 'Skal vi lage den?',
   tekst = '30 minutter på telefon. Skriftlig tilbud etterpå. Ingen forpliktelser.',
+  til = '/kontakt',
 }: {
   tittel?: string
   tekst?: string
+  /** Hvor «Ta en prat» går – med forhåndsvalg når siden vet hva det gjelder. */
+  til?: string
 }) {
   return (
     <Flate data-surface="dark">
@@ -23,7 +26,7 @@ export default function Avslutt({
           <h2>{tittel}</h2>
           <p>{tekst}</p>
           <Knapper>
-            <Knapp til="/kontakt" variant="hvit" stor>
+            <Knapp til={til} variant="hvit" stor>
               Ta en prat
             </Knapp>
             <Knapp til="/priser" variant="glass" stor>

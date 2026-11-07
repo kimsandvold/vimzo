@@ -66,7 +66,7 @@ export default function Pakkekort({ pakke }: { pakke: Pakke }) {
       </Drivere>
 
       <Bunn>
-        <Knapp til={pakke.driftInkludertMnd ? '/arrangement' : '/kontakt'} variant="myk">
+        <Knapp til={pakke.driftInkludertMnd ? '/arrangement' : `/kontakt?pakke=${pakke.id}`} variant="myk">
           {pakke.driftInkludertMnd ? 'Les mer om arrangementssider' : 'Ta en prat om dette'}
         </Knapp>
       </Bunn>

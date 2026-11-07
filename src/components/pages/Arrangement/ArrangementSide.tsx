@@ -229,6 +229,7 @@ export default function ArrangementSide() {
       <Avslutt
         tittel="Har dere et arrangement på gang?"
         tekst="Fortell kort hva det er og når, så sier vi hva vi ville laget – og hva det koster."
+        til={`/kontakt?pakke=${arrangement.id}`}
       />
     </>
   )
