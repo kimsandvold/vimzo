@@ -119,7 +119,7 @@ export const guider: readonly Guide[] = [
             tekst:
               'En AI-assistent gjengir det den kan feste til et konkret utsagn. «Vi leverer ' +
               'skreddersydde helhetsløsninger til konkurransedyktige priser» er umulig å ' +
-              'sitere. «En liten nettside koster typisk 20 000–30 000 kroner eks. mva., og ' +
+              `sitere. «En liten nettside koster typisk ${formaterRamme(pakker[0].pris)} kroner eks. mva., og ` +
               'domenet står i ditt navn fra dag én» er lett.',
           },
           { type: 'p', tekst: 'Det som bør stå i klartekst et sted på nettstedet:' },

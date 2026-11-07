@@ -14,10 +14,10 @@ Språk: norsk (bokmål)
 Typiske prosjekter og hvor de fleste lander. Den endelige prisen avtales etter en
 samtale og gis skriftlig før arbeidet starter – da står den.
 
-- Start: typisk 20 000–30 000 kr — 1–3 sider. For deg som skal være lett å finne og lett å ringe – en håndverker, en frisør, en rådgiver.
-- Bedrift: typisk 35 000–50 000 kr — 4–8 sider. For bedriften som skal selge tjenestene sine, ikke bare vises fram.
-- Vekst: fra 60 000 kr — etter behov. For deg som vil at nettsiden skal gjøre en jobb – regne ut priser, ta imot bestillinger.
-- Arrangement: typisk 12 000–18 000 kr — én side · 3 måneder drift inkludert. For en messe, en konferanse, en lansering eller en kampanje – en side som skal se ordentlig ut den perioden den gjelder.
+- Start: typisk 19 900–28 900 kr — 1–3 sider. For deg som skal være lett å finne og lett å ringe – en håndverker, en frisør, en rådgiver.
+- Bedrift: typisk 34 900–48 900 kr — 4–8 sider. For bedriften som skal selge tjenestene sine, ikke bare vises fram.
+- Vekst: fra 59 900 kr — etter behov. For deg som vil at nettsiden skal gjøre en jobb – regne ut priser, ta imot bestillinger.
+- Arrangement: typisk 11 900–17 900 kr — én side · 3 måneder drift inkludert. For en messe, en konferanse, en lansering eller en kampanje – en side som skal se ordentlig ut den perioden den gjelder.
 - Beløpet kan deles over 12 måneder.
 - Drift: 449 kr per måned — Det som holder siden i live. Endringer på innholdet faktureres for seg. Ingen bindingstid.
 - Timepris for endringer: 1 250 kr
@@ -82,7 +82,7 @@ publisering og innmelding hos Google.
 ## Vanlige spørsmål
 
 ### Hva koster en nettside hos Vimzo?
-En liten side på én til tre sider lander typisk på 20 000–30 000 kroner eks. mva., og en bedriftsside på fire til åtte sider på 35 000–50 000. Sider med kalkulator, booking eller andre verktøy starter på 60 000. Hver side lages for én bedrift, så den endelige prisen avtaler vi etter en prat – skriftlig, og den endrer seg ikke underveis. Beløpet kan deles over tolv måneder.
+En liten side på én til tre sider lander typisk på 19 900–28 900 kroner eks. mva., og en bedriftsside på fire til åtte sider på 34 900–48 900. Sider med kalkulator, booking eller andre verktøy starter på 59 900. Hver side lages for én bedrift, så den endelige prisen avtaler vi etter en prat – skriftlig, og den endrer seg ikke underveis. Beløpet kan deles over tolv måneder.
 
 ### Kommer det løpende kostnader i tillegg?
 Drift koster 449 kroner i måneden – én pris uansett hva siden gjør. Den dekker webhotell, fornyelse av domenet, sikkerhetskopi hver dag og varsling hvis siden går ned. Endringer på innholdet faktureres for seg. Driften er lav fordi det er lite å drifte: siden er ferdige filer uten database eller tillegg som må oppdateres. Første års domene er inkludert; etter det koster det rundt 169 kroner i året. Det finnes ingen lisenser å betale for.
@@ -142,7 +142,7 @@ Nei. Vi kommer gjerne ut og fotograferer bedriften, lokalene, produktene og folk
 Nei. Hele prosessen skjer digitalt: samtalen tar vi på telefon eller video, og siden følger du på en testadresse mens den lages. Vi leverer til bedrifter i hele Norge. Skal vi ta bilder hos deg, avtaler vi det.
 
 ### Hva koster en nettside til et arrangement?
-En arrangementsside lander typisk på 12 000–18 000 kroner eks. mva., med 3 måneders drift inkludert. Egen påmelding kommer i tillegg, fra 4 900 kroner. Den endelige prisen avtaler vi etter en kort prat, skriftlig.
+En arrangementsside lander typisk på 11 900–17 900 kroner eks. mva., med 3 måneders drift inkludert. Egen påmelding kommer i tillegg, fra 4 900 kroner. Den endelige prisen avtaler vi etter en kort prat, skriftlig.
 
 ### Hvor fort kan dere lage en side til messen eller konferansen vår?
 Vanligvis på én til to uker fra vi har snakket sammen og fått program og praktisk informasjon. Haster det mer enn det, si fra – en enkel side kan ofte stå klar raskere.

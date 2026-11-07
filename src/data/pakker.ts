@@ -7,6 +7,9 @@
  * er ærlig: det er der de fleste lander. Den endelige prisen avtales etter en
  * prat, skriftlig – og da står den.
  *
+ * Tallene er ikke runde med vilje: «19 900–28 900» leser som en vurdert
+ * pris, «20 000–30 000» som en gjetning.
+ *
  * Nivået er satt bevisst: under det byråene tar, men ikke på bunnen. Erfaring
  * og håndlaget arbeid skal ikke selges som en hyllevare, og vi skal ikke
  * presse prisene for andre seriøse aktører.
@@ -55,7 +58,7 @@ export const pakker: readonly Pakke[] = [
     id: 'start',
     navn: 'Start',
     for: 'For deg som skal være lett å finne og lett å ringe – en håndverker, en frisør, en rådgiver.',
-    pris: { fra: 20000, til: 30000 },
+    pris: { fra: 19900, til: 28900 },
     omfang: '1–3 sider',
     punkter: [
       'Domene i ditt navn',
@@ -71,7 +74,7 @@ export const pakker: readonly Pakke[] = [
     id: 'bedrift',
     navn: 'Bedrift',
     for: 'For bedriften som skal selge tjenestene sine, ikke bare vises fram.',
-    pris: { fra: 35000, til: 50000 },
+    pris: { fra: 34900, til: 48900 },
     omfang: '4–8 sider',
     punkter: [
       'Alt i Start',
@@ -86,7 +89,7 @@ export const pakker: readonly Pakke[] = [
     id: 'vekst',
     navn: 'Vekst',
     for: 'For deg som vil at nettsiden skal gjøre en jobb – regne ut priser, ta imot bestillinger.',
-    pris: { fra: 60000, til: null },
+    pris: { fra: 59900, til: null },
     omfang: 'Etter behov',
     punkter: [
       'Alt i Bedrift',
@@ -107,7 +110,7 @@ export const pakker: readonly Pakke[] = [
     id: 'arrangement',
     navn: 'Arrangement',
     for: 'For en messe, en konferanse, en lansering eller en kampanje – en side som skal se ordentlig ut den perioden den gjelder.',
-    pris: { fra: 12000, til: 18000 },
+    pris: { fra: 11900, til: 17900 },
     omfang: 'Én side · 3 måneder drift inkludert',
     driftInkludertMnd: 3,
     punkter: [
