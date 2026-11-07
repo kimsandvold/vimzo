@@ -28,7 +28,6 @@ export const BRANSJER: readonly Bransje[] = [
   { id: 'frisor', navn: 'Frisør' },
   { id: 'fotpleie', navn: 'Fotpleie og hudpleie' },
   { id: 'trening', navn: 'Trening og helse' },
-  { id: 'regnskap', navn: 'Regnskap og rådgivning' },
   { id: 'servering', navn: 'Servering' },
   { id: 'annet', navn: 'Noe annet' },
 ]

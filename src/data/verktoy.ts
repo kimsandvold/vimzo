@@ -30,14 +30,6 @@ export const verktoy: readonly Verktoy[] = [
       'et tilbudsskjema som allerede er fylt ut.',
   },
   {
-    ikon: 'graf',
-    bransje: 'Regnskap og rådgivning',
-    navn: 'Hva koster regnskapsføring?',
-    tekst:
-      'Antall bilag, ansatte og mva-terminer inn, månedspris ut. Sparer deg for de samtalene som ' +
-      'uansett ikke ender i oppdrag.',
-  },
-  {
     ikon: 'kart',
     bransje: 'Transport og flytting',
     navn: 'Hva koster oppdraget hit?',

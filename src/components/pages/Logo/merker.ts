@@ -4,7 +4,7 @@
  * Alle er tegnet i samme 24×24-rutenett med fyll (ikke strek), fordi et
  * fylt merke holder seg lesbart helt ned til favikon-størrelse. De er
  * bevisst geometriske og nøytrale: et verktøy som lager logoer til både
- * rørleggere og regnskapsførere kan ikke ha motiver som låser bransjen.
+ * rørleggere og frisører kan ikke ha motiver som låser bransjen.
  */
 export interface Merke {
   id: string
