@@ -68,7 +68,7 @@ export default function Navbar() {
 
             <Handlinger>
               <Knapp til="/kontakt" variant={overMork ? 'hvit' : 'aksent'}>
-                Få tilbud
+                Ta en prat
               </Knapp>
             </Handlinger>
 
@@ -96,7 +96,7 @@ export default function Navbar() {
           ))}
         </nav>
         <Knapp til="/kontakt" variant="aksent" stor onClick={() => setApen(false)}>
-          Få tilbud
+          Ta en prat
         </Knapp>
       </Mobilmeny>
     </>

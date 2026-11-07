@@ -1,5 +1,5 @@
-import { firma, epost } from '../data/firma'
-import type { Tjeneste } from '../data/tjenester'
+import { firma } from '../data/firma'
+import { prisFor, type Tjeneste } from '../data/tjenester'
 import type { Sporsmal } from '../data/faq'
 import type { Guide } from '../data/guider'
 import { pakker } from '../data/pakker'
@@ -27,10 +27,8 @@ export function organisasjon(): Record<string, unknown> {
   const adresse: Record<string, string> = {
     '@type': 'PostalAddress',
     addressLocality: firma.poststed,
-    postalCode: firma.postnr,
     addressCountry: 'NO',
   }
-  if (firma.adresse) adresse.streetAddress = firma.adresse
 
   const ld: Record<string, unknown> = {
     '@context': 'https://schema.org',
@@ -44,7 +42,6 @@ export function organisasjon(): Record<string, unknown> {
       'Vimzo lager håndkodede, forhåndsrendrede nettsider i HTML, CSS og JavaScript for små ' +
       'og mellomstore bedrifter i Norge. Sidene er optimalisert for søkemotorer og for å bli ' +
       'sitert av AI-assistenter, og er billige i drift.',
-    email: epost(),
     address: adresse,
     areaServed: firma.dekningsomrade.map((omrade) => ({ '@type': 'AdministrativeArea', name: omrade })),
     knowsAbout: [...firma.fagomrader],
@@ -53,27 +50,32 @@ export function organisasjon(): Record<string, unknown> {
       name: firma.grunnlegger,
       jobTitle: firma.grunnleggerTittel,
     },
-    priceRange: 'NOK 14900–29900',
+    priceRange: `NOK ${pakker[0].pris.fra}–${pakker[1].pris.til ?? pakker[1].pris.fra}`,
     currenciesAccepted: 'NOK',
   }
 
   if (firma.juridiskNavn) ld.legalName = firma.juridiskNavn
   if (firma.orgNr) ld.taxID = firma.orgNr.replace(/\s/g, '')
-  if (firma.telefon) ld.telephone = firma.telefon
 
-  // Pakkeprisene publiseres som en katalog. Det er det enkleste maskinlesbare
-  // svaret på «hva koster en nettside hos dere».
+  // Typiske prosjekter som en katalog med prisspenn – det enkleste
+  // maskinlesbare svaret på «hva koster en nettside hos dere». Spenn, ikke
+  // én pris, fordi det er det siden selv sier: endelig pris etter en prat.
   ld.hasOfferCatalog = {
     '@type': 'OfferCatalog',
-    name: 'Nettsidepakker',
+    name: 'Typiske nettsideprosjekter',
     itemListElement: pakker.map((p) => ({
       '@type': 'Offer',
       name: `${firma.merke} ${p.navn}`,
-      description: `${p.for} ${p.omfang}.`,
-      price: String(p.pris),
+      description: `${p.for} ${p.omfang}. Endelig pris avtales etter en samtale.`,
       priceCurrency: 'NOK',
+      priceSpecification: {
+        '@type': 'PriceSpecification',
+        priceCurrency: 'NOK',
+        valueAddedTaxIncluded: false,
+        minPrice: p.pris.fra,
+        ...(p.pris.til !== null ? { maxPrice: p.pris.til } : {}),
+      },
       url: `${URL_BASE}/priser#${p.id}`,
-      availability: 'https://schema.org/InStock',
     })),
   }
 
@@ -93,12 +95,26 @@ export function nettsted(): Record<string, unknown> {
 }
 
 export function tjenesteLd(t: Tjeneste): Record<string, unknown> {
+  // Tilleggene har egen pris; det som inngår, selges bare gjennom pakkene.
+  const priser = prisFor(t).map((p) => ({
+    '@type': 'Offer',
+    name: p.navn,
+    priceCurrency: 'NOK',
+    priceSpecification: {
+      '@type': 'UnitPriceSpecification',
+      priceCurrency: 'NOK',
+      valueAddedTaxIncluded: false,
+      ...(p.fraPris ? { minPrice: p.pris } : { price: p.pris }),
+      ...(p.enhet ? { unitText: p.enhet } : {}),
+    },
+  }))
   return {
     '@context': 'https://schema.org',
     '@type': 'Service',
     '@id': `${URL_BASE}/tjenester#${t.id}`,
     name: t.navn,
-    description: t.lang,
+    description: t.tekst,
+    ...(priser.length ? { offers: priser } : {}),
     serviceType: t.navn,
     provider: { '@id': ORG_ID },
     areaServed: firma.dekningsomrade.map((omrade) => ({ '@type': 'AdministrativeArea', name: omrade })),

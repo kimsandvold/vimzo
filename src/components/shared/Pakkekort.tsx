@@ -1,58 +1,40 @@
-import styled, { css } from 'styled-components'
-import Belop from './Belop'
+import styled from 'styled-components'
+import Belop, { Ramme } from './Belop'
 import Icon from './Icon'
 import { Knapp } from '../../ui'
-import { ANTALL_AVDRAG, SAMMENLIGNINGSPERIODE, drift, totaltOver, totaltVedDeling, type Pakke } from '../../data/pakker'
+import { ANTALL_AVDRAG, avdragRamme, drift, eieOver, type Pakke } from '../../data/pakker'
 
 /**
- * Prisekortet på prissiden. Månedsbeløpet står størst, engangsprisen og
- * totalsummen ved deling rett under – uten små skrift.
+ * Et typisk prosjekt på prissiden.
+ *
+ * Kortet viser et spenn, ikke en pris: der de fleste prosjekter av denne
+ * typen lander. Under står det som oftest flytter tallet, så kunden ser
+ * hvorfor prisen blir hans egen – og hva han kan påvirke selv.
  */
 export default function Pakkekort({ pakke }: { pakke: Pakke }) {
   return (
-    <Kort id={pakke.id} $fremhevet={!!pakke.fremhevet}>
-      {pakke.fremhevet && <Merke>Mest valgt</Merke>}
+    <Kort id={pakke.id}>
       <Navn>{pakke.navn}</Navn>
       <For>{pakke.for}</For>
 
-      {pakke.pris === null || pakke.manedspris === null ? (
-        <>
-          <Pris>
-            <Avtale>Etter avtale</Avtale>
-          </Pris>
-          <Samlet>
-            Jobber av denne størrelsen avtaler vi én og én. Du får et skriftlig tilbud med fast
-            pris før vi begynner.
-          </Samlet>
+      <Pris>
+        <strong>
+          <Ramme verdi={pakke.pris} />
+        </strong>
+        <span>kr</span>
+      </Pris>
+      <Samlet>
+        Typisk spenn · kan deles over {ANTALL_AVDRAG} mnd: <Ramme verdi={avdragRamme(pakke.pris)} /> kr/mnd
+      </Samlet>
 
-          <Deretter>
-            Drift <strong><Belop verdi={drift.pris} /> kr/mnd</strong> som ellers
-          </Deretter>
-        </>
-      ) : (
-        <>
-          <Pris>
-            <strong>
-              <Belop verdi={pakke.manedspris} />
-            </strong>
-            <span>kr/mnd</span>
-          </Pris>
-          <Samlet>
-            i {ANTALL_AVDRAG} mnd · til sammen <Belop verdi={totaltVedDeling(pakke) as number} /> kr
-            <br />
-            eller <b><Belop verdi={pakke.pris} /> kr</b> betalt på én gang
-          </Samlet>
-
-          <Deretter>
-            Deretter <strong><Belop verdi={drift.pris} /> kr/mnd</strong> i drift. Over tre år:{' '}
-            <strong><Belop verdi={totaltOver(pakke, SAMMENLIGNINGSPERIODE) as number} /> kr</strong>
-          </Deretter>
-        </>
-      )}
+      <Deretter>
+        Drift etterpå <strong><Belop verdi={drift.pris} /> kr/mnd</strong>. Å eie siden i tre år:{' '}
+        <strong><Ramme verdi={eieOver(pakke.pris)} /> kr</strong>
+      </Deretter>
 
       <Fakta>
         <span>{pakke.omfang}</span>
-        <span>Rask levering</span>
+        <span>Leveringsdato avtales i tilbudet</span>
       </Fakta>
 
       <Punkter>
@@ -64,16 +46,25 @@ export default function Pakkekort({ pakke }: { pakke: Pakke }) {
         ))}
       </Punkter>
 
+      <Drivere>
+        <h4>Dette flytter prisen</h4>
+        <ul>
+          {pakke.drivere.map((d) => (
+            <li key={d}>{d}</li>
+          ))}
+        </ul>
+      </Drivere>
+
       <Bunn>
-        <Knapp til="/kontakt" variant={pakke.fremhevet ? 'aksent' : 'myk'}>
-          Få tilbud på {pakke.navn}
+        <Knapp til="/kontakt" variant="myk">
+          Ta en prat om dette
         </Knapp>
       </Bunn>
     </Kort>
   )
 }
 
-const Kort = styled.article<{ $fremhevet: boolean }>`
+const Kort = styled.article`
   position: relative;
   display: flex;
   flex-direction: column;
@@ -83,23 +74,8 @@ const Kort = styled.article<{ $fremhevet: boolean }>`
   border: 1px solid ${({ theme }) => theme.colors.border};
   background: ${({ theme }) => theme.colors.surface};
   scroll-margin-top: 7rem;
-  ${({ $fremhevet, theme }) =>
-    $fremhevet
-      ? css`border-color: ${theme.colors.borderStrong};`
-      : css`border-color: ${theme.colors.border};`}
 `
 
-const Merke = styled.span`
-  position: absolute;
-  top: 1.25rem;
-  right: 1.25rem;
-  padding: 0.3rem 0.7rem;
-  border-radius: ${({ theme }) => theme.borderRadius.pill};
-  background: ${({ theme }) => theme.colors.accentSoft};
-  color: ${({ theme }) => theme.colors.accentInk};
-  font-size: 0.75rem;
-  font-weight: 650;
-`
 
 const Navn = styled.h3`
   font-family: ${({ theme }) => theme.fonts.body};
@@ -124,7 +100,7 @@ const Pris = styled.p`
 
   strong {
     font-family: ${({ theme }) => theme.fonts.mono};
-    font-size: clamp(2.2rem, 3.4vw, 2.9rem);
+    font-size: clamp(1.6rem, 2.4vw, 2.1rem);
     font-weight: 500;
     letter-spacing: -0.05em;
   }
@@ -137,13 +113,7 @@ const Pris = styled.p`
   }
 `
 
-/**
- * Det avdraget ikke sier.
- *
- * Et avdrag på 2 590 ser dyrt ut ved siden av et abonnement til 699 – helt
- * til man ser at vårt stopper etter tolv måneder og deres aldri gjør det.
- * Treårstotalen er det eneste tallet som kan sammenlignes, så den står her.
- */
+/** Driften og treårstotalen – det siden koster å ha, ikke bare å lage. */
 const Deretter = styled.p`
   margin: 0.6rem 0 0;
   font-size: 0.875rem;
@@ -157,19 +127,6 @@ const Deretter = styled.p`
   }
 `
 
-/**
- * «Etter avtale» der tallet ellers står.
- *
- * Lå i samme <strong> som beløpene og arvet derfor mono i sifferstørrelse –
- * to ord i tallskrift på 46 px. Dette er ord, ikke et beløp, og settes
- * deretter.
- */
-const Avtale = styled.span`
-  font-family: ${({ theme }) => theme.fonts.body};
-  font-size: ${({ theme }) => theme.fontSizes.xl};
-  font-weight: 600;
-  letter-spacing: -0.025em;
-`
 
 const Samlet = styled.p`
   margin-top: 0.35rem;
@@ -218,4 +175,30 @@ const Punkter = styled.ul`
 const Bunn = styled.div`
   margin-top: auto;
   a { width: 100%; }
+`
+
+/** Hva som flytter tallet. Det er her «skreddersøm» blir konkret. */
+const Drivere = styled.div`
+  margin-bottom: 1.75rem;
+  padding: 0.9rem 1rem;
+  border-radius: ${({ theme }) => theme.borderRadius.medium};
+  background: ${({ theme }) => theme.colors.sunken};
+
+  h4 {
+    margin: 0 0 0.4rem;
+    font-size: 0.8125rem;
+    font-weight: 650;
+    color: ${({ theme }) => theme.colors.ink};
+  }
+
+  ul {
+    margin: 0;
+    padding-left: 1.1rem;
+  }
+
+  li {
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: ${({ theme }) => theme.colors.inkMuted};
+  }
 `

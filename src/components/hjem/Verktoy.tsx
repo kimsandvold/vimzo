@@ -17,7 +17,7 @@ export default function Verktoy() {
         <Innsig>
           <Hode>
             <div>
-              <Stikkord>Regneverktøy · fra 4 900 kr</Stikkord>
+              <Stikkord>Regneverktøy · bygget for det du selger</Stikkord>
               <Tittel $niva="medium">La kunden regne ut prisen selv.</Tittel>
             </div>
             <Pil til="/logo">Prøv logoverktøyet gratis</Pil>

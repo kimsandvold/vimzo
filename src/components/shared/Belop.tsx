@@ -44,3 +44,34 @@ const Skille = styled.span`
   display: inline-block;
   width: 0.26em;
 `
+
+/**
+ * Et prisspenn: «35 000–50 000» eller «fra 60 000».
+ *
+ * Brukes overalt der vi viser anslag i stedet for en fast pris. «fra» står
+ * i brødskrift foran tallet, så forbeholdet er umulig å overse uten at det
+ * tar plassen fra beløpet.
+ */
+export function Ramme({ verdi, animert }: { verdi: { fra: number; til: number | null }; animert?: boolean }) {
+  if (verdi.til === null)
+    return (
+      <Tall>
+        <Fra>fra </Fra>
+        <Belop verdi={verdi.fra} animert={animert} />
+      </Tall>
+    )
+  return (
+    <Tall aria-label={`${verdi.fra.toLocaleString('nb-NO')} til ${verdi.til.toLocaleString('nb-NO')}`}>
+      <Belop verdi={verdi.fra} animert={animert} />
+      <span aria-hidden="true">–</span>
+      <Belop verdi={verdi.til} animert={animert} />
+    </Tall>
+  )
+}
+
+const Fra = styled.span`
+  font-family: ${({ theme }) => theme.fonts.body};
+  font-size: 0.8em;
+  font-weight: 500;
+  letter-spacing: 0;
+`

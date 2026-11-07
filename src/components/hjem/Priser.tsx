@@ -1,106 +1,113 @@
-import styled, { css } from 'styled-components'
-import { Hode, Innsig, Knapp, Pil, Seksjon, Tittel, Wrap } from '../../ui'
-import Belop from '../shared/Belop'
-import Icon from '../shared/Icon'
-import { pakker, driftsnivaer, ANTALL_AVDRAG } from '../../data/pakker'
+import styled from 'styled-components'
+import { Innsig, Pil, Seksjon, Stikkord, Wrap } from '../../ui'
+import { Ramme } from '../shared/Belop'
+import { pakker, drift } from '../../data/pakker'
 
 /**
- * Prisene. Månedsbeløpet står størst, fordi det er den summen en liten
- * bedrift vurderer mot resten av budsjettet – engangsprisen står rett under,
- * uten små skrift.
+ * «Slik blir prisen til» – forsidens prisseksjon.
  *
- * Kortene har ingen kant. Det fremhevede løftes med skygge og et løft i
- * y-aksen i stedet, så raden leser som tre papirark der ett ligger øverst.
+ * Her sto tre pakkekort med eksakte beløp og «Mest valgt». Det gjentok
+ * kalkulatoren rett over, og det fikk siden til å se ut som en hyllevare man
+ * bestiller med to klikk. Det er det ikke: hver side lages for én bedrift.
+ *
+ * Nå forteller seksjonen hvordan prisen blir til – anslag, samtale, skriftlig
+ * fast pris – og viser spennene som det de er: der de fleste lander. Prisene
+ * står fortsatt åpent. Det er rammen rundt dem som er ærligere.
  */
+const STEG = [
+  {
+    tittel: 'Et anslag her',
+    tekst: 'Kalkulatoren og spennene under viser hvor de fleste lander. Ingen e-post, ingen forpliktelser.',
+  },
+  {
+    tittel: 'En halvtime sammen',
+    tekst: 'Vi snakker om hva bedriften gjør, hvem du vil nå og hva siden skal gjøre. Det er her prisen blir din.',
+  },
+  {
+    tittel: 'Fast pris, skriftlig',
+    tekst: 'Du får et tilbud med pris og leveringsdato. Takker du ja, står prisen – også om jobben tar lengre tid.',
+  },
+] as const
+
 export default function Priser() {
   return (
     <Seksjon $flate="tint" id="priser">
       <Wrap>
         <Innsig>
-          <Hode>
-            <div>
-              <Tittel>Fast pris. Alt inkludert.</Tittel>
-            </div>
-            <Pil til="/priser">Alle priser og tillegg</Pil>
-          </Hode>
+          <Topp>
+            <Stikkord>Pris</Stikkord>
+            <h2>Slik blir prisen til</h2>
+            <p>
+              Hver side lages for én bedrift, så den endelige prisen setter vi etter en prat. Men du skal
+              vite omtrent hva det koster før du tar kontakt.
+            </p>
+          </Topp>
         </Innsig>
 
-        <Rad>
-          {pakker.map((p, i) => (
-            <Innsig key={p.id} forsinkelse={i * 80}>
-              <Kort $fremhevet={!!p.fremhevet}>
-                {p.fremhevet && <Merke>Mest valgt</Merke>}
-                <Navn>{p.navn}</Navn>
-
-                {p.manedspris === null || p.pris === null ? (
-                  <>
-                    <Pris>
-                      <Avtale>Etter avtale</Avtale>
-                    </Pris>
-                    <Samlet>Omfanget avtaler vi, så får du fast pris skriftlig</Samlet>
-                  </>
-                ) : (
-                  <>
-                    <Pris>
-                      <strong>
-                        <Belop verdi={p.manedspris} />
-                      </strong>
-                      <span>kr/mnd</span>
-                    </Pris>
-                    <Samlet>
-                      i {ANTALL_AVDRAG} mnd · 0 kr oppstart
-                      <br />
-                      eller <Belop verdi={p.pris} /> kr betalt på én gang
-                    </Samlet>
-                  </>
-                )}
-
-
-                <Punkter>
-                  {p.punkter.map((punkt) => (
-                    <li key={punkt}>
-                      <Icon navn="sjekk" storrelse={14} tykkelse={2.6} />
-                      {punkt}
-                    </li>
-                  ))}
-                </Punkter>
-
-                <Bunn>
-                  <Knapp til="/kontakt" variant={p.fremhevet ? 'aksent' : 'myk'}>
-                    Få tilbud
-                  </Knapp>
-                </Bunn>
+        <Steg>
+          {STEG.map((s, i) => (
+            <Innsig key={s.tittel} forsinkelse={i * 80}>
+              <Kort>
+                <h3>{s.tittel}</h3>
+                <p>{s.tekst}</p>
               </Kort>
             </Innsig>
           ))}
-        </Rad>
+        </Steg>
 
         <Innsig forsinkelse={240}>
-          <Driftsrad>
-            {driftsnivaer.map((d) => (
-              <span key={d.id}>
-                <strong>
-                  <Belop verdi={d.pris} /> kr/mnd
-                </strong>{' '}
-                {d.navn.toLowerCase()}
+          <Spenn>
+            <h3>Typiske prosjekter</h3>
+            <ul>
+              {pakker.map((p) => (
+                <li key={p.id}>
+                  <span>
+                    <strong>{p.navn}</strong> · {p.omfang}
+                  </span>
+                  <b>
+                    <Ramme verdi={p.pris} /> kr
+                  </b>
+                </li>
+              ))}
+            </ul>
+            <Bunnlinje>
+              <span>
+                Drift {drift.pris} kr/mnd · kan deles over 12 måneder · eks. mva.
               </span>
-            ))}
-            <span>Første års domene inkludert</span>
-            <span>Ingen bindingstid</span>
-          </Driftsrad>
+              <Pil til="/priser">Hva som påvirker prisen</Pil>
+            </Bunnlinje>
+          </Spenn>
         </Innsig>
       </Wrap>
     </Seksjon>
   )
 }
 
-const Rad = styled.div`
+const Topp = styled.div`
+  max-width: 44rem;
+  margin: 0 auto clamp(2rem, 4vw, 3rem);
+  text-align: center;
+
+  h2 {
+    margin: 0;
+    font-size: ${({ theme }) => theme.fontSizes['2xl']};
+    line-height: 1.08;
+  }
+
+  p {
+    margin: 1rem auto 0;
+    max-width: 52ch;
+    font-size: ${({ theme }) => theme.fontSizes.md};
+    line-height: 1.6;
+    color: ${({ theme }) => theme.colors.inkMuted};
+  }
+`
+
+const Steg = styled.div`
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1rem;
-  align-items: stretch;
+  gap: 1.1rem;
 
-  /* Innsig-wrapperen må strekke seg, ellers blir ikke kortene like høye. */
   > * {
     height: 100%;
   }
@@ -110,131 +117,88 @@ const Rad = styled.div`
   }
 `
 
-const Kort = styled.article<{ $fremhevet: boolean }>`
-  position: relative;
-  display: flex;
-  flex-direction: column;
+const Kort = styled.div`
   height: 100%;
-  padding: 2rem 1.75rem;
-  border-radius: ${({ theme }) => theme.borderRadius.xl};
-  /* Flatt og ugjennomsiktig, med en hårfin kant. Frosten og gjennomsikten
-     som lå her før var enda et lag å se gjennom – kortene skal lese som
-     rolige felt på sandflaten, ikke som ark som svever over den. */
+  padding: 1.6rem;
   border: 1px solid ${({ theme }) => theme.colors.border};
+  border-radius: ${({ theme }) => theme.borderRadius.large};
   background: ${({ theme }) => theme.colors.surface};
-  scroll-margin-top: 7rem;
 
-  ${({ $fremhevet, theme }) =>
-    $fremhevet
-      ? css`
-          border-color: ${theme.colors.borderStrong};
-          @media (min-width: 901px) {
-            transform: translateY(-14px);
-          }
-        `
-      : css`
-          border-color: ${theme.colors.border};
-        `}
-`
-
-const Merke = styled.span`
-  position: absolute;
-  top: 1.25rem;
-  right: 1.25rem;
-  padding: 0.3rem 0.7rem;
-  border-radius: ${({ theme }) => theme.borderRadius.pill};
-  background: ${({ theme }) => theme.colors.accentSoft};
-  color: ${({ theme }) => theme.colors.accentInk};
-  font-size: 0.75rem;
-  font-weight: 650;
-`
-
-const Navn = styled.h3`
-  font-family: ${({ theme }) => theme.fonts.body};
-  font-size: 1.05rem;
-  font-weight: 650;
-  letter-spacing: -0.01em;
-  color: ${({ theme }) => theme.colors.inkSubtle};
-`
-
-const Pris = styled.p`
-  display: flex;
-  align-items: baseline;
-  gap: 0.35rem;
-  margin-top: 1rem;
-
-  strong {
-    font-family: ${({ theme }) => theme.fonts.mono};
-    font-size: clamp(2.2rem, 3.4vw, 2.9rem);
-    font-weight: 500;
-    letter-spacing: -0.05em;
+  h3 {
+    margin: 0;
+    font-size: 1.1875rem;
+    font-weight: 650;
+    letter-spacing: -0.025em;
   }
 
-  /* Direkte barn: ellers treffer regelen også spans inne i <Belop>,
-     og beløpet arver småskriften i stedet for sin egen grad. */
-  > span {
-    font-family: ${({ theme }) => theme.fonts.mono};
-    font-size: 0.95rem;
-    color: ${({ theme }) => theme.colors.inkSubtle};
+  p {
+    margin: 0.6rem 0 0;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: ${({ theme }) => theme.colors.inkMuted};
   }
 `
 
+/** Spennene, som en rolig liste – ikke som tre kort som konkurrerer om oppmerksomheten. */
+const Spenn = styled.div`
+  margin-top: 1.1rem;
+  padding: 1.6rem;
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  border-radius: ${({ theme }) => theme.borderRadius.large};
+  background: ${({ theme }) => theme.colors.surface};
 
-/** Ord, ikke beløp – skal ikke arve mono og sifferstørrelse fra <Pris>. */
-const Avtale = styled.span`
-  font-family: ${({ theme }) => theme.fonts.body};
-  font-size: ${({ theme }) => theme.fontSizes.xl};
-  font-weight: 600;
-  letter-spacing: -0.025em;
-`
+  h3 {
+    margin: 0 0 0.6rem;
+    font-size: 1.1875rem;
+    font-weight: 650;
+    letter-spacing: -0.025em;
+  }
 
-const Samlet = styled.p`
-  margin-top: 0.3rem;
-  font-size: 0.875rem;
-  color: ${({ theme }) => theme.colors.inkSubtle};
-`
-
-const Punkter = styled.ul`
-  display: flex;
-  flex-direction: column;
-  gap: 0.65rem;
-  margin: 1.75rem 0;
-  list-style: none;
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
 
   li {
     display: flex;
-    align-items: center;
-    gap: 0.6rem;
-    font-size: 0.925rem;
-    font-weight: 500;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.8rem 0;
+    border-bottom: 1px solid ${({ theme }) => theme.colors.border};
+    font-size: 0.9375rem;
+    color: ${({ theme }) => theme.colors.inkMuted};
   }
 
-  svg {
-    flex-shrink: 0;
-    color: ${({ theme }) => theme.colors.accent};
-  }
-`
-
-const Bunn = styled.div`
-  margin-top: auto;
-
-  a {
-    width: 100%;
-  }
-`
-
-/** Driftsprisene som én rolig linje – de skal finnes, men ikke konkurrere. */
-const Driftsrad = styled.p`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.6rem 2rem;
-  margin-top: clamp(2rem, 4vw, 3rem);
-  font-size: 0.925rem;
-  color: ${({ theme }) => theme.colors.inkMuted};
-
-  strong {
-    font-family: ${({ theme }) => theme.fonts.mono};
-    font-weight: 500;
+  li strong {
+    font-weight: 650;
     color: ${({ theme }) => theme.colors.ink};
   }
+
+  li b {
+    flex-shrink: 0;
+    font-family: ${({ theme }) => theme.fonts.mono};
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    color: ${({ theme }) => theme.colors.accentInk};
+  }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.smallMobile}) {
+    li {
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+  }
+`
+
+const Bunnlinje = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem 1.5rem;
+  margin-top: 1rem;
+  font-size: 0.875rem;
+  color: ${({ theme }) => theme.colors.inkSubtle};
 `

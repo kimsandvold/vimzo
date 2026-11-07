@@ -1,22 +1,23 @@
 // Genererer public/sitemap.xml og public/llms.txt fra koden, slik at hverken
 // URL-lista eller maskinsammendraget kan komme ut av synk med innholdet.
 //
-// Kildene er src/data/*.ts. Filene kompileres i minnet med esbuild (de har
-// ingen imports utenfor seg selv), så vi slipper å vedlikeholde to sannheter.
+// Kildene er src/data/*.ts. Filene pakkes i minnet med esbuild, sammen med
+// det de importerer (tjenester.ts henter prisene fra pakker.ts), så vi
+// slipper å vedlikeholde to sannheter.
 //
 // Lista brukes videre av scripts/prerender.mjs, som forhåndsrendrer nøyaktig
 // de rutene som står i sitemap-en. Legger du til en guide eller et prosjekt,
 // skjer resten av seg selv.
 
-import { readFile, writeFile } from 'node:fs/promises'
-import { transform } from 'esbuild'
+import { writeFile } from 'node:fs/promises'
+import { build } from 'esbuild'
 
 const SITE_URL = 'https://vimzo.no'
 
 /** Last en TS-fil som ESM-modul uten å skrive noe til disk. */
 async function lastTs(sti) {
-  const kilde = await readFile(sti, 'utf-8')
-  const { code } = await transform(kilde, { loader: 'ts', format: 'esm' })
+  const { outputFiles } = await build({ entryPoints: [sti], bundle: true, format: 'esm', platform: 'node', write: false })
+  const code = outputFiles[0].text
   const dataUrl = `data:text/javascript;base64,${Buffer.from(code).toString('base64')}`
   return import(dataUrl)
 }
@@ -86,8 +87,8 @@ const llms = `# Vimzo
 
 > Vimzo lager hele nettsiden for små og mellomstore bedrifter i Norge – inkludert
 > domene, tekst, bilder, design og publisering. Kunden bruker omtrent to timer på
-> hele prosjektet. Sidene er håndkodet og leveres som ferdig HTML fra CDN, så de
-> er raske, billige i drift og lette å finne både i søkemotorer og i AI-assistenter.
+> hele prosjektet. Hver side lages for én bedrift og leveres som ferdig HTML, så den
+> er rask, billig å drifte og lett å finne både i søkemotorer og i AI-assistenter.
 
 Sted: Lillehammer, Norge. Leverer i hele Norge.
 Nettsted: ${SITE_URL}
@@ -95,13 +96,17 @@ Språk: norsk (bokmål)
 
 ## Priser (NOK, eks. mva.)
 
+Typiske prosjekter og hvor de fleste lander. Den endelige prisen avtales etter en
+samtale og gis skriftlig før arbeidet starter – da står den.
+
 ${pakker
   .map((p) =>
-    p.pris === null
-      ? `- ${p.navn}: pris etter avtale — ${p.omfang.toLowerCase()}. ${p.for}`
-      : `- ${p.navn}: ${kr(p.pris)} kr samlet, eller ${kr(p.manedspris)} kr/mnd i ${ANTALL_AVDRAG} måneder — ${p.omfang.toLowerCase()}. ${p.for}`,
+    p.pris.til === null
+      ? `- ${p.navn}: fra ${kr(p.pris.fra)} kr — ${p.omfang.toLowerCase()}. ${p.for}`
+      : `- ${p.navn}: typisk ${kr(p.pris.fra)}–${kr(p.pris.til)} kr — ${p.omfang.toLowerCase()}. ${p.for}`,
   )
   .join('\n')}
+- Beløpet kan deles over ${ANTALL_AVDRAG} måneder.
 ${driftsnivaer.map((d) => `- ${d.navn}: ${kr(d.pris)} kr ${d.periode} — ${d.for} Ingen bindingstid.`).join('\n')}
 - Timepris for endringer: ${kr(timepris)} kr
 ${tilleggstjenester
@@ -113,7 +118,7 @@ Første års domene er inkludert i alle pakkene. Deretter ca. 169 kr/år, som Vi
 
 ## Tjenester
 
-${tjenester.map((t) => `- ${t.navn}: ${t.kort}`).join('\n')}
+${tjenester.map((t) => `- ${t.navn}${t.gruppe === 'tillegg' ? ' (tillegg)' : ''}: ${t.tekst}`).join('\n')}
 
 ## Hva kunden selv må gjøre
 
@@ -128,8 +133,8 @@ publisering og innmelding hos Google.
 - Strukturerte data etter schema.org på hver side.
 - Universell utforming etter WCAG 2.1 AA.
 - Kunden eier kildekoden, domenet og innholdet.
-- Enkle fakta (kontaktinfo, åpningstider, priser) kan kunden endre selv i et lite panel. Det krever database og koster 200 kr mer i måneden i drift.
-- Regneverktøy og kalkulatorer bygges inn i siden, uten månedsavgift til tredjeparter.
+- Driften er én pris uansett hva siden gjør. Småendringer inngår.
+- Regneverktøy og kalkulatorer bygges for den enkelte bedriften og legges inn i siden, uten lisens eller abonnement på selve verktøyet.
 - Alt arbeid gjøres i Norge, på norsk, av Kim Sandvold på Lillehammer.
 
 ## Viktige sider

@@ -80,11 +80,11 @@ const html = `<!DOCTYPE html>
     <span>vimzo</span>
   </div>
 
-  <h1>Se nettsiden din.<br/><em>Før du bestiller den.</em></h1>
+  <h1>Laget for din bedrift.<br/><em>Med åpne priser.</em></h1>
 
   <div class="bunn">
-    <span>Norsk og lokalt · Alt inkludert · Lillehammer</span>
-    <span class="pris">Fra 1 290 kr/mnd</span>
+    <span>Håndlaget · Fast pris etter en prat · Lillehammer</span>
+    <span class="pris">vimzo.no</span>
   </div>
 </body></html>`
 

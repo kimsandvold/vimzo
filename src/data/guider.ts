@@ -1,3 +1,4 @@
+import { drift, formaterPris, formaterRamme, pakker, timepris } from './pakker'
 /**
  * Fagartiklene. De gjør tre jobber samtidig: de svarer på det kundene faktisk
  * googler, de er beviset på at vi kan faget, og de er innholdet AI-assistenter
@@ -118,8 +119,8 @@ export const guider: readonly Guide[] = [
             tekst:
               'En AI-assistent gjengir det den kan feste til et konkret utsagn. «Vi leverer ' +
               'skreddersydde helhetsløsninger til konkurransedyktige priser» er umulig å ' +
-              'sitere. «En nettside koster fra 14 900 kroner eks. mva., og domenet står i ' +
-              'ditt navn fra dag én» er lett.',
+              'sitere. «En liten nettside koster typisk 20 000–30 000 kroner eks. mva., og ' +
+              'domenet står i ditt navn fra dag én» er lett.',
           },
           { type: 'p', tekst: 'Det som bør stå i klartekst et sted på nettstedet:' },
           {
@@ -373,11 +374,12 @@ export const guider: readonly Guide[] = [
           {
             type: 'p',
             tekst:
-              'Vi legger prisene åpent ut fordi det sparer begge parter for tid: fra 14 900 ' +
-              'kroner for opptil tre sider, og 29 900 kroner for en bedriftsside med opptil ' +
-              'åtte sider. Drift koster 449 kroner i måneden. Småendringer inngår; større ' +
-              'endringer har fast pris, og timepris på 1 150 kroner bruker vi bare når ' +
-              'ingenting annet passer. Alt eks. mva.',
+              'Vi legger prisene åpent ut fordi det sparer begge parter for tid. En liten side ' +
+              `på én til tre sider lander typisk på ${formaterRamme(pakker[0].pris)} kroner, og en ` +
+              `bedriftsside på fire til åtte sider på ${formaterRamme(pakker[1].pris)}. Drift koster ` +
+              `${drift.pris} kroner i måneden. Småendringer inngår; større endringer har fast pris, ` +
+              `og timepris på ${formaterPris(timepris)} kroner bruker vi bare når ingenting annet ` +
+              'passer. Alt eks. mva.',
           },
           {
             type: 'p',

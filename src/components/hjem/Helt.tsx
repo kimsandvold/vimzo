@@ -7,9 +7,9 @@ import Kalkulator from './kalkulator/Kalkulator'
 /**
  * Forsidens åpning.
  *
- * Én setning, og så får du regne. Vi forklarer ikke hva en nettside koster –
- * du finner det ut selv, på fire spørsmål, uten å oppgi e-post eller snakke
- * med en selger.
+ * Én setning, og så får du regne. Du ser omtrent hva siden vil koste, på
+ * fire spørsmål, uten å oppgi e-post – og ingressen sier rett ut at det er et
+ * anslag. Siden lages for én bedrift; prisen blir din egen etter en prat.
  *
  * Flaten er lys. Den var mørk før, med et vinterfoto under, og det så
  * håndlaget ut – men det så også ut som noe som ble laget i 2015. Et skjema
@@ -24,12 +24,12 @@ export default function Helt() {
       <Innhold>
         <Topp>
           <h1>
-            Se hva du får.
-            <Uthevet>Og hva det koster.</Uthevet>
+            Se hva det koster.
+            <Uthevet>Før du spør noen.</Uthevet>
           </h1>
           <Sidelinje>
-            Fire spørsmål, så står prisen på nettsiden din der – sammen med lista over hva som inngår.
-            Ingen e-post, ingen selger, ingenting sendes før du vil.
+            Fire spørsmål gir deg et ærlig anslag og lista over hva som pleier å inngå. Siden lages
+            for din bedrift, så den endelige prisen setter vi etter en prat – skriftlig, og da står den.
           </Sidelinje>
         </Topp>
 

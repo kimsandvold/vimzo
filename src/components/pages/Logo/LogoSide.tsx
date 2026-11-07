@@ -6,6 +6,7 @@ import Sidehode from '../../layout/Sidehode'
 import Avslutt from '../../hjem/Avslutt'
 import { Knapp, Seksjon, Wrap } from '../../../ui'
 import { MERKER, PALETT, type Farge, type Form, type Merke, type Oppsett } from './merker'
+import { formaterPris, tillegg } from '../../../data/pakker'
 
 /**
  * Logoverktøyet.
@@ -278,8 +279,8 @@ export default function LogoSide() {
               <h2>Vil du ha den ferdig tegnet?</h2>
               <p>
                 Verktøyet gir deg en ryddig logo på et minutt. Trenger du noe som er tegnet for
-                akkurat din bedrift – med farger og skrifttyper som hører sammen – gjør vi det fra
-                2 900 kroner.
+                akkurat din bedrift – med farger og skrifttyper som hører sammen – tegner vi den for{' '}
+                {formaterPris(tillegg('Logo').pris)} kroner.
               </p>
             </div>
             <Knapp til="/kontakt" variant="mork" ikon="pilHoyre">
@@ -291,7 +292,7 @@ export default function LogoSide() {
 
       <Avslutt
         tittel="Logo på plass. Mangler du siden?"
-        tekst="Vi lager hele nettsiden – domene, tekst, bilder og publisering. Fra 1 290 kr/mnd."
+        tekst="Vi lager hele nettsiden for bedriften din – domene, tekst, bilder og publisering. Se hva det omtrent koster, og ta en prat."
       />
     </>
   )

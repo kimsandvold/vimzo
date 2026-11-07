@@ -1,5 +1,18 @@
 import type { IkonNavn } from '../components/shared/Icon'
-import { ANTALL_AVDRAG, SAMMENLIGNINGSPERIODE, driftsnivaer, pakker, type Driftsniva, type Pakke } from './pakker'
+import {
+  ANTALL_AVDRAG,
+  avdragRamme,
+  driftsnivaer,
+  eieOver,
+  formaterPris,
+  formaterRamme,
+  leggTil,
+  pakker,
+  tillegg as tilleggPris,
+  type Driftsniva,
+  type Pakke,
+  type Prisramme,
+} from './pakker'
 import { BRANSJER, type Bransje } from './bransjer'
 
 /**
@@ -63,11 +76,11 @@ export const STARTSVAR: Svar = {
   verktoy: [],
 }
 
-/** Tillegg som ikke er verktøy. Beløpene er de samme som på prissiden. */
+/** Tillegg som ikke er verktøy. Slått opp i `pakker.ts`, så prissiden og kalkulatoren aldri er uenige. */
 const TILLEGG = {
-  foto: 6900,
-  logo: 2900,
-  profil: 5900,
+  foto: tilleggPris('Foto og dronevideo').pris,
+  logo: tilleggPris('Logo').pris,
+  profil: tilleggPris('Visuell profil').pris,
 } as const
 
 /* -------------------------------------------------------------- spørsmål */
@@ -80,8 +93,8 @@ export interface Alternativ<T extends string | boolean> {
   /**
    * Hva valget koster, når det koster noe.
    *
-   * Sto ikke her før, og da valgte kunden «kom og ta bilder» uten å vite at
-   * det er 6 900 kroner. Et valg som flytter prisen skal si det der valget
+   * Sto ikke her før, og da valgte kunden «kom og ta bilder» uten å vite hva
+   * det koster. Et valg som flytter prisen skal si det der valget
    * tas – ikke først i estimatet ved siden av.
    */
   pris?: number
@@ -143,8 +156,8 @@ export function foreslaDomene(navn: string): string {
  * en tredjepart. Verktøy som tar imot opplysninger lagrer dem i Europa –
  * ikke «ingen steder», og ikke «bare i Norge». Se `lagrerData` nedenfor.
  *
- * TODO: juster beløpene til det du faktisk vil ta – som i `pakker.ts`.
- * Ankeret i dag er «Regneverktøy eller kalkulator» til 4 900.
+ * Ankeret er «Regneverktøy eller kalkulator» i `pakker.ts`. De enkle,
+ * like-hver-gang-verktøyene (omtaler, døgnvakt) har fast pris under det.
  */
 export interface Verktoy {
   id: string
@@ -173,14 +186,14 @@ export interface Verktoy {
 }
 
 export const VERKTOY: readonly Verktoy[] = [
-  { id: 'befaring', navn: 'Bestill befaring', ikon: 'kamera', hint: 'Kunden sender bilde av problemet og får et anslag', pris: 4900, fraPris: true, lagrerData: true },
-  { id: 'timebestilling', navn: 'Timebestilling', ikon: 'klokke', hint: 'Kunden booker ledig tid, begge får bekreftelse', pris: 4900, fraPris: true, lagrerData: true },
-  { id: 'kalkulator', navn: 'Priskalkulator', ikon: 'graf', hint: 'Kunden regner ut prisen sin selv, før han ringer', pris: 4900, fraPris: true },
-  { id: 'omtaler', navn: 'Google-omtaler', ikon: 'gnist', hint: 'Stjernene hentes inn og bakes rett i siden', pris: 2900 },
-  { id: 'stillinger', navn: 'Ledige stillinger', ikon: 'samtale', hint: 'Jobbsøkere søker på siden, med CV vedlagt', pris: 4900, fraPris: true, lagrerData: true },
-  { id: 'tredim', navn: '3D-visning av produkt', ikon: 'kode', hint: 'Kunden snur på produktet, velger mål og ser prisen endre seg', pris: 12900, fraPris: true },
-  { id: 'dognvakt', navn: 'Døgnvakt og «åpent nå»', ikon: 'lyn', hint: 'Viser om du er på vakt akkurat nå, med riktig nummer', pris: 1900 },
-  { id: 'reklamasjon', navn: 'Reklamasjon og klage', ikon: 'skjold', hint: 'Saksnummer og vedlegg, så du har papirene i orden', pris: 2900, fraPris: true, lagrerData: true },
+  { id: 'befaring', navn: 'Bestill befaring', ikon: 'kamera', hint: 'Kunden sender bilde av problemet og får et anslag', pris: tilleggPris('Regneverktøy eller kalkulator').pris, fraPris: true, lagrerData: true },
+  { id: 'timebestilling', navn: 'Timebestilling', ikon: 'klokke', hint: 'Kunden booker ledig tid, begge får bekreftelse', pris: tilleggPris('Regneverktøy eller kalkulator').pris, fraPris: true, lagrerData: true },
+  { id: 'kalkulator', navn: 'Priskalkulator', ikon: 'graf', hint: 'Kunden regner ut prisen sin selv, før han ringer', pris: tilleggPris('Regneverktøy eller kalkulator').pris, fraPris: true },
+  { id: 'omtaler', navn: 'Google-omtaler', ikon: 'gnist', hint: 'Stjernene hentes inn og bakes rett i siden', pris: 3900 },
+  { id: 'stillinger', navn: 'Ledige stillinger', ikon: 'samtale', hint: 'Jobbsøkere søker på siden, med CV vedlagt', pris: tilleggPris('Regneverktøy eller kalkulator').pris, fraPris: true, lagrerData: true },
+  { id: 'tredim', navn: '3D-visning av produkt', ikon: 'kode', hint: 'Kunden snur på produktet, velger mål og ser prisen endre seg', pris: tilleggPris('3D-visning og designverktøy').pris, fraPris: true },
+  { id: 'dognvakt', navn: 'Døgnvakt og «åpent nå»', ikon: 'lyn', hint: 'Viser om du er på vakt akkurat nå, med riktig nummer', pris: 2900 },
+  { id: 'reklamasjon', navn: 'Reklamasjon og klage', ikon: 'skjold', hint: 'Saksnummer og vedlegg, så du har papirene i orden', pris: 6900, fraPris: true, lagrerData: true },
 ]
 
 /* ---------------------------------------------------------------- utregning */
@@ -203,29 +216,16 @@ export interface Estimat {
   /** Tilleggene svarene utløste. Tom liste er et helt gyldig svar. */
   tillegg: readonly Linje[]
   /**
-   * Sant når pakken ikke har en pris å regne på. Da viser kortet ingen tall –
-   * et fra-beløp på en jobb vi ikke har sett omfanget av, ville vært et
-   * anslag forkledd som en pris.
+   * Hvor prosjektet sannsynligvis lander: pakkens spenn pluss tilleggene.
+   * Et anslag, ikke en pris – den avtales etter en prat.
    */
-  etterAvtale: boolean
-  engangs: number | null
-  /** Beløpet per måned hvis engangssummen deles over tolv avdrag. */
-  manedlig: number | null
-  /**
-   * Sant når minst én linje er et fra-beløp. Da er hele summen et fra-beløp,
-   * og det skal stå på tallet – ikke i en fotnote.
-   */
-  fraPris: boolean
-  /** Den løpende driften. Kommer i tillegg til avdragene – aldri slått sammen. */
+  ramme: Prisramme
+  /** Spennet delt over tolv avdrag. Vises lite – det er ikke hovedtallet. */
+  avdrag: Prisramme
+  /** Den løpende driften. Kommer i tillegg – aldri slått sammen med bygget. */
   drift: Driftsniva
-  /**
-   * Hva siden koster å eie i tre år: bygget pluss driften som løper.
-   *
-   * Det er dette tallet som faktisk kan sammenlignes med et abonnement, og
-   * derfor står det på kortet. Månedsbeløpet vårt stopper etter tolv
-   * avdrag; et abonnement gjør aldri det.
-   */
-  treAr: number | null
+  /** Bygget pluss tre års drift. Det ærligste tallet for hva siden koster å ha. */
+  treAr: Prisramme
   omfang: string
 }
 
@@ -235,7 +235,7 @@ export interface Estimat {
  * Det er med vilje. Hvor lang tid en side tar avhenger av omfang, om vi må ut
  * og ta bilder, og – oftest – hvor fort kunden får sagt det vi trenger å vite.
  * Et tall her ville vært gjetting, og en dato man gjetter på er en dato man
- * bryter. Vi lover rask levering og avtaler datoen i samtalen i stedet.
+ * bryter. Datoen avtales i samtalen, og står i tilbudet.
  */
 
 /**
@@ -301,31 +301,19 @@ export function regnUt(svar: Svar): Estimat {
     tillegg.push({ navn: v.navn, pris: dekket ? 0 : v.pris, dekket, fraPris: !dekket && v.fraPris })
   }
 
-  const etterAvtale = pakke.pris === null || pakke.manedspris === null
-  const engangs = etterAvtale ? null : (pakke.pris as number) + tillegg.reduce((sum, l) => sum + l.pris, 0)
+  const ramme = leggTil(pakke.pris, tillegg.reduce((sum, l) => sum + l.pris, 0))
 
-  /**
-   * Delbetalingen har et lite påslag, og det skal følge tilleggene også –
-   * ellers ville et tillegg vært gratis å dele opp. Faktoren hentes fra
-   * pakken selv, så forsiden og prissiden ender på samme krone når ingen
-   * tillegg er valgt.
-   */
-  const faktor = etterAvtale ? 0 : ((pakke.manedspris as number) * ANTALL_AVDRAG) / (pakke.pris as number)
-  const manedlig = engangs === null ? null : Math.round((engangs * faktor) / ANTALL_AVDRAG / 10) * 10
-
-  /** Én driftspris for alle. Valgene over flytter engangssummen, ikke månedsprisen. */
+  /** Én driftspris for alle. Valgene over flytter bygget, ikke månedsprisen. */
   const drift = driftsnivaer[0]
 
   return {
     pakke,
     inkludert: pakke.punkter,
     tillegg,
-    fraPris: tillegg.some((t) => t.fraPris),
-    etterAvtale,
-    engangs,
-    manedlig,
+    ramme,
+    avdrag: avdragRamme(ramme),
     drift,
-    treAr: engangs === null ? null : engangs + drift.pris * SAMMENLIGNINGSPERIODE,
+    treAr: eieOver(ramme),
     omfang: pakke.omfang,
   }
 }
@@ -350,22 +338,20 @@ export function lagBrief(svar: Svar, estimat: Estimat): string {
     `Logo: ${LOGO.find((l) => l.verdi === svar.logo)?.navn}`,
     `Verktøy: ${svar.verktoy.length ? VERKTOY.filter((v) => svar.verktoy.includes(v.id)).map((v) => v.navn).join(', ') : 'Ingen'}`,
     '',
-    `Dette gir pakken ${estimat.pakke.navn} (${estimat.omfang}).`,
+    `Ligner mest på: ${estimat.pakke.navn} (${estimat.omfang}).`,
   ]
 
   const betalte = estimat.tillegg.filter((t) => !t.dekket)
   if (betalte.length) {
-    linjer.push('', 'Tillegg:', ...betalte.map((t) => `  – ${t.navn}: ${t.fraPris ? 'fra ' : ''}${t.pris.toLocaleString('nb-NO')} kr`))
+    linjer.push('', 'Tillegg:', ...betalte.map((t) => `  – ${t.navn}: ${t.fraPris ? 'fra ' : ''}${formaterPris(t.pris)} kr`))
   }
 
   linjer.push(
     '',
-    estimat.etterAvtale
-      ? 'Omfanget her må avtales – ingen pris er regnet ut i kalkulatoren.'
-      : `Estimat: ${estimat.fraPris ? 'fra ' : ''}${(estimat.engangs as number).toLocaleString('nb-NO')} kr samlet, eller ${estimat.fraPris ? 'fra ' : ''}${(estimat.manedlig as number).toLocaleString('nb-NO')} kr/mnd i ${ANTALL_AVDRAG} måneder.`,
-    `Drift: ${estimat.drift.pris} kr/mnd (${estimat.drift.navn}).`,
+    `Anslag: ${formaterRamme(estimat.ramme)} kr, eller ${formaterRamme(estimat.avdrag)} kr/mnd over ${ANTALL_AVDRAG} måneder.`,
+    `Drift: ${estimat.drift.pris} kr/mnd.`,
     '',
-    'Regnet ut i kalkulatoren på forsiden. Alle beløp er eks. mva.',
+    'Anslag fra kalkulatoren på forsiden – den endelige prisen avtales etter en prat. Alle beløp er eks. mva.',
   )
 
   return linjer.join('\n')

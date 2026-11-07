@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import Belop from '../../shared/Belop'
+import Belop, { Ramme } from '../../shared/Belop'
 import Icon from '../../shared/Icon'
 import { ANTALL_AVDRAG } from '../../../data/pakker'
 import { foreslaDomene, type Estimat as EstimatData, type Svar } from '../../../data/kalkulator'
@@ -7,13 +7,13 @@ import { foreslaDomene, type Estimat as EstimatData, type Svar } from '../../../
 /**
  * Estimatet ved siden av kalkulatoren.
  *
- * Dette er hele løftet på forsiden: du skal se hva det koster og hva du får,
- * før du snakker med noen. Derfor står tallet størst, og derfor står lista
- * over hva som inngår rett under det – ikke på en annen side.
+ * Et ærlig anslag før du snakker med noen – ikke en prisliste. Spennet er der
+ * de fleste i samme situasjon lander; den endelige prisen setter vi etter en
+ * prat, og da står den skriftlig. Kortet sier det rett ut, så ingen tror de
+ * har bestilt noe ferdig med fire klikk.
  *
- * To ting er bevisst holdt fra hverandre. Avdraget er det du betaler for å få
- * siden laget, og driften er det den koster å ha. Slår man dem sammen får man
- * et penere tall og en kunde som føler seg lurt i måned tretten.
+ * Bygget og driften holdes fra hverandre. Slår man dem sammen får man et
+ * penere tall og en kunde som føler seg lurt i måned tretten.
  *
  * Flaten er den eneste mørke på forsiden. Den skal lese som en kvittering som
  * ligger over siden, ikke som enda en seksjon.
@@ -27,7 +27,6 @@ export default function Estimat({
   svar: Svar
   onSend: () => void
 }) {
-  const betalte = estimat.tillegg.filter((t) => !t.dekket)
   const adresse = svar.domene.trim() || foreslaDomene(svar.navn) || 'hansen-ror.no'
 
   return (
@@ -53,46 +52,29 @@ export default function Estimat({
       </Adresselinje>
 
       <Topp>
-        <Stikkord>{svar.navn.trim() ? `Estimat for ${svar.navn.trim()}` : 'Ditt estimat'}</Stikkord>
-        <Merke>{estimat.pakke.navn}</Merke>
+        <Stikkord>{svar.navn.trim() ? `Anslag for ${svar.navn.trim()}` : 'Ditt anslag'}</Stikkord>
+        <Merke>Ligner på {estimat.pakke.navn}</Merke>
       </Topp>
 
-      {estimat.etterAvtale ? (
-        <>
-          <Avtale>Etter avtale</Avtale>
-          <Under>Dette er for stort til en prisliste – vi tar en prat først.</Under>
-        </>
-      ) : (
-        <>
-          <Tall>
-            {estimat.fraPris && <Fra>fra</Fra>}
-            <strong>
-              <Belop verdi={estimat.manedlig as number} animert />
-            </strong>
-            <span>kr/mnd</span>
-          </Tall>
-          <Under>i {ANTALL_AVDRAG} måneder · 0 kr i oppstart</Under>
-        </>
-      )}
+      <Tall>
+        <strong>
+          <Ramme verdi={estimat.ramme} animert />
+        </strong>
+        <span>kr</span>
+      </Tall>
+      <Under>Der de fleste i din situasjon lander. Den endelige prisen setter vi etter en prat.</Under>
 
-      {/* Den viktigste linja på hele kortet. Avdraget stopper etter tolv
-          måneder, og da er dette alt siden koster – lavere enn noe
-          nettside-abonnement i Norge. Sto den nederst, leste den som en
-          ekstra regning i stedet for som poenget. */}
       <Deretter>
         <Icon navn="pilNed" storrelse={14} tykkelse={2.5} />
-        {estimat.etterAvtale ? 'Drift ' : 'Deretter '}
+        Drift etterpå{' '}
         <strong>
           <Belop verdi={estimat.drift.pris} /> kr/mnd
         </strong>
       </Deretter>
 
-      {!estimat.etterAvtale && (
-        <Under>
-          eller {estimat.fraPris && 'fra '}
-          <Belop verdi={estimat.engangs as number} animert /> kr betalt på én gang
-        </Under>
-      )}
+      <Under>
+        Kan deles over {ANTALL_AVDRAG} måneder: <Ramme verdi={estimat.avdrag} /> kr/mnd
+      </Under>
 
       <Fakta>
         <li>
@@ -100,25 +82,20 @@ export default function Estimat({
           {estimat.omfang}
         </li>
         <li>
-          <Icon navn="lyn" storrelse={14} tykkelse={2} />
-          Rask levering
-        </li>
-        {/* Står her og ikke i punktlista, fordi Bedrift og Vekst viser «Alt i
-            Start» i stedet for å gjenta den – og da ville løftet om mobil
-            forsvunnet for de to pakkene folk flest havner i. */}
-        <li>
           <Icon navn="enheter" storrelse={14} tykkelse={2} />
           Mobil, nettbrett og PC
         </li>
       </Fakta>
 
+      {/* Det viktigste forbeholdet på kortet, og derfor ikke i småskrift
+          nederst: tallet over er et utgangspunkt for en samtale. */}
       <Avklaring>
-        Når siden står ferdig, avtaler vi når vi har snakket sammen. Det kommer an på omfanget, om vi skal ut
-        og ta bilder, og hvor fort vi får vite det vi trenger om bedriften din.
+        Slik blir prisen til: vi tar en prat på en halvtime om hva bedriften trenger. Etterpå får du
+        et skriftlig tilbud med fast pris og leveringsdato – og da står prisen.
       </Avklaring>
 
       <Bolk>
-        <Tittel>Dette inngår</Tittel>
+        <Tittel>Dette pleier å inngå</Tittel>
         <Liste>
           {estimat.inkludert.map((punkt) => (
             <li key={punkt}>
@@ -150,33 +127,21 @@ export default function Estimat({
         </Bolk>
       )}
 
-      {/* Totalen over tre år. Det eneste tallet som kan måles mot et
-          abonnement, og det er her vi vinner. */}
-      {estimat.treAr !== null && (
-        <Drift>
-          <span>Å eie siden i tre år</span>
-          <strong>
-            {estimat.fraPris && <Fradel>fra </Fradel>}
-            <Belop verdi={estimat.treAr} animert /> kr
-          </strong>
-        </Drift>
-      )}
+      {/* Bygget pluss tre års drift – det ærligste tallet for hva siden
+          faktisk koster å ha. */}
+      <Drift>
+        <span>Å eie siden i tre år</span>
+        <strong>
+          <Ramme verdi={estimat.treAr} animert /> kr
+        </strong>
+      </Drift>
 
       <Send type="button" onClick={onSend}>
-        Få dette som fast pris
+        Ta en prat om dette
         <Icon navn="pilHoyre" storrelse={16} tykkelse={2} />
       </Send>
 
-      <Note>
-        {estimat.etterAvtale
-          ? 'Jobber av denne størrelsen avtaler vi én og én, så du får et skriftlig tilbud med fast pris i stedet for et anslag herfra.'
-          : estimat.fraPris
-          ? 'Verktøy skreddersys, så både engangssummen og månedsprisen er fra-beløp. Det nøyaktige tallet avtaler vi når vi vet hva du trenger – og da står det skriftlig.'
-          : betalte.length > 0
-            ? 'Estimat, ikke tilbud. Du får prisen skriftlig før vi begynner, og da står den.'
-            : 'Du får prisen skriftlig før vi begynner, og den står selv om jobben tar lengre tid.'}{' '}
-        Alle beløp er eks. mva.
-      </Note>
+      <Note>Et anslag, ikke et tilbud. Ingenting sendes før du selv trykker send. Alle beløp er eks. mva.</Note>
     </Flate>
   )
 }
@@ -319,7 +284,9 @@ const Tall = styled.p`
 
   > strong {
     font-family: ${({ theme }) => theme.fonts.mono};
-    font-size: clamp(2.7rem, 5vw, 3.8rem);
+    /* Mindre enn da det sto ett tall her: et spenn er dobbelt så langt, og
+       skal fortsatt holde seg på én linje i spalten. */
+    font-size: clamp(1.9rem, 3.2vw, 2.7rem);
     font-weight: 600;
     line-height: 1;
     letter-spacing: -0.045em;
@@ -335,18 +302,6 @@ const Tall = styled.p`
   }
 `
 
-/**
- * «fra» foran beløpet.
- *
- * Det står inntil tallet og i samme grunnlinje, ikke som en fotnote – et
- * forbehold man må lete etter er ikke et forbehold.
- */
-const Fra = styled.span`
-  font-size: 1.1rem;
-  font-weight: 550;
-  letter-spacing: -0.01em;
-  color: ${({ theme }) => theme.colors.inkInvertedMuted};
-`
 
 const Fradel = styled.span`
   font-family: ${({ theme }) => theme.fonts.body};
@@ -354,15 +309,6 @@ const Fradel = styled.span`
   color: ${({ theme }) => theme.colors.inkInvertedMuted};
 `
 
-/** Tallets plass når det ikke finnes et tall. Samme grad, så kortet ikke hopper. */
-const Avtale = styled.p`
-  margin: 0;
-  font-size: clamp(2rem, 3.4vw, 2.6rem);
-  font-weight: 600;
-  line-height: 1.05;
-  letter-spacing: -0.04em;
-  color: ${({ theme }) => theme.colors.accentLight};
-`
 
 const Under = styled.p`
   margin: 0.5rem 0 0;
@@ -416,7 +362,7 @@ const Fakta = styled.ul`
 /**
  * Forbeholdet om tid.
  *
- * Det står her, like under «rask levering», og ikke med liten skrift nederst.
+ * Det står midt på kortet, og ikke med liten skrift nederst.
  * En side som selger fast pris har ikke råd til å gjemme det ene stedet den
  * faktisk tar forbehold – da mister resten av kortet troverdighet.
  */

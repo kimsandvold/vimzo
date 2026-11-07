@@ -27,11 +27,11 @@ import Avslutt from '../../hjem/Avslutt'
  */
 export default function ForsideSide() {
   useSEO({
-    title: 'Vimzo – se hva nettsiden din koster, før du bestiller',
+    title: 'Vimzo – nettsider laget for din bedrift, med åpne priser',
     description:
-      'Fire spørsmål, så ser du prisen og hva som inngår. Vi lager resten: domene, tekst, ' +
-      'bilder og publisering. Like god på mobil, nettbrett og PC. Fra 14 900 kr, ' +
-      'deretter 349 kr/mnd.',
+      'Se omtrent hva nettsiden din vil koste før du snakker med noen. Vi lager resten – ' +
+      'domene, tekst, bilder og publisering – og du får fast pris skriftlig etter en prat. ' +
+      'Håndlaget i Lillehammer.',
     jsonLd: [organisasjon(), nettsted(), faqLd(faq.slice(0, 6))],
   })
 

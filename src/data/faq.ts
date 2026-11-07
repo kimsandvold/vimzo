@@ -1,3 +1,5 @@
+import { AVDRAGSPASLAG, domenepris, drift, formaterPris, formaterRamme, pakker, tillegg, timepris } from './pakker'
+
 /**
  * Spørsmål og svar. Dette er den enkeltseksjonen som gir mest igjen for
  * AI-synlighet: svarene publiseres både som lesbar tekst og som `FAQPage` i
@@ -19,30 +21,30 @@ export const faq: readonly Sporsmal[] = [
     tema: 'pris',
     sporsmal: 'Hva koster en nettside hos Vimzo?',
     svar:
-      'Fra 14 900 kroner eks. mva. for opptil tre sider, og 29 900 kroner for en bedriftsside ' +
-      'med opptil åtte sider. Større jobber avtaler vi én og én, så der får du pris etter en ' +
-      'prat. Du kan dele beløpet over tolv måneder – da er det 0 kroner i oppstart, og det ' +
-      'starter på 1 290 kroner i måneden. Prisen avtales skriftlig før vi begynner, og den ' +
-      'endrer seg ikke underveis.',
+      `En liten side på én til tre sider lander typisk på ${formaterRamme(pakker[0].pris)} ` +
+      `kroner eks. mva., og en bedriftsside på fire til åtte sider på ${formaterRamme(pakker[1].pris)}. ` +
+      `Sider med kalkulator, booking eller andre verktøy starter på ${formaterPris(pakker[2].pris.fra)}. ` +
+      'Hver side lages for én bedrift, så den endelige prisen avtaler vi etter en prat – ' +
+      'skriftlig, og den endrer seg ikke underveis. Beløpet kan deles over tolv måneder.',
   },
   {
     tema: 'pris',
     sporsmal: 'Kommer det løpende kostnader i tillegg?',
     svar:
-      'Drift koster 449 kroner i måneden – én pris uansett hva siden gjør. Den dekker at siden ' +
-      'er oppe, sikkerhetskopi hver dag, fornyelse av domenet og småendringer underveis, og ' +
-      'den dekker også databasen når siden tar imot bestillinger eller saker fra kundene dine. ' +
-      'Første års domene er inkludert i prisen; etter det koster det rundt 169 kroner i året. ' +
-      'Det finnes ingen lisenser eller tilleggsprogrammer å betale for.',
+      `Drift koster ${drift.pris} kroner i måneden – én pris uansett hva siden gjør. Den dekker ` +
+      'at siden er oppe, sikkerhetskopi hver dag, fornyelse av domenet og småendringer ' +
+      'underveis. Den er lav fordi det er lite å drifte: siden er ferdige filer uten database ' +
+      'eller tillegg som må oppdateres. Første års domene er inkludert; etter det koster det ' +
+      `rundt ${domenepris} kroner i året. Det finnes ingen lisenser å betale for.`,
   },
   {
     tema: 'prosess',
     sporsmal: 'Hvor lang tid tar det å få siden på nett?',
     svar:
-      'To uker for en Start-side, tre uker for en bedriftsside og fem uker når innhold ' +
-      'skal produseres. Tiden regnes fra du har godkjent tilbudet. Det som oftest ' +
-      'forsinker et prosjekt er bilder og godkjenning av tekst, så vi avtaler frister for ' +
-      'begge deler i første møte.',
+      'Typisk to til tre uker for en liten side, og tre til fem uker for en bedriftsside. ' +
+      'Den nøyaktige leveringsdatoen står i tilbudet, og tiden regnes fra du har godkjent ' +
+      'det. Det som oftest forsinker et prosjekt er bilder og godkjenning av tekst, så vi ' +
+      'avtaler frister for begge deler i første møte.',
   },
   {
     tema: 'prosess',
@@ -64,18 +66,19 @@ export const faq: readonly Sporsmal[] = [
     tema: 'pris',
     sporsmal: 'Kan jeg dele opp betalingen?',
     svar:
-      'Ja. Alle pakkene kan deles over tolv måneder, fra 1 290 kroner i måneden. Det er ingen ' +
-      'renter og ingen kredittsjekk, men totalsummen blir litt høyere enn om du betaler alt på ' +
-      'én gang. Begge tallene står på prissiden, så du ser nøyaktig hva forskjellen er.',
+      'Ja. Beløpet kan deles over tolv måneder, med 0 kroner i oppstart. Det er ingen renter ' +
+      `og ingen kredittsjekk; påslaget er ${Math.round(AVDRAGSPASLAG * 100)} %, og det står i ` +
+      'tilbudet, så du ser nøyaktig hva forskjellen er.',
   },
   {
     tema: 'teknisk',
     sporsmal: 'Kan dere lage en priskalkulator eller et bookingskjema?',
     svar:
-      'Ja. Vi bygger regneverktøy rett inn i siden fra 4 900 kroner – priskalkulator, ' +
-      'tilbudsskjema i flere steg, eller booking med bekreftelse på e-post. ' +
-      'Det ligger i din egen side, så du slipper månedsavgift til en tredjepart. Opplysninger ' +
-      'kundene dine sender inn lagres i Europa.',
+      `Ja. Vi bygger regneverktøy for det du selger, fra ${formaterPris(tillegg('Regneverktøy eller kalkulator').pris)} ` +
+      'kroner – priskalkulator, tilbudsskjema i flere steg, eller booking med bekreftelse ' +
+      'på e-post. Verktøyet ligger i din egen side, uten lisens eller abonnement på selve ' +
+      'verktøyet. Hva det koster avhenger av hva det skal regne ut, så prisen setter vi ' +
+      'etter en prat.',
   },
   {
     tema: 'prosess',
@@ -108,10 +111,10 @@ export const faq: readonly Sporsmal[] = [
     sporsmal: 'Hva koster det å endre noe etterpå?',
     svar:
       'Småendringer koster ingenting – nytt telefonnummer, nye åpningstider, en pris eller en ' +
-      'setning. Du sender en e-post, vi retter det, og det inngår i driften. Skal du ha noe ' +
-      'nytt, får du fast pris før vi gjør det: en ny side koster 2 900 kroner, en fagartikkel ' +
-      '2 400. Timepris på 1 150 bruker vi bare når ingenting annet passer, og du får alltid et ' +
-      'anslag først. Vi oppdaterer også siden av oss selv når noe endrer seg hos deg.',
+      'setning. Si fra, så retter vi det, og det inngår i driften. Skal du ha noe nytt, får ' +
+      `du fast pris før vi gjør det: en ny side fra ${formaterPris(tillegg('Ekstra side').pris)} kroner, ` +
+      `en fagartikkel ${formaterPris(tillegg('Fagartikkel').pris)}. Timepris på ${formaterPris(timepris)} ` +
+      'bruker vi bare når ingenting annet passer, og du får alltid et anslag først.',
   },
   {
     tema: 'prosess',
@@ -119,9 +122,9 @@ export const faq: readonly Sporsmal[] = [
     svar:
       'Fordi det sjelden gjør siden bedre, og alltid gjør den dyrere. Å skrive innhold som ' +
       'både leser godt og rangerer er et fag, og en nettside eieren skal fylle selv mellom ' +
-      'alt annet, forfaller nesten alltid. Derfor skriver og oppdaterer vi innholdet – du ' +
-      'betaler bare for timene som faktisk brukes, i stedet for lisens og vedlikehold hver ' +
-      'måned for et system du bruker to ganger i året. Siden blir også raskere og tryggere ' +
+      'alt annet, forfaller nesten alltid. Derfor skriver og oppdaterer vi innholdet – ' +
+      'småendringer inngår i driften, i stedet for lisens og vedlikehold hver måned for et ' +
+      'system du bruker to ganger i året. Siden blir også raskere og tryggere ' +
       'av å være rene filer uten innlogging.',
   },
   {
@@ -129,7 +132,7 @@ export const faq: readonly Sporsmal[] = [
     sporsmal: 'Hva betyr det at nettsiden er headless?',
     svar:
       'At innhold og presentasjon er skilt fra hverandre. Selve sidene leveres som ferdig ' +
-      'HTML fra et globalt CDN, mens de få feltene du kan endre selv – kontaktinfo, ' +
+      'HTML, mens de få feltene du kan endre selv – kontaktinfo, ' +
       'åpningstider, priser – ligger i en database (Firebase). Siden henter dem når den ' +
       'vises, og den forhåndsrendrede HTML-en inneholder alltid siste kjente verdi. Dermed ' +
       'ser både Google og AI-assistenter riktig innhold selv uten å kjøre JavaScript, og du ' +

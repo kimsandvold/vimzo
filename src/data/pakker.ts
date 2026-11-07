@@ -1,52 +1,57 @@
 /**
- * Prisene. Dette er sidens viktigste innhold.
+ * Prisene – som anslag, ikke som prisliste.
  *
- * To ting styrer hvordan de er satt opp. Det ene er at en konkret pris er det
- * eneste de fleste leter etter – og det eneste en AI-assistent kan sitere.
- * Det andre er at et femsifret beløp skremmer en liten bedrift, selv når det
- * er riktig pris. Derfor oppgis alt både som månedsbeløp og som engangssum,
- * med differansen skrevet rett ut. Ingen skjulte påslag, ingen «fra*».
+ * Hver nettside lages for én bedrift, og den endelige prisen avhenger av hvor
+ * mye tekst som skal skrives, om vi må ut og ta bilder, og hva siden skal gjøre.
+ * Derfor oppgis typiske prosjekter med et spenn, ikke et eksakt tall. Spennet
+ * er ærlig: det er der de fleste lander. Den endelige prisen avtales etter en
+ * prat, skriftlig – og da står den.
  *
- * TODO: juster beløpene til det du faktisk vil ta. Alt annet på siden –
- * forsiden, prissiden, kontaktskjemaet, strukturerte data og llms.txt –
- * leser herfra.
+ * Nivået er satt bevisst: under det byråene tar, men ikke på bunnen. Erfaring
+ * og håndlaget arbeid skal ikke selges som en hyllevare, og vi skal ikke
+ * presse prisene for andre seriøse aktører.
+ *
+ * Alt annet på siden – forsiden, prissiden, tjenestesiden, kontaktskjemaet,
+ * strukturerte data og llms.txt – leser herfra.
  *
  * Alle priser er i NOK og oppgitt eks. mva.
  */
 
+/** Et prisspenn. `til: null` betyr «fra»: jobben har ingen naturlig øvre grense. */
+export interface Prisramme {
+  fra: number
+  til: number | null
+}
+
 export interface Pakke {
   id: string
   navn: string
-  /** Én linje: hvem pakken er for. Skrevet som man snakker. */
+  /** Én linje: hvem dette typisk passer for. Skrevet som man snakker. */
   for: string
-  /**
-   * Samlet pris, eller `null` når omfanget må avtales.
-   *
-   * `null` er ikke en snikende «ring oss for pris». Det er en grense: de
-   * største jobbene tar titalls timer, og de skal avtales én og én – ikke
-   * bestilles fra en prisliste en fredag kveld.
-   */
-  pris: number | null
-  /** Månedsbeløp ved deling over 12 måneder. `null` følger `pris`. */
-  manedspris: number | null
-  /** Antall sider som inngår, formulert for mennesker. */
+  /** Hvor de fleste lander. Den endelige prisen avtales etter en prat. */
+  pris: Prisramme
+  /** Antall sider, formulert for mennesker. */
   omfang: string
   punkter: readonly string[]
-  /** Nøyaktig én pakke bør være fremhevet. */
-  fremhevet?: boolean
+  /** Det som oftest flytter prisen innenfor spennet. */
+  drivere: readonly string[]
 }
 
-/** Antall måneder delbetalingen går over. */
 export const ANTALL_AVDRAG = 12
+
+/**
+ * Påslaget når beløpet deles over tolv avdrag. Står åpent på prissiden –
+ * en side som selger tillit har ikke råd til liten skrift.
+ */
+export const AVDRAGSPASLAG = 0.04
 
 export const pakker: readonly Pakke[] = [
   {
     id: 'start',
     navn: 'Start',
-    for: 'For deg som bare må finnes på nett, og helst i går.',
-    pris: 14900,
-    manedspris: 1290,
-    omfang: 'Opptil 3 sider',
+    for: 'For deg som skal være lett å finne og lett å ringe – en håndverker, en frisør, en rådgiver.',
+    pris: { fra: 20000, til: 30000 },
+    omfang: '1–3 sider',
     punkter: [
       'Domene i ditt navn',
       'Alle tekster skrevet av oss',
@@ -55,15 +60,14 @@ export const pakker: readonly Pakke[] = [
       'Kontaktskjema til e-posten din',
       'Synlig på Google og Google Maps',
     ],
+    drivere: ['Hvor mye tekst som skal skrives', 'Om det finnes bilder fra før'],
   },
   {
     id: 'bedrift',
     navn: 'Bedrift',
     for: 'For bedriften som skal selge tjenestene sine, ikke bare vises fram.',
-    pris: 29900,
-    manedspris: 2590,
-    omfang: 'Opptil 8 sider',
-    fremhevet: true,
+    pris: { fra: 35000, til: 50000 },
+    omfang: '4–8 sider',
     punkter: [
       'Alt i Start',
       'Egen side per tjeneste',
@@ -71,14 +75,14 @@ export const pakker: readonly Pakke[] = [
       'E-post på eget domene',
       'Synlig i AI-assistenter',
     ],
+    drivere: ['Antall tjenester og steder', 'Om en gammel side skal flyttes, med e-post og lenker'],
   },
   {
     id: 'vekst',
     navn: 'Vekst',
-    for: 'For deg som vil at nettsiden skal skaffe kunder, ikke bare stå der.',
-    pris: null,
-    manedspris: null,
-    omfang: 'Omfang etter avtale',
+    for: 'For deg som vil at nettsiden skal gjøre en jobb – regne ut priser, ta imot bestillinger.',
+    pris: { fra: 60000, til: null },
+    omfang: 'Etter behov',
     punkter: [
       'Alt i Bedrift',
       'Priskalkulator eller booking',
@@ -86,8 +90,29 @@ export const pakker: readonly Pakke[] = [
       'Seks fagartikler',
       'Månedsrapport i tre måneder',
     ],
+    drivere: ['Hva verktøyet skal regne ut eller ta imot', 'Innlogging, betaling eller koblinger til andre systemer'],
   },
 ] as const
+
+/** Månedsbeløpet når et beløp deles over tolv avdrag, rundet til nærmeste tier. */
+export function avdrag(belop: number): number {
+  return Math.round((belop * (1 + AVDRAGSPASLAG)) / ANTALL_AVDRAG / 10) * 10
+}
+
+/** Et spenn som tekst: «35 000–50 000» eller «fra 60 000». Uten «kr». */
+export function formaterRamme(r: Prisramme): string {
+  return r.til === null ? `fra ${formaterPris(r.fra)}` : `${formaterPris(r.fra)}–${formaterPris(r.til)}`
+}
+
+/** Legg et fast beløp til et spenn. */
+export function leggTil(r: Prisramme, belop: number): Prisramme {
+  return { fra: r.fra + belop, til: r.til === null ? null : r.til + belop }
+}
+
+/** Spennet delt over tolv avdrag. */
+export function avdragRamme(r: Prisramme): Prisramme {
+  return { fra: avdrag(r.fra), til: r.til === null ? null : avdrag(r.til) }
+}
 
 /**
  * Timepris for endringer og arbeid utenfor avtalt omfang.
@@ -103,29 +128,34 @@ export const pakker: readonly Pakke[] = [
  * småendringer i driften, det forutsigbare har fast pris, og timer bruker vi
  * bare når ingenting annet passer.
  */
-export const timepris = 1150
+export const timepris = 1250
 
 export interface Tillegg {
   navn: string
   pris: number
-  /** «fra 6 900 kr» når omfanget varierer. */
+  /** «fra 7 900 kr» når omfanget varierer. */
   fraPris?: boolean
   enhet?: string
   beskrivelse: string
 }
 
+/**
+ * Tilleggene. Satt etter hva jobben faktisk tar, ikke for å se billig ut:
+ * en skreddersydd kalkulator til 4 900 ville vært dumping, og det ville
+ * fortalt kunden at det er en ferdigmal vi bare skrur på.
+ */
 export const tilleggstjenester: readonly Tillegg[] = [
   {
     navn: 'Regneverktøy eller kalkulator',
-    pris: 4900,
+    pris: 9900,
     fraPris: true,
     beskrivelse:
-      'En priskalkulator, en bookingløsning eller et tilbudsskjema i flere steg, bygget inn i ' +
-      'siden. Ingen månedsavgift til en tredjepart, og dataene lagres i Europa.',
+      'En priskalkulator, en bookingløsning eller et tilbudsskjema i flere steg, bygget for det ' +
+      'du selger og lagt rett inn i siden. Ingen lisens eller abonnement på selve verktøyet.',
   },
   {
     navn: 'Logo',
-    pris: 2900,
+    pris: 4900,
     beskrivelse:
       'En ny logo tegnet for bedriften din, levert i alle filformatene du trenger – til nett, ' +
       'til trykk, til bil og skilt. Du får tre forslag og velger ett. Vil du prøve deg fram ' +
@@ -133,7 +163,7 @@ export const tilleggstjenester: readonly Tillegg[] = [
   },
   {
     navn: 'Visuell profil',
-    pris: 5900,
+    pris: 9900,
     beskrivelse:
       'Logo, fargepalett, skrifttyper og et kort profilark som viser hvordan de brukes. Da ser ' +
       'nettsiden, fakturaen, arbeidstøyet og Facebook-siden ut som samme bedrift. Inkluderer ' +
@@ -141,7 +171,7 @@ export const tilleggstjenester: readonly Tillegg[] = [
   },
   {
     navn: 'Foto og dronevideo',
-    pris: 6900,
+    pris: 7900,
     fraPris: true,
     beskrivelse:
       'Halv dag hos deg: bilder av lokaler, produkter og folk, dronefoto av bygg og uteområder, ' +
@@ -149,7 +179,7 @@ export const tilleggstjenester: readonly Tillegg[] = [
   },
   {
     navn: '3D-visning og designverktøy',
-    pris: 12900,
+    pris: 24900,
     fraPris: true,
     beskrivelse:
       'Produktet ditt bygget i 3D i nettleseren: kunden snur på det, velger mål og materiale, ' +
@@ -159,13 +189,13 @@ export const tilleggstjenester: readonly Tillegg[] = [
   },
   {
     navn: 'Ekstra side',
-    pris: 2900,
+    pris: 3900,
     fraPris: true,
-    beskrivelse: 'En ny tjeneste-, produkt- eller stedsside utover pakken, ferdig skrevet av oss.',
+    beskrivelse: 'En ny tjeneste-, produkt- eller stedsside utover det som er avtalt, ferdig skrevet av oss.',
   },
   {
     navn: 'Fagartikkel',
-    pris: 2400,
+    pris: 3400,
     enhet: 'per artikkel',
     beskrivelse:
       'En artikkel på 800–1 200 ord som svarer på noe kundene dine faktisk googler, skrevet ' +
@@ -182,6 +212,13 @@ export const tilleggstjenester: readonly Tillegg[] = [
   },
 ] as const
 
+/** Slå opp et tillegg på navn. Kaster hvis det ikke finnes – en skrivefeil skal stoppe bygget. */
+export function tillegg(navn: string): Tillegg {
+  const funnet = tilleggstjenester.find((t) => t.navn === navn)
+  if (!funnet) throw new Error(`Fant ikke tillegget «${navn}» i pakker.ts`)
+  return funnet
+}
+
 export interface Driftsniva {
   id: string
   navn: string
@@ -196,13 +233,9 @@ export interface Driftsniva {
 /**
  * Drift. Én pris, uansett hva siden gjør.
  *
- * Det var to nivåer før, der det dyre dekket sider med database. Det er
- * fjernet med vilje. Databasen deles av alle kundene våre og koster i
- * praksis ingenting ekstra per side, så et eget nivå priset en kostnad som
- * knapt fantes – og ga kunden et valg han ikke hadde grunnlag for å ta.
- *
- * Én pris er dessuten én ting å forklare, én ting å fakturere og én ting å
- * holde styr på. Det er verdt mer enn de kronene et ekstra nivå henter inn.
+ * Den er lav fordi det er lite å drifte: ferdige filer på et vanlig
+ * webhotell, ingen database å oppdatere, ingen tillegg som må lappes. Det er
+ * ikke en rabatt – det er hva det faktisk koster, pluss tiden vår.
  */
 export const driftsnivaer: readonly Driftsniva[] = [
   {
@@ -215,9 +248,7 @@ export const driftsnivaer: readonly Driftsniva[] = [
     punkter: [
       'Vi passer på at siden er oppe, hele døgnet',
       'Sikkerhetskopi hver dag',
-      'Småendringer inngår, inntil 20 minutter i måneden',
-      'Database og sikkerhetskopi også når siden tar imot kundedata',
-      'Kundedataene lagres i Europa, aldri lenger unna',
+      'Småendringer inngår – en pris, en setning, nye åpningstider',
       'Hjelp med domene og e-post når du trenger det',
       'Ingen bindingstid',
     ],
@@ -233,67 +264,36 @@ export const domenepris = 169
 /** Hvor mange måneder vi regner «over tid» på. Tre år er en nettsides levetid. */
 export const SAMMENLIGNINGSPERIODE = 36
 
-/**
- * Hva det koster å eie siden i et gitt antall måneder: bygget én gang,
- * pluss driften som løper.
- *
- * Dette tallet finnes fordi månedsprisen alene lyver begge veier. Vårt
- * avdrag på 1 290 ser dyrt ut ved siden av et abonnement til 699 – helt til
- * man ser at avdraget stopper etter tolv måneder og abonnementet aldri gjør
- * det. Da er det bare totalen som forteller sannheten.
- */
-export function totaltOver(pakke: Pakke, maneder: number, driftPris: number = drift.pris): number | null {
-  return pakke.pris === null ? null : pakke.pris + driftPris * maneder
+/** Hva det koster å eie siden i et gitt antall måneder: bygget, pluss driften som løper. */
+export function eieOver(r: Prisramme, maneder: number = SAMMENLIGNINGSPERIODE): Prisramme {
+  return leggTil(r, drift.pris * maneder)
 }
-
-/**
- * Hva et nettside-abonnement typisk koster i Norge, per måned eks. mva.
- *
- * Spennet er hentet fra oppgitte priser hos norske abonnementsleverandører
- * i november 2026. Vi navngir ingen – tallene endrer seg, og en påstand om
- * en konkurrent må kunne etterprøves den dagen noen sjekker. Spennet kan
- * det. Felles for alle er at beløpet løper så lenge du er kunde, og at
- * siden som regel slutter å finnes den dagen du slutter å betale.
- */
-export const markedsabonnement = {
-  lav: 699,
-  hoy: 1490,
-  hentet: 'november 2026',
-} as const
 
 export const prisnotat =
-  'Alle priser er eks. mva. Du får et skriftlig tilbud med fast pris før vi begynner, og den ' +
-  'står selv om arbeidet tar lengre tid enn vi trodde. Første års domene er inkludert; etter ' +
-  'det koster det rundt 169 kroner i året, som vi fornyer for deg. Driften koster 449 ' +
-  'kroner i måneden uansett hva siden gjør – også når den tar imot bestillinger og trenger ' +
-  'en database bak seg.'
-
-/**
- * Delbetalingen koster litt mer totalt. Det står åpent – en side som selger
- * trygghet har ikke råd til små skrift.
- */
-export function totaltVedDeling(pakke: Pakke): number | null {
-  return pakke.manedspris === null ? null : pakke.manedspris * ANTALL_AVDRAG
-}
+  'Spennene viser hvor de fleste prosjektene lander. Den endelige prisen avtaler vi etter en ' +
+  'prat, og du får den skriftlig før vi begynner. Da står den – også om arbeidet tar lengre ' +
+  `tid enn vi trodde. Første års domene er inkludert; etter det koster det rundt ${domenepris} ` +
+  `kroner i året. Driften er ${drift.pris} kroner i måneden uansett hva siden gjør. ` +
+  'Alle priser er eks. mva.'
 
 /**
  * Hva det koster å endre noe etter lansering.
  *
- * To linjer, med vilje. Kunden skal vite hva som er gratis å spørre om uten
- * å måtte lese en prisliste først – terskelen for å sende den e-posten er
- * det eneste som avgjør om siden holder seg oppdatert.
+ * Kunden skal vite hva som er gratis å spørre om uten å måtte lese en
+ * prisliste først – terskelen for å be om en endring er det eneste som
+ * avgjør om siden holder seg oppdatert.
  */
 export const endringsnotat =
-  'Småendringer inngår i driften: telefon, åpningstider, en pris eller en setning. Du sender ' +
-  'en e-post, vi retter det. Skal du ha noe nytt, får du fast pris før vi gjør det – en ny ' +
-  `side koster 2 900 kroner, en fagartikkel 2 400. Timepris på ${timepris} bruker vi bare når ` +
-  'ingenting annet passer, og da får du et anslag først.'
+  'Småendringer inngår i driften: telefon, åpningstider, en pris eller en setning. Si fra, så ' +
+  'retter vi det. Skal du ha noe nytt, får du fast pris før vi gjør det – en ny side fra ' +
+  `${formaterPris(tillegg('Ekstra side').pris)} kroner, en fagartikkel ` +
+  `${formaterPris(tillegg('Fagartikkel').pris)}. Timepris på ${formaterPris(timepris)} bruker vi ` +
+  'bare når ingenting annet passer, og da får du et anslag først.'
 
 export const delbetalingsnotat =
-  `Deler du opp, er det 0 kroner i oppstart: du betaler ${ANTALL_AVDRAG} avdrag og ender litt ` +
-  'høyere enn engangsprisen. Begge tallene står på kortene, så du ser nøyaktig hva forskjellen ' +
-  'er. Ingen renter, ingen kredittsjekk, og ingenting å binde seg til etter de tolv månedene – ' +
-  'da er siden betalt, og det eneste som løper videre er driften.'
+  `Du kan dele beløpet over ${ANTALL_AVDRAG} måneder, med 0 kroner i oppstart. Påslaget er ` +
+  `${Math.round(AVDRAGSPASLAG * 100)} %, og det står i tilbudet. Ingen renter, ingen ` +
+  'kredittsjekk – og etter tolv måneder er siden betalt. Det eneste som løper videre er driften.'
 
 /**
  * «14 900» med hardt mellomrom som tusenskille, for ren tekst (skjemafelter,

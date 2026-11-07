@@ -16,25 +16,43 @@ import {
   prisnotat,
   delbetalingsnotat,
   endringsnotat,
-  markedsabonnement,
-  totaltOver,
-  SAMMENLIGNINGSPERIODE,
+  formaterRamme,
 } from '../../../data/pakker'
 import { faqFor } from '../../../data/faq'
 
 /**
- * Prissiden. Den finnes først og fremst fordi den sparer alle for tid – og
- * fordi en konkret pris er det eneste en AI-assistent kan gjengi når noen
- * spør hva en nettside koster.
+ * Hva som oftest flytter prisen, uansett prosjekt.
+ *
+ * Dette er det tydeligste tegnet på at siden er skreddersøm og ikke en
+ * hyllevare – og det er samtidig nyttig: kunden ser hva han selv kan gjøre
+ * for å holde prisen nede. Står også som tekst AI-assistenter kan sitere når
+ * noen spør hvorfor nettsider koster så forskjellig.
+ */
+const PRISDRIVERE = [
+  { tittel: 'Hvor mye som skal skrives', tekst: 'Vi skriver alle tekstene. Tre sider om én tjeneste er en annen jobb enn åtte sider om fem.' },
+  { tittel: 'Bilder', tekst: 'Har du gode bilder, bruker vi dem. Må vi ut og fotografere – med drone eller uten – kommer det i tillegg.' },
+  { tittel: 'Hva siden skal gjøre', tekst: 'En side som informerer er én ting. En som regner ut priser, tar imot bestillinger eller har innlogging, er en annen.' },
+  { tittel: 'En gammel side som skal flyttes', tekst: 'Eksisterende domene, e-post og lenker som må tas vare på, krever litt ekstra arbeid – men det er arbeid som må gjøres riktig.' },
+] as const
+
+/**
+ * Prissiden.
+ *
+ * Den viser typiske prosjekter med spenn, ikke en prisliste. Prisene står
+ * åpent – det sparer alle for tid, og det er det eneste en AI-assistent kan
+ * gjengi – men den endelige prisen avtales etter en prat, og det sier siden
+ * rett ut i stedet for å late som om man bestiller med to klikk.
  */
 export default function PriserSide() {
   const sporsmal = faqFor('pris', 'prosess')
+  const [start, bedrift] = pakker
 
   useSEO({
-    title: 'Priser – nettside fra 1 290 kr/mnd | Vimzo',
+    title: 'Priser – hva en nettside koster for en liten bedrift | Vimzo',
     description:
-      'Fast pris, alt inkludert – også domenet. Fra 1 290 kr/mnd eller 14 900 kr samlet. ' +
-      'Bedriftsside 29 900 kr, større jobber etter avtale. Drift 449 kr/mnd. Ingen skjulte kostnader.',
+      `En liten side lander typisk på ${formaterRamme(start.pris)} kr, en bedriftsside på ` +
+      `${formaterRamme(bedrift.pris)} kr. Endelig pris avtales etter en prat, skriftlig. ` +
+      `Drift ${drift.pris} kr/mnd, eks. mva.`,
     jsonLd: [brodsmuler([{ navn: 'Priser', sti: '/priser' }]), organisasjon(), faqLd(sporsmal)],
   })
 
@@ -44,7 +62,7 @@ export default function PriserSide() {
         smuler={[{ navn: 'Priser' }]}
         stikkord="Priser"
         tittel="Hva en nettside koster hos oss"
-        ingress="Vi legger prisene åpent ut, og du kan dele beløpet over tolv måneder. Alt er inkludert – også domenet det første året. Tilbudet får du skriftlig før vi begynner, og prisen står."
+        ingress="Hver side lages for én bedrift, så den endelige prisen setter vi etter en prat. Her ser du hvor de fleste prosjektene lander – og hva som flytter tallet. Tilbudet får du skriftlig, og da står prisen."
       />
 
       <Seksjon $flate="surface" $tett>
@@ -62,55 +80,38 @@ export default function PriserSide() {
       <Seksjon $flate="paper" $tett>
         <Wrap>
           <Innsig>
-  <SeksjonsHode>
-    <Stikkord>Etter lansering</Stikkord>
-    <Tittel>Det er her de fleste leverandører blir dyre</Tittel>
-    <Ingress>Én driftspris, uansett hva siden gjør. Databasen deles av alle kundene våre og koster i praksis ingenting ekstra per side, så vi tar ikke betalt for et nivå du ikke har grunnlag for å velge.</Ingress>
-  </SeksjonsHode>
-</Innsig>
+            <SeksjonsHode>
+              <Stikkord>Skreddersøm</Stikkord>
+              <Tittel>Hvorfor prisen blir din egen</Tittel>
+              <Ingress>
+                To bedrifter i samme bransje trenger sjelden den samme siden. Dette er det som oftest
+                avgjør hvor i spennet du lander.
+              </Ingress>
+            </SeksjonsHode>
+          </Innsig>
+          <Drivergitter>
+            {PRISDRIVERE.map((d) => (
+              <li key={d.tittel}>
+                <h3>{d.tittel}</h3>
+                <p>{d.tekst}</p>
+              </li>
+            ))}
+          </Drivergitter>
+        </Wrap>
+      </Seksjon>
 
-          {/* Regnestykket konkurrentene ikke viser.
-              Vårt avdrag stopper etter tolv måneder; et abonnement gjør aldri
-              det. Over tre år er det den forskjellen som avgjør, og den er
-              umulig å se på en månedspris alene. Tallene regnes ut fra
-              pakkene over, så de kan ikke bli stående feil. */}
-          <Innsig forsinkelse={80}>
-            <Regnestykke>
-              <h3>Hva siden koster å eie i tre år</h3>
-              <Sammenligning>
-                {pakker.map((p) => {
-                  const total = totaltOver(p, SAMMENLIGNINGSPERIODE)
-                  if (total === null) return null
-                  return (
-                    <li key={p.id}>
-                      <span className="navn">{p.navn}</span>
-                      <span className="belop">
-                        <Belop verdi={total} /> kr
-                      </span>
-                    </li>
-                  )
-                })}
-                <li className="andre">
-                  <span className="navn">
-                    Nettside-abonnement, {markedsabonnement.lav}–{markedsabonnement.hoy} kr/mnd
-                  </span>
-                  <span className="belop">
-                    <Belop verdi={markedsabonnement.lav * SAMMENLIGNINGSPERIODE} />–
-                    <Belop verdi={markedsabonnement.hoy * SAMMENLIGNINGSPERIODE} /> kr
-                  </span>
-                </li>
-              </Sammenligning>
-              <p>
-                Alt inkludert: bygget én gang, pluss {drift.pris} kroner i måneden i drift. Et
-                abonnement ser billigere ut i måneden, men beløpet løper så lenge du er kunde – og
-                slutter du å betale, slutter som regel siden å finnes. Hos oss er siden din fra
-                dag én, og etter tolv avdrag er den betalt.
-              </p>
-              <small>
-                Spennet er oppgitte månedspriser hos norske abonnementsleverandører, hentet{' '}
-                {markedsabonnement.hentet}. Alle beløp eks. mva.
-              </small>
-            </Regnestykke>
+      <Seksjon $flate="surface" $tett>
+        <Wrap>
+          <Innsig>
+            <SeksjonsHode>
+              <Stikkord>Etter lansering</Stikkord>
+              <Tittel>Lite å drifte, derfor lav driftspris</Tittel>
+              <Ingress>
+                Siden er ferdige filer – ingen database som må oppdateres, ingen tillegg som må lappes,
+                ingen servere å passe på. Det er derfor driften koster {drift.pris} kroner i måneden, og
+                derfor den sjelden går i stykker.
+              </Ingress>
+            </SeksjonsHode>
           </Innsig>
 
           <Toseksjon>
@@ -141,9 +142,9 @@ export default function PriserSide() {
 
             <Tilleggsliste>
               <h3>Tillegg</h3>
-              {/* Står før prislista, ikke etter. Den som leser «1 150 per time»
-                  uten å vite at småendringer er gratis, regner feil på hele
-                  avtalen – og tør ikke sende e-posten når noe må rettes. */}
+              {/* Står før prislista, ikke etter. Den som leser timeprisen uten
+                  å vite at småendringer inngår, regner feil på hele avtalen –
+                  og tør ikke si fra når noe må rettes. */}
               <Endringer>{endringsnotat}</Endringer>
               <dl>
                 {tilleggstjenester.map((t) => (
@@ -169,11 +170,11 @@ export default function PriserSide() {
         <Wrap>
           <Smal>
             <Innsig>
-  <SeksjonsHode>
-    <Stikkord>Spørsmål og svar</Stikkord>
-    <Tittel>Om pris, tid og det som kommer etterpå</Tittel>
-  </SeksjonsHode>
-</Innsig>
+              <SeksjonsHode>
+                <Stikkord>Spørsmål og svar</Stikkord>
+                <Tittel>Om pris, tid og det som kommer etterpå</Tittel>
+              </SeksjonsHode>
+            </Innsig>
             <Sporsmalsliste sporsmal={sporsmal} />
           </Smal>
         </Wrap>
@@ -181,11 +182,46 @@ export default function PriserSide() {
 
       <Avslutt
         tittel="Vil du vite hva akkurat din side vil koste?"
-        tekst="Fortell kort hva bedriften gjør, så får du et skriftlig tilbud med fast pris – vanligvis innen to virkedager."
+        tekst="Fortell kort hva bedriften gjør, så tar vi en prat. Etterpå får du et skriftlig tilbud med fast pris – vanligvis innen to virkedager."
       />
     </>
   )
 }
+
+/** Prisdriverne som enkle kort, i samme uttrykk som tjenestesiden. */
+const Drivergitter = styled.ul`
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  li {
+    padding: 1.6rem;
+    border: 1px solid ${({ theme }) => theme.colors.border};
+    border-radius: ${({ theme }) => theme.borderRadius.large};
+    background: ${({ theme }) => theme.colors.surface};
+  }
+
+  h3 {
+    margin: 0;
+    font-size: 1.1875rem;
+    font-weight: 650;
+    letter-spacing: -0.025em;
+  }
+
+  p {
+    margin: 0.6rem 0 0;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: ${({ theme }) => theme.colors.inkMuted};
+  }
+
+  @media (max-width: 800px) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+`
 
 const Gitter = styled.div`
   display: grid;
@@ -364,90 +400,7 @@ const Endringer = styled.p`
   color: ${({ theme }) => theme.colors.accentInk};
 `
 
-const Regnestykke = styled.div`
-  margin: 2.5rem 0 0;
-  padding: 1.75rem;
-  border-radius: ${({ theme }) => theme.borderRadius.xl};
-  background: ${({ theme }) => theme.colors.surface};
-  box-shadow: ${({ theme }) => theme.shadows.md};
 
-  h3 {
-    margin: 0 0 1.1rem;
-    font-size: ${({ theme }) => theme.fontSizes.xl};
-    font-weight: 600;
-    letter-spacing: -0.03em;
-  }
-
-  p {
-    margin: 1.1rem 0 0;
-    max-width: 68ch;
-    font-size: ${({ theme }) => theme.fontSizes.base};
-    line-height: 1.6;
-    color: ${({ theme }) => theme.colors.inkMuted};
-  }
-
-  small {
-    display: block;
-    margin-top: 0.9rem;
-    font-size: 0.75rem;
-    line-height: 1.5;
-    color: ${({ theme }) => theme.colors.inkSubtle};
-  }
-
-  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
-    padding: 1.25rem;
-  }
-`
-
-/**
- * Radene i regnestykket.
- *
- * Abonnementsraden står nederst og tonet ned, ikke fordi den er mindre
- * viktig, men fordi den er sammenligningsgrunnlaget – ikke et tilbud.
- */
-const Sammenligning = styled.ul`
-  margin: 0;
-  padding: 0;
-  list-style: none;
-
-  li {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 1rem;
-    padding: 0.7rem 0;
-    border-bottom: 1px solid ${({ theme }) => theme.colors.border};
-  }
-
-  li:last-child {
-    border-bottom: 0;
-  }
-
-  .navn {
-    font-size: ${({ theme }) => theme.fontSizes.base};
-    font-weight: 550;
-    letter-spacing: -0.01em;
-  }
-
-  .belop {
-    flex-shrink: 0;
-    font-family: ${({ theme }) => theme.fonts.mono};
-    font-size: ${({ theme }) => theme.fontSizes.base};
-    font-weight: 600;
-    letter-spacing: -0.03em;
-  }
-
-  li.andre {
-    margin-top: 0.4rem;
-    border-top: 1px solid ${({ theme }) => theme.colors.border};
-    color: ${({ theme }) => theme.colors.inkSubtle};
-
-    .navn,
-    .belop {
-      font-weight: 500;
-    }
-  }
-`
 
 const SeksjonsHode = styled.div`
   margin-bottom: clamp(2rem, 4vw, 3rem);

@@ -75,9 +75,9 @@ export default function OmSide() {
               </p>
               <p>
                 Så vi gjør det gammeldags og nytt på samme tid: håndkodet HTML, CSS og JavaScript,
-                bygget ferdig før noen besøker siden, lagt ut på et globalt CDN. Ingenting som
-                ruster, ingenting som må oppdateres, og ingenting som står mellom innholdet ditt og
-                den som leser det – enten det er et menneske eller en AI-assistent.
+                bygget ferdig før noen besøker siden og lagt ut som rene filer. Ingenting som ruster,
+                ingenting som må oppdateres, og ingenting som står mellom innholdet ditt og den som
+                leser det – enten det er et menneske eller en AI-assistent.
               </p>
 
               <h2>Hvordan vi jobber</h2>

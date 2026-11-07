@@ -1,16 +1,15 @@
 import { useId, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import styled, { css } from 'styled-components'
 import Icon from '../../shared/Icon'
 import Estimat from './Estimat'
+import Oppsummering from './Oppsummering'
 import { BRANSJER } from '../../../data/bransjer'
-import { formaterPris } from '../../../data/pakker'
+import { formaterPris, formaterRamme } from '../../../data/pakker'
 import { useDomenesjekk } from '../../../hooks/useDomenesjekk'
 import {
   BILDER,
   foreslaDomene,
   fotoInngar,
-  BRIEF_NOKKEL,
   LOGO,
   OMFANG,
   STARTSVAR,
@@ -25,10 +24,10 @@ const STEG = ['Bedrift', 'Omfang', 'Innhold', 'Verktøy'] as const
 /**
  * Kalkulatoren på forsiden.
  *
- * Den gjør to jobber på én gang. Kunden får et tall og en liste over hva som
- * inngår før han har snakket med et menneske – det er grunnen til å bli
- * værende. Og vi får et ferdig brief i stedet for «hei, hva koster en
- * nettside?», slik at første svar kan være et reelt tilbud.
+ * Den gjør to jobber på én gang. Kunden får et ærlig anslag og en liste over
+ * hva som pleier å inngå før han har snakket med et menneske – det er grunnen
+ * til å bli værende. Og vi får et ferdig brief i stedet for «hei, hva koster
+ * en nettside?», slik at samtalen kan handle om det som faktisk avgjør prisen.
  *
  * Fire steg, aldri flere, og estimatet står ved siden av hele veien. Ingen
  * trenger å fullføre for å få noe ut av det, og ingenting sendes noe sted før
@@ -43,7 +42,7 @@ export default function Kalkulator() {
   // Sjekker bare når kunden faktisk trenger et nytt. Eier han det alt,
   // ville «opptatt» vært et svar om hans eget domene.
   const domenestatus = useDomenesjekk(svar.domenevalg === 'trenger' ? svar.domene : '')
-  const naviger = useNavigate()
+  const [oppsummering, setOppsummering] = useState(false)
 
   const estimat = regnUt(svar)
   const sett = <K extends keyof Svar>(nokkel: K, verdi: Svar[K]) => setSvar((s) => ({ ...s, [nokkel]: verdi }))
@@ -55,15 +54,9 @@ export default function Kalkulator() {
     }))
   }
 
-  /** Legg briefet i sessionStorage og send kunden til skjemaet. */
+  /** Vis oppsummeringen. Den sender ingenting før kunden selv trykker send. */
   function send() {
-    try {
-      sessionStorage.setItem(BRIEF_NOKKEL, lagBrief(svar, estimat))
-    } catch {
-      // Privat nettlesing kan nekte. Da går kunden videre uten brief – det er
-      // bedre enn å stoppe ham på veien til kontaktskjemaet.
-    }
-    naviger('/kontakt')
+    setOppsummering(true)
   }
 
   return (
@@ -89,7 +82,7 @@ export default function Kalkulator() {
         <Lommesum aria-hidden="true">
           <span>{estimat.pakke.navn}</span>
           <strong>
-            {estimat.manedlig === null ? 'Etter avtale' : `${estimat.manedlig.toLocaleString('nb-NO')} kr/mnd`}
+            {formaterRamme(estimat.ramme)} kr
           </strong>
         </Lommesum>
 
@@ -344,7 +337,7 @@ export default function Kalkulator() {
             </Neste>
           ) : (
             <Neste type="button" onClick={send}>
-              Få dette som tilbud
+              Ta en prat om dette
               <Icon navn="pilHoyre" storrelse={16} tykkelse={2} />
             </Neste>
           )}
@@ -352,6 +345,14 @@ export default function Kalkulator() {
       </Panel>
 
       <Estimat estimat={estimat} svar={svar} onSend={send} />
+
+      <Oppsummering
+        apen={oppsummering}
+        onLukk={() => setOppsummering(false)}
+        svar={svar}
+        estimat={estimat}
+        brief={lagBrief(svar, estimat)}
+      />
     </Rute>
   )
 }
