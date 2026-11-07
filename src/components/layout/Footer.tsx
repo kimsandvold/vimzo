@@ -87,6 +87,9 @@ export default function Footer() {
                 <li>
                   <Link to="/personvern">Personvern</Link>
                 </li>
+                <li>
+                  <Link to="/min-side">Min side (for kunder)</Link>
+                </li>
               </ul>
             </Spalte>
 

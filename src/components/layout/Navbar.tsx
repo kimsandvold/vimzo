@@ -67,6 +67,12 @@ export default function Navbar() {
             </Lenker>
 
             <Handlinger>
+              {/* For kunder som allerede har et prosjekt. Diskret – den skal
+                  finnes av dem som leter, ikke konkurrere med «Ta en prat». */}
+              <Navlenke to="/min-side" $mork={overMork} className="min-side">
+                <Icon navn="person" storrelse={17} tykkelse={1.8} />
+                Min side
+              </Navlenke>
               <Knapp til="/kontakt" variant={overMork ? 'hvit' : 'aksent'}>
                 Ta en prat
               </Knapp>
@@ -98,6 +104,10 @@ export default function Navbar() {
         <Knapp til="/kontakt" variant="aksent" stor onClick={() => setApen(false)}>
           Ta en prat
         </Knapp>
+        <MinSideMobil to="/min-side" tabIndex={apen ? 0 : -1} onClick={() => setApen(false)}>
+          <Icon navn="person" storrelse={18} tykkelse={1.8} />
+          Min side – for kunder
+        </MinSideMobil>
       </Mobilmeny>
     </>
   )
@@ -162,6 +172,12 @@ const Navlenke = styled(NavLink)<{ $mork: boolean }>`
 
   &:hover {
     color: ${({ theme, $mork }) => ($mork ? theme.colors.inkInverted : theme.colors.ink)};
+  }
+
+  &.min-side {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
   }
 
   &.active {
@@ -283,4 +299,16 @@ const Mobillenke = styled(NavLink)`
       color: ${({ theme }) => theme.colors.accent};
     }
   }
+`
+
+const MinSideMobil = styled(NavLink)`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 1.25rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: ${({ theme }) => theme.colors.inkMuted};
+  text-decoration: none;
 `
