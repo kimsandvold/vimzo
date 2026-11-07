@@ -7,6 +7,7 @@ import Sidehode from '../../layout/Sidehode'
 import { firma } from '../../../data/firma'
 import { emailjsKlar } from '../../../lib/emailjs'
 import { firebaseKlar } from '../../../lib/firebase'
+import { analyseKlar, apneSamtykke } from '../../../lib/analytics'
 
 /**
  * Personvernerklæring.
@@ -20,7 +21,9 @@ export default function PersonvernSide() {
     title: 'Personvern – Vimzo',
     description:
       'Hvilke opplysninger vimzo.no samler inn, hvorfor, hvor lenge de lagres og hvilke ' +
-      'rettigheter du har. Nettstedet bruker ingen informasjonskapsler og ingen analyseverktøy.',
+      (analyseKlar
+        ? 'rettigheter du har. Statistikk med Google Analytics brukes bare hvis du samtykker.'
+        : 'rettigheter du har. Nettstedet bruker ingen informasjonskapsler og ingen analyseverktøy.'),
     jsonLd: [brodsmuler([{ navn: 'Personvern', sti: '/personvern' }])],
   })
 
@@ -30,7 +33,11 @@ export default function PersonvernSide() {
         smuler={[{ navn: 'Personvern' }]}
         stikkord="Personvern"
         tittel="Hva vi samler inn, og hva vi ikke gjør"
-        ingress="Kort versjon: nettstedet bruker ingen informasjonskapsler og ingen analyseverktøy. Det eneste vi får fra deg, er det du selv skriver i kontaktskjemaet."
+        ingress={
+          analyseKlar
+            ? 'Kort versjon: vi bruker Google Analytics for å se hvordan siden brukes – men bare hvis du sier ja. Ellers får vi bare det du selv skriver i kontaktskjemaet.'
+            : 'Kort versjon: nettstedet bruker ingen informasjonskapsler og ingen analyseverktøy. Det eneste vi får fra deg, er det du selv skriver i kontaktskjemaet.'
+        }
       />
 
       <Seksjon $flate="surface" $tett>
@@ -44,13 +51,37 @@ export default function PersonvernSide() {
               <Link to="/kontakt">kontaktskjemaet</Link>.
             </p>
 
-            <h2>Informasjonskapsler</h2>
-            <p>
-              Nettstedet setter ingen informasjonskapsler, og laster ingen script fra
-              tredjeparter. Det er derfor du ikke møter noen samtykkeboks her. Skulle vi senere ta
-              i bruk besøksstatistikk, vil det stå på denne siden før det tas i bruk — og vi vil
-              velge en løsning som ikke krever samtykke.
-            </p>
+            <h2>Informasjonskapsler og statistikk</h2>
+            {analyseKlar ? (
+              <>
+                <p>
+                  Vi bruker Google Analytics for å se hvilke sider som blir lest og hvordan folk
+                  finner fram – ikke hvem du er. Det setter informasjonskapsler, og derfor spør vi
+                  først. Sier du nei, eller svarer du ikke, lastes ingenting fra Google, og ingen
+                  informasjonskapsler settes.
+                </p>
+                <p>
+                  Sier du ja, sendes opplysninger om besøket – blant annet sidene du ser, omtrentlig
+                  sted, nettleser og enhet – til Google Ireland Ltd., som er databehandler for oss.
+                  IP-adressen forkortes. Grunnlaget er samtykket ditt (personvernforordningen
+                  artikkel 6 nr. 1 bokstav a), og opplysningene kan bli overført til USA under EUs
+                  rammeverk for dataoverføring (Data Privacy Framework). Statistikken slettes etter
+                  14 måneder.
+                </p>
+                <p>
+                  Du kan trekke samtykket tilbake når som helst:{' '}
+                  <Knappelenke type="button" onClick={apneSamtykke}>
+                    endre valget ditt
+                  </Knappelenke>
+                  . Valget lagres bare i nettleseren din.
+                </p>
+              </>
+            ) : (
+              <p>
+                Nettstedet setter ingen informasjonskapsler, og laster ingen script fra
+                tredjeparter. Det er derfor du ikke møter noen samtykkeboks her.
+              </p>
+            )}
 
             <h2>Opplysninger du selv sender inn</h2>
             <p>
@@ -179,4 +210,15 @@ const Oppdatert = styled.p`
   font-family: ${({ theme }) => theme.fonts.mono};
   font-size: 0.8125rem !important;
   color: ${({ theme }) => theme.colors.inkSubtle};
+`
+
+/** Ser ut som en lenke i teksten, men er en knapp – den åpner samtykkebanneret. */
+const Knappelenke = styled.button`
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: ${({ theme }) => theme.colors.accent};
+  text-decoration: underline;
+  cursor: pointer;
 `

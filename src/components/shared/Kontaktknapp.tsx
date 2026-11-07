@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom'
 import styled, { keyframes } from 'styled-components'
 import Icon from './Icon'
 import { firma, telefonLenke, telefonVist } from '../../data/firma'
+import { vedSamtykkeEndring } from '../../lib/analytics'
 
 /**
  * «Ta kontakt», nede i høyre hjørne på hver side.
@@ -43,10 +44,36 @@ export default function Kontaktknapp() {
     }
   }, [apen])
 
+  // Vik unna når en «fri sone» er på skjermen – f.eks. kalkulatorens
+  // Tilbake/Neste. Ellers legger knappen seg oppå dem på mobil.
+  const [viker, setViker] = useState(false)
+  // Samtykkebanneret er også en fri sone; når det lukkes, må vi se på nytt.
+  const [skann, setSkann] = useState(0)
+  useEffect(() => vedSamtykkeEndring(() => setSkann((n) => n + 1)), [])
+  useEffect(() => {
+    const synlige = new Set<Element>()
+    const observator = new IntersectionObserver((treff) => {
+      for (const t of treff) {
+        if (t.isIntersecting) synlige.add(t.target)
+        else synlige.delete(t.target)
+      }
+      setViker(synlige.size > 0)
+    })
+    // Sidene lastes etter hvert; let etter sonene litt etter sidebytte.
+    const tid = window.setTimeout(() => {
+      document.querySelectorAll('[data-fri-sone]').forEach((el) => observator.observe(el))
+    }, 400)
+    return () => {
+      window.clearTimeout(tid)
+      observator.disconnect()
+      setViker(false)
+    }
+  }, [pathname, skann])
+
   const tlf = telefonLenke()
 
   return (
-    <Hjorne ref={ref}>
+    <Hjorne ref={ref} $viker={viker && !apen} aria-hidden={viker && !apen ? true : undefined}>
       {apen && (
         <Valg id="kontaktvalg">
           {tlf && firma.tilgjengelig && <Tilgjengelig>{firma.tilgjengelig}</Tilgjengelig>}
@@ -96,8 +123,18 @@ const inn = keyframes`
   to   { opacity: 1; transform: none; }
 `
 
-const Hjorne = styled.div`
+const Hjorne = styled.div<{ $viker: boolean }>`
   position: fixed;
+  transition:
+    opacity ${({ theme }) => theme.transitions.default},
+    transform ${({ theme }) => theme.transitions.default};
+  ${({ $viker }) =>
+    $viker &&
+    `
+      opacity: 0;
+      transform: translateY(12px);
+      pointer-events: none;
+    `}
   right: clamp(1rem, 2vw, 1.5rem);
   bottom: clamp(1rem, 2vw, 1.5rem);
   z-index: ${({ theme }) => theme.zIndex.kontaktknapp};
@@ -199,5 +236,11 @@ const Hoved = styled.button<{ $apen: boolean }>`
 
   &:active {
     transform: scale(0.97);
+  }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.smallMobile}) {
+    min-height: 44px;
+    padding: 0 1.1rem;
+    font-size: 0.875rem;
   }
 `

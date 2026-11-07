@@ -4,6 +4,7 @@ import { Wrap } from '../../ui'
 import Logo from '../shared/Logo'
 import Icon from '../shared/Icon'
 import { firma } from '../../data/firma'
+import { analyseKlar, apneSamtykke } from '../../lib/analytics'
 import { tjenester } from '../../data/tjenester'
 
 /**
@@ -116,8 +117,17 @@ export default function Footer() {
             {firma.orgNr && ` · Org.nr ${firma.orgNr}`}
           </p>
           <p className="sitat">
-            Denne siden er bygget på samme måte som dem vi selger: håndkodet, forhåndsrendret og
-            uten et eneste tredjeparts-script.
+            {analyseKlar
+              ? 'Denne siden er bygget på samme måte som dem vi selger: håndkodet, forhåndsrendret og uten tredjeparts-script før du selv sier ja.'
+              : 'Denne siden er bygget på samme måte som dem vi selger: håndkodet, forhåndsrendret og uten et eneste tredjeparts-script.'}
+            {analyseKlar && (
+              <>
+                {' '}
+                <Samtykkelenke type="button" onClick={apneSamtykke}>
+                  Informasjonskapsler
+                </Samtykkelenke>
+              </>
+            )}
           </p>
         </Bunn>
       </Wrap>
@@ -253,4 +263,15 @@ const Bunn = styled.div`
       text-align: left;
     }
   }
+`
+
+const Samtykkelenke = styled.button`
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: ${({ theme }) => theme.colors.inkInverted};
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
 `
