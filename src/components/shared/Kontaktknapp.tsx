@@ -73,7 +73,7 @@ export default function Kontaktknapp() {
   const tlf = telefonLenke()
 
   return (
-    <Hjorne ref={ref} $viker={viker && !apen} aria-hidden={viker && !apen ? true : undefined}>
+    <Hjorne ref={ref} as="aside" aria-label="Ta kontakt" $viker={viker && !apen} inert={viker && !apen}>
       {apen && (
         <Valg id="kontaktvalg">
           {tlf && firma.tilgjengelig && <Tilgjengelig>{firma.tilgjengelig}</Tilgjengelig>}

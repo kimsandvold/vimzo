@@ -35,7 +35,8 @@ export default function GuideSide() {
 
 function Artikkel({ guide }: { guide: Guide }) {
   useSEO({
-    title: `${guide.tittel} | Vimzo`,
+    // Merkenavnet bare når det er plass – Google kutter titler over ~60 tegn.
+    title: guide.tittel.length > 55 ? guide.tittel : `${guide.tittel} | Vimzo`,
     description: guide.ingress,
     jsonLd: [
       brodsmuler([
@@ -97,7 +98,7 @@ function Artikkel({ guide }: { guide: Guide }) {
             </Innhold>
 
             <Sidespalte>
-              <Innholdsfortegnelse>
+              <Innholdsfortegnelse aria-label="I denne guiden">
                 <h2>I denne guiden</h2>
                 <ol>
                   {guide.seksjoner.map((s) => (
@@ -109,7 +110,7 @@ function Artikkel({ guide }: { guide: Guide }) {
               </Innholdsfortegnelse>
 
               {andre.length > 0 && (
-                <Videre>
+                <Videre aria-label="Flere guider">
                   <h2>Flere guider</h2>
                   <ul>
                     {andre.map((g) => (
@@ -160,13 +161,13 @@ function Blokkvisning({ blokk }: { blokk: Blokk }) {
       )
     case 'tabell':
       return (
-        <Tabellramme>
+        <Tabellramme tabIndex={0} role="region" aria-label={`Tabell: ${blokk.kolonner.filter(Boolean).join(', ')}`}>
           <table>
             <thead>
               <tr>
                 {blokk.kolonner.map((k) => (
-                  <th key={k} scope="col">
-                    {k}
+                  <th key={k || 'tom'} scope="col">
+                    {k || <Skjult>Hva</Skjult>}
                   </th>
                 ))}
               </tr>
@@ -192,9 +193,10 @@ const Byline = styled.p`
   align-items: center;
   gap: 0.5rem;
   font-family: ${({ theme }) => theme.fonts.mono};
-  font-size: 0.78rem;
+  font-size: 0.8125rem;
   letter-spacing: 0.04em;
-  color: ${({ theme }) => theme.colors.inkSubtle};
+  /* Står på den mørke sidehode-flaten – inkSubtle ga 3,7:1 her. */
+  color: ${({ theme }) => theme.colors.inkInvertedMuted};
 `
 
 const Brodtekst = styled.article`
@@ -242,7 +244,7 @@ const Kortsvar = styled.div`
     font-weight: 500;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: ${({ theme }) => theme.colors.inkSubtle};
+    color: ${({ theme }) => theme.colors.inkMuted};
     margin-bottom: 0.75rem;
   }
 
@@ -460,4 +462,13 @@ const Videre = styled.nav`
       color: ${({ theme }) => theme.colors.accent};
     }
   }
+`
+
+const Skjult = styled.span`
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 `

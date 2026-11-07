@@ -158,7 +158,7 @@ const Tallkort = styled.div`
     display: block;
     margin-top: 0.35rem;
     font-size: 0.8125rem;
-    color: ${({ theme }) => theme.colors.inkSubtle};
+    color: ${({ theme }) => theme.colors.inkInvertedMuted};
   }
 `
 

@@ -66,8 +66,8 @@ export default function ArrangementSide() {
   useSEO({
     title: 'Nettside til arrangement, messe eller konferanse | Vimzo',
     description:
-      `En egen side til arrangementet, laget på 1–2 uker. Program, påmelding, delingsbilde og QR-kode. ` +
-      `Typisk ${formaterRamme(arrangement.pris)} kr med ${arrangement.driftInkludertMnd} måneders drift inkludert.`,
+      `Egen side til arrangementet på 1–2 uker: program, påmelding, delingsbilde og QR-kode. ` +
+      `Typisk ${formaterRamme(arrangement.pris)} kr, drift inkludert.`,
     jsonLd: [
       brodsmuler([{ navn: 'Arrangementssider', sti: '/arrangement' }]),
       {
@@ -141,7 +141,8 @@ export default function ArrangementSide() {
                 Åpne eksempelsiden
               </Knapp>
             </div>
-            <Forhand to="/arrangement/eksempel" aria-label="Åpne eksempelsiden">
+            {/* Dekorativt utsnitt – knappen ved siden av er lenken. */}
+            <Forhand aria-hidden="true">
               <Nettleserlinje aria-hidden="true">
                 <i />
                 <i />
@@ -315,17 +316,11 @@ const Eksempel = styled.div`
  * Et utsnitt av eksempelsiden, tegnet i CSS. I eksempelets egne farger –
  * ikke Vimzos – fordi poenget er at siden ser ut som arrangementet, ikke som oss.
  */
-const Forhand = styled(Link)`
+const Forhand = styled.div`
   display: block;
   overflow: hidden;
   border-radius: ${({ theme }) => theme.borderRadius.large};
   box-shadow: ${({ theme }) => theme.shadows.xl};
-  text-decoration: none;
-  transition: transform ${({ theme }) => theme.transitions.soft};
-
-  &:hover {
-    transform: translateY(-4px);
-  }
 `
 
 const Nettleserlinje = styled.div`

@@ -100,7 +100,7 @@ export default function Navbar() {
         </Wrap>
       </Topp>
 
-      <Mobilmeny id="mobilmeny" $apen={apen} aria-hidden={!apen}>
+      <Mobilmeny id="mobilmeny" $apen={apen} inert={!apen} role="region" aria-label="Meny">
         <nav>
           {LENKER.map((l) => (
             <Mobillenke key={l.til} to={l.til} tabIndex={apen ? 0 : -1} onClick={() => setApen(false)}>

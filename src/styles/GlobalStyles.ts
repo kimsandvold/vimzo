@@ -174,6 +174,11 @@ const GlobalStyles = createGlobalStyle`
     padding-top: var(--nav-hoyde);
   }
 
+  /* Hovedinnholdet får fokus fra «Hopp til innhold» – uten en ring rundt hele siden. */
+  #innhold:focus {
+    outline: none;
+  }
+
   img, picture, video {
     display: block;
     max-width: 100%;

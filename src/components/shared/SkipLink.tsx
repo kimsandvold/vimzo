@@ -23,6 +23,24 @@ const Lenke = styled.a`
   }
 `
 
+/**
+ * Flytter fokus til hovedinnholdet, ikke bare rullingen. Ankeret alene
+ * flyttet ikke fokus i en app som denne – neste Tab startet da på nytt
+ * øverst i menyen, og lenken gjorde ingenting for den som trengte den.
+ */
 export default function SkipLink() {
-  return <Lenke href="#innhold">Hopp til innhold</Lenke>
+  return (
+    <Lenke
+      href="#innhold"
+      onClick={(e) => {
+        const hoved = document.getElementById('innhold')
+        if (!hoved) return
+        e.preventDefault()
+        hoved.focus()
+        hoved.scrollIntoView()
+      }}
+    >
+      Hopp til innhold
+    </Lenke>
+  )
 }

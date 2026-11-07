@@ -24,7 +24,9 @@ export default function Belop({ verdi, animert }: { verdi: number; animert?: boo
   const grupper = String(Math.round(vist)).match(/\d{1,3}(?=(?:\d{3})*$)/g) ?? [String(vist)]
 
   return (
-    <Tall aria-label={verdi.toLocaleString('nb-NO')}>
+    <Tall>
+      {/* Skjermlesere får tallet som ett ord; det synlige er delt opp. */}
+      <Skjult>{verdi.toLocaleString('nb-NO')}</Skjult>
       {grupper.map((g, i) => (
         <Fragment key={i}>
           {i > 0 && <Skille aria-hidden="true" />}
@@ -37,6 +39,15 @@ export default function Belop({ verdi, animert }: { verdi: number; animert?: boo
 
 const Tall = styled.span`
   font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+`
+
+const Skjult = styled.span`
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
   white-space: nowrap;
 `
 
@@ -61,8 +72,9 @@ export function Ramme({ verdi, animert }: { verdi: { fra: number; til: number | 
       </Tall>
     )
   return (
-    <Tall aria-label={`${verdi.fra.toLocaleString('nb-NO')} til ${verdi.til.toLocaleString('nb-NO')}`}>
+    <Tall>
       <Belop verdi={verdi.fra} animert={animert} />
+      <Skjult> til </Skjult>
       <span aria-hidden="true">–</span>
       <Belop verdi={verdi.til} animert={animert} />
     </Tall>

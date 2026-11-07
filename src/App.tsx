@@ -20,7 +20,7 @@ export default function App() {
       <GlobalStyles />
       <BrowserRouter>
         <Ramme>
-        <main id="innhold">
+        <main id="innhold" tabIndex={-1}>
           <Suspense fallback={<Laster />}>
             <Routes>
               {/* Forsiden lastes ikke som egen bit – den er den vanligste

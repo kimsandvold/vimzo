@@ -57,7 +57,7 @@ export default function Pakkekort({ pakke }: { pakke: Pakke }) {
       </Punkter>
 
       <Drivere>
-        <h4>Dette flytter prisen</h4>
+        <h3>Dette flytter prisen</h3>
         <ul>
           {pakke.drivere.map((d) => (
             <li key={d}>{d}</li>
@@ -87,7 +87,7 @@ const Kort = styled.article`
 `
 
 
-const Navn = styled.h3`
+const Navn = styled.h2`
   font-family: ${({ theme }) => theme.fonts.body};
   font-size: 1.05rem;
   font-weight: 650;
@@ -194,7 +194,7 @@ const Drivere = styled.div`
   border-radius: ${({ theme }) => theme.borderRadius.medium};
   background: ${({ theme }) => theme.colors.sunken};
 
-  h4 {
+  h3 {
     margin: 0 0 0.4rem;
     font-size: 0.8125rem;
     font-weight: 650;

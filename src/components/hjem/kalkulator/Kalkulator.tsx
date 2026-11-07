@@ -500,8 +500,19 @@ const Stegknapp = styled.button<{ $aktiv: boolean; $passert: boolean }>`
  * stegindikator uten det er bare dekor.
  */
 const Etikett = styled.span<{ $aktiv: boolean }>`
+  /* Skjult visuelt på smale skjermer – men aldri for skjermlesere, ellers
+     ville knappene stått igjen uten navn. */
   @media (max-width: ${({ theme }) => theme.breakpoints.smallMobile}) {
-    display: ${({ $aktiv }) => ($aktiv ? 'inline' : 'none')};
+    ${({ $aktiv }) =>
+      !$aktiv &&
+      `
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip-path: inset(50%);
+        white-space: nowrap;
+      `}
   }
 `
 

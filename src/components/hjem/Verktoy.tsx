@@ -26,12 +26,14 @@ export default function Verktoy() {
 
         <Liste>
           {verktoy.map((v, i) => (
-            <Innsig key={v.navn} forsinkelse={i * 50}>
-              <Rad>
-                <Bransje>{v.bransje}</Bransje>
-                <Navn>{v.navn}</Navn>
-              </Rad>
-            </Innsig>
+            <li key={v.navn}>
+              <Innsig forsinkelse={i * 50}>
+                <Rad>
+                  <Bransje>{v.bransje}</Bransje>
+                  <Navn>{v.navn}</Navn>
+                </Rad>
+              </Innsig>
+            </li>
           ))}
         </Liste>
       </Wrap>
@@ -46,7 +48,7 @@ const Liste = styled.ul`
   box-shadow: inset 0 1px 0 ${({ theme }) => theme.colors.neutral[200]};
 `
 
-const Rad = styled.li`
+const Rad = styled.div`
   display: grid;
   grid-template-columns: 15rem minmax(0, 1fr);
   gap: 1.5rem;
