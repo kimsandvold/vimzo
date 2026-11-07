@@ -6,32 +6,16 @@ import { brodsmuler, organisasjon } from '../../../lib/jsonLd'
 import Sidehode from '../../layout/Sidehode'
 import Icon from '../../shared/Icon'
 import { firma, epost } from '../../../data/firma'
-import { pakker, formaterPris } from '../../../data/pakker'
+import { pakker, formaterRamme } from '../../../data/pakker'
 import { BRIEF_NOKKEL } from '../../../data/kalkulator'
+import { emailjsKlar, sendHenvendelse } from '../../../lib/emailjs'
 
-/**
- * Hvor skjemaet sendes.
- *
- * Settes med `VITE_KONTAKT_ENDPOINT` i .env når et mottak finnes (Firebase
- * Functions, Vercel-funksjon eller tilsvarende). Er den ikke satt — som nå —
- * faller skjemaet tilbake til en ferdig utfylt e-post. Det er et bevisst valg:
- * en knapp som later som den sender noe ingen leser, er verre enn en knapp som
- * åpner e-postklienten.
- *
- * ADVARSEL — les denne før du setter variabelen.
- *
- * Så lenge den er tom, sendes ingenting til noen tredjepart, og det er derfor
- * personvernsiden kan si at nettstedet ikke laster script fra tredjeparter og
- * ikke trenger samtykkeboks — og at bunnteksten kan si «uten et eneste
- * tredjeparts-script». Begge deler blir usant i det øyeblikket skjemaet
- * posterer til EmailJS, en Supabase Edge Function eller noe annet.
- *
- * Settes denne, må følgende oppdateres i samme slengen:
- *   – `src/components/pages/Personvern/PersonvernSide.tsx` (mottaker,
- *     behandlingsgrunnlag og overføringsgrunnlag etter GDPR art. 13)
- *   – `src/components/layout/Footer.tsx` («uten et eneste tredjeparts-script»)
+/*
+ * Skjemaet sendes via EmailJS (se `src/lib/emailjs.ts`), samme vei som
+ * oppsummeringen fra kalkulatoren. Er EmailJS ikke satt opp, faller det
+ * tilbake til en ferdig utfylt e-post – en knapp som later som den sender noe
+ * ingen leser, er verre enn en som åpner e-postklienten.
  */
-const ENDEPUNKT = import.meta.env.VITE_KONTAKT_ENDPOINT as string | undefined
 
 type Status = 'klar' | 'sender' | 'sendt' | 'feil'
 
@@ -78,7 +62,7 @@ export default function KontaktSide() {
     // Honningkrukke: felt som er skjult for mennesker, men som roboter fyller ut.
     if (data.nettsted) return
 
-    if (!ENDEPUNKT) {
+    if (!emailjsKlar) {
       const linjer = [
         `Bedrift: ${data.bedrift || '–'}`,
         `Navn: ${data.navn || '–'}`,
@@ -96,12 +80,15 @@ export default function KontaktSide() {
 
     setStatus('sender')
     try {
-      const svar = await fetch(ENDEPUNKT, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(brief ? { ...data, brief } : data),
+      await sendHenvendelse({
+        emne: `Forespørsel fra ${data.bedrift || data.navn || 'nettsiden'}`,
+        navn: data.navn || '',
+        bedrift: data.bedrift || '',
+        epost: data.epost || '',
+        telefon: data.telefon || '',
+        melding: `Pakke: ${data.pakke || 'Ikke bestemt'}\n\n${data.melding || ''}`,
+        brief,
       })
-      if (!svar.ok) throw new Error(String(svar.status))
       setStatus('sendt')
       skjema.reset()
       try {
@@ -109,7 +96,8 @@ export default function KontaktSide() {
       } catch {
         // Ikke kritisk – briefet forsvinner uansett når fanen lukkes.
       }
-    } catch {
+    } catch (feil) {
+      console.error(feil)
       setStatus('feil')
     }
   }
@@ -132,8 +120,7 @@ export default function KontaktSide() {
                   <Icon navn="sjekk" storrelse={26} tykkelse={2.2} />
                   <h2>Takk — meldingen er sendt</h2>
                   <p>
-                    Du hører fra oss innen to virkedager. Haster det, send gjerne en e-post til{' '}
-                    <a href={`mailto:${epost()}`}>{epost()}</a>.
+                    Du hører fra oss innen to virkedager.
                   </p>
                 </Kvittering>
               ) : (
@@ -185,7 +172,7 @@ export default function KontaktSide() {
                       {pakker.map((p) => (
                         <option key={p.id} value={p.navn}>
                           {p.navn}
-                          {p.pris === null ? ' – etter avtale' : ` – ${formaterPris(p.pris)} kr`}
+                          {` – typisk ${formaterRamme(p.pris)} kr`}
                         </option>
                       ))}
                       <option value="Foto og dronevideo">Foto og dronevideo</option>
@@ -212,8 +199,8 @@ export default function KontaktSide() {
 
                   {status === 'feil' && (
                     <Feilmelding role="alert">
-                      Noe gikk galt da meldingen skulle sendes. Prøv igjen, eller send en e-post til{' '}
-                      <a href={`mailto:${epost()}`}>{epost()}</a>.
+                      Noe gikk galt da meldingen skulle sendes. Prøv igjen om litt – det du har
+                      skrevet, står der fortsatt.
                     </Feilmelding>
                   )}
 
@@ -231,28 +218,6 @@ export default function KontaktSide() {
             </Skjemaside>
 
             <Sidespalte>
-              <Kontaktkort>
-                <h2>Direkte</h2>
-                <ul>
-                  <li>
-                    <Icon navn="epost" storrelse={17} />
-                    <a href={`mailto:${epost()}`}>{epost()}</a>
-                  </li>
-                  {firma.telefon && (
-                    <li>
-                      <Icon navn="samtale" storrelse={17} />
-                      <a href={`tel:${firma.telefon}`}>{firma.telefonVist || firma.telefon}</a>
-                    </li>
-                  )}
-                  <li>
-                    <Icon navn="kart" storrelse={17} />
-                    <span>
-                      {firma.poststed}, {firma.land}
-                    </span>
-                  </li>
-                </ul>
-              </Kontaktkort>
-
               <Forventning>
                 <h2>Hva skjer videre</h2>
                 <ol>
@@ -432,40 +397,6 @@ const Sidespalte = styled.aside`
     text-transform: uppercase;
     color: ${({ theme }) => theme.colors.inkSubtle};
     margin-bottom: 1rem;
-  }
-`
-
-const Kontaktkort = styled.div`
-  padding: 1.6rem;
-  border: 1px solid ${({ theme }) => theme.colors.border};
-  border-radius: ${({ theme }) => theme.borderRadius.large};
-  background: ${({ theme }) => theme.colors.sunken};
-
-  ul {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 0.8rem;
-  }
-
-  li {
-    display: flex;
-    align-items: center;
-    gap: 0.65rem;
-    font-size: 0.9375rem;
-  }
-
-  svg {
-    color: ${({ theme }) => theme.colors.accent};
-  }
-
-  a {
-    color: ${({ theme }) => theme.colors.ink};
-    text-decoration: none;
-
-    &:hover {
-      color: ${({ theme }) => theme.colors.accent};
-    }
   }
 `
 

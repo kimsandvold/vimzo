@@ -1,9 +1,11 @@
+import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 import { Seksjon, Wrap } from '../../../ui'
 import { useSEO } from '../../../hooks/useSEO'
 import { brodsmuler } from '../../../lib/jsonLd'
 import Sidehode from '../../layout/Sidehode'
-import { firma, epost } from '../../../data/firma'
+import { firma } from '../../../data/firma'
+import { emailjsKlar } from '../../../lib/emailjs'
 
 /**
  * Personvernerklæring.
@@ -37,8 +39,8 @@ export default function PersonvernSide() {
             <p>
               {firma.juridiskNavn || firma.merke}
               {firma.orgNr && ` (org.nr ${firma.orgNr})`} i {firma.poststed} er ansvarlig for
-              behandlingen av personopplysninger på vimzo.no. Spørsmål rettes til{' '}
-              <a href={`mailto:${epost()}`}>{epost()}</a>.
+              behandlingen av personopplysninger på vimzo.no. Spørsmål sendes via{' '}
+              <Link to="/kontakt">kontaktskjemaet</Link>.
             </p>
 
             <h2>Informasjonskapsler</h2>
@@ -58,9 +60,18 @@ export default function PersonvernSide() {
             </p>
             <p>
               Opplysningene brukes bare til å svare på henvendelsen og eventuelt gjennomføre et
-              oppdrag. De deles ikke med andre, selges ikke, og brukes ikke til nyhetsbrev eller
-              markedsføring.
+              oppdrag. De selges ikke, og brukes ikke til nyhetsbrev eller markedsføring.
             </p>
+            {/* TODO: fyll inn hvor EmailJS lagrer og behandler data, og
+                overføringsgrunnlaget hvis det er utenfor EØS (art. 13 nr. 1 f). */}
+            {emailjsKlar && (
+              <p>
+                Kontaktskjemaet og oppsummeringen fra kalkulatoren sendes via EmailJS, en
+                tjeneste som videresender meldingen som e-post til oss. EmailJS er databehandler
+                for oss og får bare innholdet du sender, i det øyeblikket du trykker send.
+                Nettstedet laster ingen kode fra EmailJS.
+              </p>
+            )}
 
             <h2>Lagringstid</h2>
             <p>
@@ -85,7 +96,7 @@ export default function PersonvernSide() {
               <li>Du kan klage til Datatilsynet dersom du mener vi behandler opplysninger feil.</li>
             </ul>
             <p>
-              Send en e-post til <a href={`mailto:${epost()}`}>{epost()}</a>, så svarer vi innen
+              Send en melding via <Link to="/kontakt">kontaktskjemaet</Link>, så svarer vi innen
               30 dager.
             </p>
 
