@@ -41,10 +41,10 @@ const PRINSIPPER: Array<{ ikon: IkonNavn; tittel: string; tekst: string }> = [
 
 export default function OmSide() {
   useSEO({
-    title: `Om Vimzo – ${firma.grunnlegger}, ${firma.poststed}`,
+    title: `Om Vimzo – ${firma.grunnlegger}, ${firma.grunnleggerTittel.toLowerCase()}`,
     description:
       'Vimzo lager håndkodede, forhåndsrendrede nettsider for små og mellomstore bedrifter. ' +
-      `Drevet av ${firma.grunnlegger} fra ${firma.poststed}, med fast pris og åpne priser.`,
+      `Drevet av ${firma.grunnlegger}, med åpne priser og fast pris etter en prat.`,
     jsonLd: [brodsmuler([{ navn: 'Om oss', sti: '/om' }]), organisasjon()],
   })
 
@@ -54,7 +54,7 @@ export default function OmSide() {
         smuler={[{ navn: 'Om oss' }]}
         stikkord="Om Vimzo"
         tittel="Én som koder, og som svarer på telefonen"
-        ingress={`Vimzo drives av ${firma.grunnlegger} fra ${firma.poststed}. Du snakker med den som faktisk bygger nettsiden – det er hele poenget med å være liten.`}
+        ingress={`Vimzo drives av ${firma.grunnlegger}. Du snakker med den som faktisk bygger nettsiden – det er hele poenget med å være liten.`}
       />
 
       <Seksjon $flate="surface" $tett>
@@ -107,10 +107,8 @@ export default function OmSide() {
                   </dd>
                 </div>
                 <div>
-                  <dt>Holder til</dt>
-                  <dd>
-                    {firma.poststed}, {firma.land}
-                  </dd>
+                  <dt>Jobber</dt>
+                  <dd>Digitalt – på telefon, video og en testadresse du følger med på</dd>
                 </div>
                 <div>
                   <dt>Leverer til</dt>

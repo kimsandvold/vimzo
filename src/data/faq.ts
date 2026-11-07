@@ -94,7 +94,7 @@ export const faq: readonly Sporsmal[] = [
     tema: 'prosess',
     sporsmal: 'Er dere norske?',
     svar:
-      'Ja, helt igjennom. Vimzo drives fra Lillehammer av Kim Sandvold. Det er han som tar ' +
+      'Ja, helt igjennom. Vimzo drives av Kim Sandvold. Det er han som tar ' +
       'praten, skriver tekstene og koder siden – ingenting settes ut til utlandet. All ' +
       'kommunikasjon, alle tekster og all support er på norsk.',
   },
@@ -192,11 +192,11 @@ export const faq: readonly Sporsmal[] = [
   },
   {
     tema: 'prosess',
-    sporsmal: 'Jobber dere bare på Lillehammer?',
+    sporsmal: 'Må vi være i nærheten av dere?',
     svar:
-      'Nei. Vi holder til på Lillehammer og møter gjerne kunder i Innlandet ansikt til ' +
-      'ansikt, men hele prosessen fungerer på video og e-post. Vi leverer til bedrifter i ' +
-      'hele Norge.',
+      'Nei. Hele prosessen skjer digitalt: samtalen tar vi på telefon eller video, og siden ' +
+      'følger du på en testadresse mens den lages. Vi leverer til bedrifter i hele Norge. ' +
+      'Skal vi ta bilder hos deg, avtaler vi det.',
   },
   {
     tema: 'arrangement',

@@ -5,7 +5,7 @@
 > hele prosjektet. Hver side lages for én bedrift og leveres som ferdig HTML, så den
 > er rask, billig å drifte og lett å finne både i søkemotorer og i AI-assistenter.
 
-Sted: Lillehammer, Norge. Leverer i hele Norge.
+Leverer i hele Norge. Alt arbeid skjer digitalt.
 Nettsted: https://vimzo.no
 Språk: norsk (bokmål)
 
@@ -64,7 +64,7 @@ publisering og innmelding hos Google.
 - Driften er én pris uansett hva siden gjør, og dekker webhotell, domene, sikkerhetskopi og overvåking.
 - Endringer etter lansering faktureres med 1 250 kr timen, per påbegynte halvtime.
 - Regneverktøy og kalkulatorer bygges for den enkelte bedriften og legges inn i siden, uten lisens eller abonnement på selve verktøyet.
-- Alt arbeid gjøres i Norge, på norsk, av Kim Sandvold på Lillehammer.
+- Alt arbeid gjøres i Norge, på norsk, av Kim Sandvold.
 
 ## Viktige sider
 
@@ -106,7 +106,7 @@ Ja. Vi bygger regneverktøy for det du selger, fra 9 900 kroner – priskalkula
 Nei. Vi lager sider for bedrifter som selger tjenester – håndverkere, frisører, fotpleiere, verksteder, renholdere og rådgivere. Skal du selge varer med lager, frakt og betaling på nett, trenger du en ekte nettbutikkløsning, og det sier vi med én gang i stedet for å bygge noe halvveis. Timebestilling, befaring og forespørsler ordner vi gjerne – det er varehandelen vi holder oss unna.
 
 ### Er dere norske?
-Ja, helt igjennom. Vimzo drives fra Lillehammer av Kim Sandvold. Det er han som tar praten, skriver tekstene og koder siden – ingenting settes ut til utlandet. All kommunikasjon, alle tekster og all support er på norsk.
+Ja, helt igjennom. Vimzo drives av Kim Sandvold. Det er han som tar praten, skriver tekstene og koder siden – ingenting settes ut til utlandet. All kommunikasjon, alle tekster og all support er på norsk.
 
 ### Må jeg skrive tekstene selv?
 Nei. Vi intervjuer deg i omtrent en time om hva bedriften gjør, og skriver sidene ferdig på norsk. Du leser gjennom og godkjenner alt før det publiseres. Vil du skrive selv, trekker vi det fra prisen.
@@ -138,8 +138,8 @@ Nei, og ingen seriøs leverandør kan det. Det vi garanterer er grunnlaget: rikt
 ### Må vi skaffe bildene selv?
 Nei. Vi kommer gjerne ut og fotograferer bedriften, lokalene, produktene og folkene som jobber der, og filmer med drone når motivet fortjener det. Egne bilder gjør mer for troverdigheten enn noe annet på en bedriftsside, og de gir i tillegg bildetreff i Google som en kjøpt arkivbilde aldri gir.
 
-### Jobber dere bare på Lillehammer?
-Nei. Vi holder til på Lillehammer og møter gjerne kunder i Innlandet ansikt til ansikt, men hele prosessen fungerer på video og e-post. Vi leverer til bedrifter i hele Norge.
+### Må vi være i nærheten av dere?
+Nei. Hele prosessen skjer digitalt: samtalen tar vi på telefon eller video, og siden følger du på en testadresse mens den lages. Vi leverer til bedrifter i hele Norge. Skal vi ta bilder hos deg, avtaler vi det.
 
 ### Hva koster en nettside til et arrangement?
 En arrangementsside lander typisk på 12 000–18 000 kroner eks. mva., med 3 måneders drift inkludert. Egen påmelding kommer i tillegg, fra 4 900 kroner. Den endelige prisen avtaler vi etter en kort prat, skriftlig.

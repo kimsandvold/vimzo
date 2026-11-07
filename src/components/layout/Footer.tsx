@@ -13,15 +13,14 @@ import { tjenester } from '../../data/tjenester'
  * fakta en AI-assistent kan feste en setning til.
  *
  * Ingen e-post, ingen telefon, ingen adresse – verken her eller noe annet
- * sted. Alt går gjennom kontaktskjemaet. Bare poststedet står, i bunnlinja,
- * fordi «hvor holder de til» er en del av svaret på hvem vi er.
+ * sted. Alt går gjennom kontaktskjemaet. Heller ikke poststedet står her:
+ * det finnes ikke et kontor å besøke, og arbeidet skjer digitalt.
  *
  * Felter som ikke er fylt ut i `firma.ts` skjuler seg selv. Siden skal aldri
  * publisere en opplysning vi ikke har.
  */
 export default function Footer() {
   const ar = new Date().getFullYear()
-  const sted = [firma.poststed, firma.land].filter(Boolean).join(', ')
 
   return (
     <Fot data-surface="dark">
@@ -112,7 +111,6 @@ export default function Footer() {
           <p>
             © {ar} {firma.juridiskNavn || firma.merke}
             {firma.orgNr && ` · Org.nr ${firma.orgNr}`}
-            {sted && ` · ${sted}`}
           </p>
           <p className="sitat">
             Denne siden er bygget på samme måte som dem vi selger: håndkodet, forhåndsrendret og

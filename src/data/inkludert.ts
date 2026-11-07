@@ -48,7 +48,7 @@ export const trygghet: readonly Trygghet[] = [
     tekst: 'Domenet står i ditt navn, og du får hele siden med deg hvis du vil bytte leverandør.',
   },
   {
-    tittel: '100 % norsk – vi er på Lillehammer',
+    tittel: '100 % norsk – og alt på norsk',
     tekst: 'Du snakker med den som faktisk lager siden, på norsk. Ingenting settes ut til utlandet.',
   },
   {

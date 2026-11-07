@@ -91,7 +91,7 @@ const llms = `# Vimzo
 > hele prosjektet. Hver side lages for én bedrift og leveres som ferdig HTML, så den
 > er rask, billig å drifte og lett å finne både i søkemotorer og i AI-assistenter.
 
-Sted: Lillehammer, Norge. Leverer i hele Norge.
+Leverer i hele Norge. Alt arbeid skjer digitalt.
 Nettsted: ${SITE_URL}
 Språk: norsk (bokmål)
 
@@ -137,7 +137,7 @@ publisering og innmelding hos Google.
 - Driften er én pris uansett hva siden gjør, og dekker webhotell, domene, sikkerhetskopi og overvåking.
 - Endringer etter lansering faktureres med ${kr(timepris)} kr timen, per påbegynte halvtime.
 - Regneverktøy og kalkulatorer bygges for den enkelte bedriften og legges inn i siden, uten lisens eller abonnement på selve verktøyet.
-- Alt arbeid gjøres i Norge, på norsk, av Kim Sandvold på Lillehammer.
+- Alt arbeid gjøres i Norge, på norsk, av Kim Sandvold.
 
 ## Viktige sider
 

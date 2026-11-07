@@ -31,7 +31,7 @@ export default function ForsideSide() {
     description:
       'Se omtrent hva nettsiden din vil koste før du snakker med noen. Vi lager resten – ' +
       'domene, tekst, bilder og publisering – og du får fast pris skriftlig etter en prat. ' +
-      'Håndlaget i Lillehammer.',
+      'Håndlaget i Norge.',
     jsonLd: [organisasjon(), nettsted(), faqLd(faq.slice(0, 6))],
   })
 

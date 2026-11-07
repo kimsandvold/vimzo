@@ -83,7 +83,7 @@ const html = `<!DOCTYPE html>
   <h1>Laget for din bedrift.<br/><em>Med åpne priser.</em></h1>
 
   <div class="bunn">
-    <span>Håndlaget · Fast pris etter en prat · Lillehammer</span>
+    <span>Håndlaget · Fast pris etter en prat · Hele Norge</span>
     <span class="pris">vimzo.no</span>
   </div>
 </body></html>`
