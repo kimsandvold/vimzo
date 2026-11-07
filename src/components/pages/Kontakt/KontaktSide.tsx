@@ -1,4 +1,5 @@
-import { useState, type FormEvent } from 'react'
+import { useEffect, useRef, useState, type FormEvent } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import styled from 'styled-components'
 import { Knapp, Seksjon, Wrap } from '../../../ui'
 import { useSEO } from '../../../hooks/useSEO'
@@ -7,8 +8,7 @@ import Sidehode from '../../layout/Sidehode'
 import Icon from '../../shared/Icon'
 import { firma, epost } from '../../../data/firma'
 import { pakker, formaterRamme } from '../../../data/pakker'
-import { BRIEF_NOKKEL } from '../../../data/kalkulator'
-import { emailjsKlar, sendHenvendelse } from '../../../lib/emailjs'
+import { emailjsKlar, erRobot, lesSkjema, sendHenvendelse } from '../../../lib/emailjs'
 
 /*
  * Skjemaet sendes via EmailJS (se `src/lib/emailjs.ts`), samme vei som
@@ -21,27 +21,30 @@ type Status = 'klar' | 'sender' | 'sendt' | 'feil'
 
 export default function KontaktSide() {
   const [status, setStatus] = useState<Status>('klar')
+  const kvitteringRef = useRef<HTMLDivElement>(null)
+  /** Sperre mot dobbel innsending – en ref, fordi et dobbeltklikk kommer før neste render. */
+  const sender = useRef(false)
+
   /**
-   * Briefet fra veiviseren på forsiden. Det ligger i sessionStorage fordi det
-   * er for langt for en adresselinje – og fordi en kundes valg ikke har noe i
-   * nettleserhistorikken å gjøre. Finnes det ikke noe brief, oppfører skjemaet
-   * seg nøyaktig som før.
+   * Pakken kunden kom fra, når han trykket «Ta en prat om dette» på et
+   * pakkekort (/kontakt?pakke=bedrift). Da slipper han å velge den på nytt.
    */
-  const [brief, setBrief] = useState(() => {
-    if (typeof window === 'undefined') return ''
-    try {
-      return sessionStorage.getItem(BRIEF_NOKKEL) || ''
-    } catch {
-      // Privat modus – da er det bare å fylle ut skjemaet manuelt.
-      return ''
-    }
-  })
+  const [sok] = useSearchParams()
+  const valgtPakke = pakker.find((p) => p.id === sok.get('pakke'))?.navn ?? ''
+
+  // Når kvitteringen dukker opp, flytt fokus og visning dit – skjemaet kunden
+  // sto i, er borte.
+  useEffect(() => {
+    if (status !== 'sendt') return
+    kvitteringRef.current?.focus()
+    kvitteringRef.current?.scrollIntoView({ block: 'center' })
+  }, [status])
 
   useSEO({
     title: 'Kontakt – få tilbud på nettside | Vimzo',
     description:
-      'Fortell kort hva bedriften gjør, så får du et skriftlig tilbud med fast pris – vanligvis ' +
-      'innen to virkedager. Ingen forpliktelser.',
+      'Fortell kort hva bedriften gjør. Du hører fra oss innen to virkedager, vi tar en prat, ' +
+      'og så får du et skriftlig tilbud med fast pris. Ingen forpliktelser.',
     jsonLd: [
       brodsmuler([{ navn: 'Kontakt', sti: '/kontakt' }]),
       organisasjon(),
@@ -56,49 +59,67 @@ export default function KontaktSide() {
 
   async function send(hendelse: FormEvent<HTMLFormElement>) {
     hendelse.preventDefault()
+    if (sender.current) return
     const skjema = hendelse.currentTarget
-    const data = Object.fromEntries(new FormData(skjema)) as Record<string, string>
+    const data = lesSkjema(skjema)
 
-    // Honningkrukke: felt som er skjult for mennesker, men som roboter fyller ut.
-    if (data.nettsted) return
+    // Bare mellomrom i et påkrevd felt: si fra ved feltet i stedet for å sende tomt.
+    for (const [navn, tekst] of [
+      ['bedrift', 'Skriv navnet på bedriften'],
+      ['navn', 'Skriv navnet ditt'],
+      ['melding', 'Skriv noen ord om hva bedriften gjør'],
+    ] as const) {
+      if (!data[navn]) {
+        const felt = skjema.elements.namedItem(navn) as HTMLInputElement
+        felt.setCustomValidity(tekst)
+        felt.reportValidity()
+        felt.setCustomValidity('')
+        return
+      }
+    }
+
+    // Robotfellen: lat som det gikk, uten å sende noe.
+    if (erRobot(data)) {
+      setStatus('sendt')
+      return
+    }
+
+    const emne = `Forespørsel fra ${data.bedrift || data.navn}`
 
     if (!emailjsKlar) {
       const linjer = [
         `Bedrift: ${data.bedrift || '–'}`,
         `Navn: ${data.navn || '–'}`,
         `Telefon: ${data.telefon || '–'}`,
-        `Pakke: ${data.pakke || 'Ikke bestemt'}`,
+        `Tenker på: ${data.pakke || 'Ikke bestemt'}`,
         '',
         data.melding || '',
-        ...(brief ? ['', '— Fra veiviseren —', brief] : []),
       ].join('\n')
-      window.location.href = `mailto:${epost()}?subject=${encodeURIComponent(
-        `Forespørsel fra ${data.bedrift || data.navn || 'nettsiden'}`,
-      )}&body=${encodeURIComponent(linjer)}`
+      window.location.href = `mailto:${epost()}?subject=${encodeURIComponent(emne)}&body=${encodeURIComponent(linjer)}`
       return
     }
 
+    sender.current = true
     setStatus('sender')
     try {
       await sendHenvendelse({
-        emne: `Forespørsel fra ${data.bedrift || data.navn || 'nettsiden'}`,
-        navn: data.navn || '',
-        bedrift: data.bedrift || '',
-        epost: data.epost || '',
-        telefon: data.telefon || '',
-        melding: `Pakke: ${data.pakke || 'Ikke bestemt'}\n\n${data.melding || ''}`,
-        brief,
+        emne,
+        navn: data.navn,
+        bedrift: data.bedrift,
+        epost: data.epost,
+        telefon: data.telefon,
+        melding: `Tenker på: ${data.pakke || 'Ikke bestemt'}\n\n${data.melding}`,
+        // Malen har en egen bolk for kalkulatoren. Fra kontaktsiden står den
+        // ellers tom, og da ser det ut som noe har falt bort.
+        brief: 'Sendt fra kontaktskjemaet – kalkulatoren ble ikke brukt.',
       })
       setStatus('sendt')
       skjema.reset()
-      try {
-        sessionStorage.removeItem(BRIEF_NOKKEL)
-      } catch {
-        // Ikke kritisk – briefet forsvinner uansett når fanen lukkes.
-      }
     } catch (feil) {
       console.error(feil)
       setStatus('feil')
+    } finally {
+      sender.current = false
     }
   }
 
@@ -108,7 +129,7 @@ export default function KontaktSide() {
         smuler={[{ navn: 'Kontakt' }]}
         stikkord="Kontakt"
         tittel="Fortell kort hva bedriften gjør"
-        ingress="Du får et skriftlig tilbud med fast pris, vanligvis innen to virkedager. Ingen forpliktelser, og ingen som ringer deg opp igjen i et halvt år."
+        ingress="Du hører fra oss innen to virkedager, så tar vi en prat. Etterpå får du et skriftlig tilbud med fast pris. Ingen forpliktelser, og ingen som ringer deg opp igjen i et halvt år."
       />
 
       <Seksjon $flate="surface" $tett>
@@ -116,29 +137,13 @@ export default function KontaktSide() {
           <Oppsett>
             <Skjemaside>
               {status === 'sendt' ? (
-                <Kvittering role="status">
+                <Kvittering role="status" ref={kvitteringRef} tabIndex={-1}>
                   <Icon navn="sjekk" storrelse={26} tykkelse={2.2} />
                   <h2>Takk — meldingen er sendt</h2>
-                  <p>
-                    Du hører fra oss innen to virkedager.
-                  </p>
+                  <p>Du hører fra oss innen to virkedager, så finner vi en halvtime til å snakke sammen.</p>
                 </Kvittering>
               ) : (
                 <form onSubmit={send} noValidate={false}>
-                  {brief && (
-                    <Briefkort>
-                      <Brieftopp>
-                        <Icon navn="sjekk" storrelse={15} tykkelse={2.6} />
-                        <strong>Dette følger med fra veiviseren</strong>
-                        <button type="button" onClick={() => setBrief('')}>
-                          Fjern
-                        </button>
-                      </Brieftopp>
-                      <pre>{brief}</pre>
-                      <input type="hidden" name="brief" value={brief} />
-                    </Briefkort>
-                  )}
-
                   <Rad>
                     <Felt>
                       <label htmlFor="bedrift">Bedrift</label>
@@ -167,7 +172,7 @@ export default function KontaktSide() {
                     <label htmlFor="pakke">
                       Hva tenker du på? <small>valgfritt</small>
                     </label>
-                    <select id="pakke" name="pakke" defaultValue="">
+                    <select id="pakke" name="pakke" defaultValue={valgtPakke}>
                       <option value="">Ikke bestemt ennå</option>
                       {pakker.map((p) => (
                         <option key={p.id} value={p.navn}>
@@ -181,7 +186,7 @@ export default function KontaktSide() {
                   </Felt>
 
                   <Felt>
-                    <label htmlFor="melding">Hva driver bedriften med?</label>
+                    <label htmlFor="melding">Hva driver bedriften med, og hva trenger du?</label>
                     <textarea
                       id="melding"
                       name="melding"
@@ -446,46 +451,4 @@ const Dekning = styled.div`
   }
 `
 
-const Briefkort = styled.div`
-  padding: 1rem 1.15rem;
-  border-radius: ${({ theme }) => theme.borderRadius.large};
-  background: ${({ theme }) => theme.colors.sunken};
 
-  pre {
-    margin-top: 0.6rem;
-    font-family: inherit;
-    font-size: 0.85rem;
-    line-height: 1.6;
-    white-space: pre-wrap;
-    color: ${({ theme }) => theme.colors.inkMuted};
-  }
-`
-
-const Brieftopp = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-
-  svg {
-    color: ${({ theme }) => theme.colors.accent};
-  }
-
-  strong {
-    font-size: 0.9rem;
-    font-weight: 650;
-  }
-
-  button {
-    margin-left: auto;
-    border: 0;
-    background: none;
-    font-family: inherit;
-    font-size: 0.8rem;
-    color: ${({ theme }) => theme.colors.inkSubtle};
-    cursor: pointer;
-
-    &:hover {
-      color: ${({ theme }) => theme.colors.ink};
-    }
-  }
-`

@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import Icon from '../../shared/Icon'
 import { epost } from '../../../data/firma'
 import { formaterRamme } from '../../../data/pakker'
-import { emailjsKlar, sendHenvendelse } from '../../../lib/emailjs'
+import { emailjsKlar, erRobot, lesSkjema, sendHenvendelse } from '../../../lib/emailjs'
 import type { Estimat, Svar } from '../../../data/kalkulator'
 
 type Status = 'klar' | 'sender' | 'sendt' | 'feil'
@@ -34,6 +34,12 @@ export default function Oppsummering({
 }) {
   const ref = useRef<HTMLDialogElement>(null)
   const [status, setStatus] = useState<Status>('klar')
+  /**
+   * Sperre mot dobbel innsending. En ref og ikke `status`: et raskt
+   * dobbeltklikk kommer før React har rendret «sender», og da ville begge
+   * klikkene sett «klar» og sendt hver sin henvendelse.
+   */
+  const sender = useRef(false)
   const tittelId = useId()
 
   useEffect(() => {
@@ -51,10 +57,24 @@ export default function Oppsummering({
 
   async function send(hendelse: FormEvent<HTMLFormElement>) {
     hendelse.preventDefault()
-    const data = Object.fromEntries(new FormData(hendelse.currentTarget)) as Record<string, string>
+    if (sender.current) return
+    const skjema = hendelse.currentTarget
+    const data = lesSkjema(skjema)
 
-    // Honningkrukke: skjult for mennesker, men roboter fyller den ut.
-    if (data.nettsted) return
+    // Bare mellomrom i et påkrevd felt: si fra i stedet for å sende tomt.
+    const navnFelt = skjema.elements.namedItem('navn') as HTMLInputElement
+    if (!data.navn) {
+      navnFelt.setCustomValidity('Skriv navnet ditt')
+      navnFelt.reportValidity()
+      navnFelt.setCustomValidity('')
+      return
+    }
+
+    // Robotfellen: lat som det gikk, uten å sende noe.
+    if (erRobot(data)) {
+      setStatus('sendt')
+      return
+    }
 
     const bedrift = svar.navn.trim()
     const henvendelse = {
@@ -82,6 +102,7 @@ export default function Oppsummering({
       return
     }
 
+    sender.current = true
     setStatus('sender')
     try {
       await sendHenvendelse(henvendelse)
@@ -89,6 +110,8 @@ export default function Oppsummering({
     } catch (feil) {
       console.error(feil)
       setStatus('feil')
+    } finally {
+      sender.current = false
     }
   }
 
@@ -105,7 +128,9 @@ export default function Oppsummering({
           <p>
             Du hører fra oss innen to virkedager, så finner vi en halvtime til å snakke sammen.
           </p>
-          <Hovedknapp type="button" onClick={lukk}>
+          {/* Fokus hit, så tastatur og skjermleser ikke mister plassen sin
+              når skjemaet de sto i forsvinner. */}
+          <Hovedknapp type="button" onClick={lukk} autoFocus>
             Lukk
           </Hovedknapp>
         </Kvittering>
@@ -278,8 +303,9 @@ const Merke = styled.em`
   align-self: center;
   padding: 0.25rem 0.6rem;
   border-radius: ${({ theme }) => theme.borderRadius.pill};
-  background: ${({ theme }) => theme.colors.accentVivid};
-  color: ${({ theme }) => theme.colors.accentOn};
+  /* Nøytral – en merkelapp, ikke en knapp. */
+  background: ${({ theme }) => theme.colors.sunken};
+  color: ${({ theme }) => theme.colors.inkMuted};
   font-size: 0.75rem;
   font-style: normal;
   font-weight: 650;

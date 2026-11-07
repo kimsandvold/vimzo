@@ -29,8 +29,6 @@ import { BRANSJER, type Bransje } from './bransjer'
  * endrer du en pakke der, endrer forsiden seg med.
  */
 
-/** Nøkkel i sessionStorage. Kontaktsiden leser briefet herfra. */
-export const BRIEF_NOKKEL = 'vimzo-brief'
 
 /* ------------------------------------------------------------------- svar */
 
