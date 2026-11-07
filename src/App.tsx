@@ -1,5 +1,6 @@
 import { Suspense } from 'react'
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom'
+import type { ReactNode } from 'react'
 import { ThemeProvider } from 'styled-components'
 import theme from './styles/theme'
 import GlobalStyles from './styles/GlobalStyles'
@@ -17,8 +18,7 @@ export default function App() {
     <ThemeProvider theme={theme}>
       <GlobalStyles />
       <BrowserRouter>
-        <SkipLink />
-        <Navbar />
+        <Ramme>
         <main id="innhold">
           <Suspense fallback={<Laster />}>
             <Routes>
@@ -32,9 +32,29 @@ export default function App() {
             </Routes>
           </Suspense>
         </main>
-        <Footer />
-        <Kontaktknapp />
+        </Ramme>
       </BrowserRouter>
     </ThemeProvider>
+  )
+}
+
+/**
+ * Navbar, fot og kontaktknapp rundt innholdet – unntatt på eksempelsider.
+ *
+ * Eksempelet på en arrangementsside skal se ut som kundens side, ikke som
+ * vår. Med Vimzos meny over og fot under ville det sett ut som en seksjon på
+ * vimzo.no, og da beviser det ingenting.
+ */
+function Ramme({ children }: { children: ReactNode }) {
+  const { pathname } = useLocation()
+  if (pathname.endsWith('/eksempel')) return <>{children}</>
+  return (
+    <>
+      <SkipLink />
+      <Navbar />
+      {children}
+      <Footer />
+      <Kontaktknapp />
+    </>
   )
 }

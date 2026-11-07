@@ -23,18 +23,28 @@ export default function Pakkekort({ pakke }: { pakke: Pakke }) {
         </strong>
         <span>kr</span>
       </Pris>
-      <Samlet>
-        Typisk spenn · kan deles over {ANTALL_AVDRAG} mnd: <Ramme verdi={avdragRamme(pakke.pris)} /> kr/mnd
-      </Samlet>
-
-      <Deretter>
-        Drift etterpå <strong><Belop verdi={drift.pris} /> kr/mnd</strong>. Å eie siden i tre år:{' '}
-        <strong><Ramme verdi={eieOver(pakke.pris)} /> kr</strong>
-      </Deretter>
+      {pakke.driftInkludertMnd ? (
+        <>
+          <Samlet>Typisk spenn · klar på 1–2 uker</Samlet>
+          <Deretter>
+            <strong>{pakke.driftInkludertMnd} måneders drift</strong> er med i prisen.
+          </Deretter>
+        </>
+      ) : (
+        <>
+          <Samlet>
+            Typisk spenn · kan deles over {ANTALL_AVDRAG} mnd: <Ramme verdi={avdragRamme(pakke.pris)} /> kr/mnd
+          </Samlet>
+          <Deretter>
+            Drift etterpå <strong><Belop verdi={drift.pris} /> kr/mnd</strong>. Å eie siden i tre år:{' '}
+            <strong><Ramme verdi={eieOver(pakke.pris)} /> kr</strong>
+          </Deretter>
+        </>
+      )}
 
       <Fakta>
         <span>{pakke.omfang}</span>
-        <span>Leveringsdato avtales i tilbudet</span>
+        {!pakke.driftInkludertMnd && <span>Leveringsdato avtales i tilbudet</span>}
       </Fakta>
 
       <Punkter>
@@ -56,8 +66,8 @@ export default function Pakkekort({ pakke }: { pakke: Pakke }) {
       </Drivere>
 
       <Bunn>
-        <Knapp til="/kontakt" variant="myk">
-          Ta en prat om dette
+        <Knapp til={pakke.driftInkludertMnd ? '/arrangement' : '/kontakt'} variant="myk">
+          {pakke.driftInkludertMnd ? 'Les mer om arrangementssider' : 'Ta en prat om dette'}
         </Knapp>
       </Bunn>
     </Kort>

@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 import { Innsig, Pil, Seksjon, Stikkord, Wrap } from '../../ui'
 import { Ramme } from '../shared/Belop'
@@ -62,7 +63,14 @@ export default function Priser() {
               {pakker.map((p) => (
                 <li key={p.id}>
                   <span>
-                    <strong>{p.navn}</strong> · {p.omfang}
+                    {p.driftInkludertMnd ? (
+                      <Link to="/arrangement">
+                        <strong>{p.navn}</strong>
+                      </Link>
+                    ) : (
+                      <strong>{p.navn}</strong>
+                    )}{' '}
+                    · {p.omfang}
                   </span>
                   <b>
                     <Ramme verdi={p.pris} /> kr
@@ -174,6 +182,10 @@ const Spenn = styled.div`
   li strong {
     font-weight: 650;
     color: ${({ theme }) => theme.colors.ink};
+  }
+
+  li a strong {
+    color: ${({ theme }) => theme.colors.accent};
   }
 
   li b {

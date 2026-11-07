@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 import { Ingress, Innsig, Seksjon, Stikkord, Tittel, Wrap } from '../../../ui'
 import { useSEO } from '../../../hooks/useSEO'
@@ -10,6 +11,8 @@ import Avslutt from '../../hjem/Avslutt'
 import Belop from '../../shared/Belop'
 import {
   pakker,
+  varigePakker,
+  arrangement,
   driftsnivaer,
   drift,
   tilleggstjenester,
@@ -68,12 +71,29 @@ export default function PriserSide() {
       <Seksjon $flate="surface" $tett>
         <Wrap>
           <Gitter>
-            {pakker.map((p) => (
+            {varigePakker.map((p) => (
               <Pakkekort key={p.id} pakke={p} />
             ))}
           </Gitter>
           <Notat>{prisnotat}</Notat>
           <Notat>{delbetalingsnotat}</Notat>
+        </Wrap>
+      </Seksjon>
+
+      <Seksjon $flate="tint" $tett>
+        <Wrap>
+          <Kortvarig>
+            <div>
+              <Stikkord>Kortvarige sider</Stikkord>
+              <h2>Bare til et arrangement?</h2>
+              <p>
+                En messe, en konferanse eller en lansering trenger sjelden en hel nettside – men den
+                trenger en side som ser ordentlig ut den perioden den gjelder. Vi lager den på 1–2 uker,
+                med tre måneders drift inkludert. <Link to="/arrangement/eksempel">Se et eksempel</Link>.
+              </p>
+            </div>
+            <Pakkekort pakke={arrangement} />
+          </Kortvarig>
         </Wrap>
       </Seksjon>
 
@@ -142,9 +162,9 @@ export default function PriserSide() {
 
             <Tilleggsliste>
               <h3>Tillegg</h3>
-              {/* Står før prislista, ikke etter. Den som leser timeprisen uten
-                  å vite at småendringer inngår, regner feil på hele avtalen –
-                  og tør ikke si fra når noe må rettes. */}
+              {/* Står før prislista, ikke etter: hvordan endringer faktureres
+                  er det kunden oftest lurer på etter lansering, og det skal
+                  være sagt før han leser tallene. */}
               <Endringer>{endringsnotat}</Endringer>
               <dl>
                 {tilleggstjenester.map((t) => (
@@ -404,4 +424,36 @@ const Endringer = styled.p`
 
 const SeksjonsHode = styled.div`
   margin-bottom: clamp(2rem, 4vw, 3rem);
+`
+
+/** Arrangementssiden for seg: tekst til venstre, kortet til høyre. */
+const Kortvarig = styled.div`
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(2rem, 5vw, 4rem);
+  align-items: center;
+
+  /* Bare tekstspalten – kortet ved siden av har sine egne stiler. */
+  > div > h2 {
+    margin: 0;
+    font-size: ${({ theme }) => theme.fontSizes['2xl']};
+    line-height: 1.08;
+  }
+
+  > div > p {
+    margin: 1rem 0 0;
+    max-width: 46ch;
+    font-size: ${({ theme }) => theme.fontSizes.md};
+    line-height: 1.6;
+    color: ${({ theme }) => theme.colors.inkMuted};
+  }
+
+  > div > p a {
+    color: ${({ theme }) => theme.colors.accent};
+    font-weight: 600;
+  }
+
+  @media (max-width: 900px) {
+    grid-template-columns: minmax(0, 1fr);
+  }
 `

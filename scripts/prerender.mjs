@@ -50,8 +50,11 @@ async function lesRuter() {
       .filter((u) => u.startsWith(SITE_URL))
       .map((u) => new URL(u).pathname)
       .filter((p) => !p.endsWith('.html'))
+    // Sider som skal forhåndsrendres, men ikke stå i sitemap – eksempelsider
+    // med oppdiktet innhold. De har noindex, og skal ikke inviteres inn i søk.
+    const ekstra = ['/arrangement/eksempel']
     // Unik liste, forsiden først.
-    return [...new Set(ruter)].sort((a, b) => a.length - b.length)
+    return [...new Set([...ruter, ...ekstra])].sort((a, b) => a.length - b.length)
   } catch (e) {
     console.warn('[prerender] kunne ikke lese sitemap.xml – hopper over:', e.message)
     return []

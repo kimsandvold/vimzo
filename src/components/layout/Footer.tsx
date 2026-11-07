@@ -68,6 +68,9 @@ export default function Footer() {
                   <Link to="/priser">Priser</Link>
                 </li>
                 <li>
+                  <Link to="/arrangement">Arrangementssider</Link>
+                </li>
+                <li>
                   <Link to="/arbeid">Arbeid</Link>
                 </li>
                 <li>

@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { useLocation } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import styled from 'styled-components'
 import { Knapp, Seksjon, Stikkord, Wrap } from '../../../ui'
 import { useSEO } from '../../../hooks/useSEO'
@@ -7,7 +7,7 @@ import { brodsmuler, tjenesteLd } from '../../../lib/jsonLd'
 import Sidehode from '../../layout/Sidehode'
 import Avslutt from '../../hjem/Avslutt'
 import { prisFor, tjenester, type Gruppe, type Tjeneste } from '../../../data/tjenester'
-import { formaterPris, formaterRamme, pakker } from '../../../data/pakker'
+import { arrangement, formaterPris, formaterRamme, pakker } from '../../../data/pakker'
 
 const inngar = tjenester.filter((t) => t.gruppe === 'inngar')
 const tillegg = tjenester.filter((t) => t.gruppe === 'tillegg')
@@ -88,6 +88,23 @@ export default function TjenesterSide() {
               <Tjenestekort key={t.id} tjeneste={t} />
             ))}
           </Rutenett>
+        </Wrap>
+      </Seksjon>
+
+      <Seksjon $flate="tint" $tett>
+        <Wrap>
+          <Kortvarig to="/arrangement">
+            <div>
+              <Stikkord>Også kortvarige sider</Stikkord>
+              <h2>Bare til en messe eller et arrangement?</h2>
+              <p>
+                En egen side med program, påmelding og QR-kode til standen – laget på 1–2 uker, typisk{' '}
+                {formaterRamme(arrangement.pris)} kr med {arrangement.driftInkludertMnd} måneders drift
+                inkludert.
+              </p>
+            </div>
+            <span>Les om arrangementssider →</span>
+          </Kortvarig>
         </Wrap>
       </Seksjon>
 
@@ -318,5 +335,45 @@ const Usikker = styled.div`
     font-size: 0.9375rem;
     line-height: 1.65;
     color: ${({ theme }) => theme.colors.inkMuted};
+  }
+`
+
+/** Henvisning til arrangementssidene – hele kortet er lenken. */
+const Kortvarig = styled(Link)`
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem 3rem;
+  padding: clamp(1.6rem, 3vw, 2.2rem);
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  border-radius: ${({ theme }) => theme.borderRadius.large};
+  background: ${({ theme }) => theme.colors.surface};
+  color: inherit;
+  text-decoration: none;
+  transition: border-color ${({ theme }) => theme.transitions.default};
+
+  h2 {
+    margin: 0;
+    font-size: ${({ theme }) => theme.fontSizes.xl};
+    letter-spacing: -0.03em;
+  }
+
+  p {
+    margin: 0.6rem 0 0;
+    max-width: 58ch;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: ${({ theme }) => theme.colors.inkMuted};
+  }
+
+  > span {
+    flex-shrink: 0;
+    font-weight: 600;
+    color: ${({ theme }) => theme.colors.accent};
+  }
+
+  &:hover {
+    border-color: ${({ theme }) => theme.colors.accentVivid};
   }
 `
