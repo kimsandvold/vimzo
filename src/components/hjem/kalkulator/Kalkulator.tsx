@@ -54,8 +54,16 @@ export default function Kalkulator() {
     }))
   }
 
-  /** Vis oppsummeringen. Den sender ingenting før kunden selv trykker send. */
+  /**
+   * Vis oppsummeringen. Den sender ingenting før kunden selv trykker send.
+   * Mangler omfanget, finnes det ikke noe anslag å oppsummere – da går vi
+   * til steget der det velges i stedet.
+   */
   function send() {
+    if (!estimat.klar) {
+      setSteg(1)
+      return
+    }
     setOppsummering(true)
   }
 
@@ -80,9 +88,9 @@ export default function Kalkulator() {
         </Stegrad>
 
         <Lommesum aria-hidden="true">
-          <span>{estimat.pakke.navn}</span>
+          <span>{estimat.klar ? estimat.pakke.navn : 'Ditt anslag'}</span>
           <strong>
-            {formaterRamme(estimat.ramme)} kr
+            {estimat.klar ? `${formaterRamme(estimat.ramme)} kr` : 'Velg omfang i steg 2'}
           </strong>
         </Lommesum>
 
@@ -344,7 +352,7 @@ export default function Kalkulator() {
         </Bunn>
       </Panel>
 
-      <Estimat estimat={estimat} svar={svar} onSend={send} />
+      <Estimat estimat={estimat} svar={svar} onSend={send} onVelgOmfang={() => setSteg(1)} />
 
       <Oppsummering
         apen={oppsummering}

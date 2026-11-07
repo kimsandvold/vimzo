@@ -22,10 +22,13 @@ export default function Estimat({
   estimat,
   svar,
   onSend,
+  onVelgOmfang,
 }: {
   estimat: EstimatData
   svar: Svar
   onSend: () => void
+  /** Hopp til omfangssteget – kortet peker dit før det har et tall å vise. */
+  onVelgOmfang: () => void
 }) {
   const adresse = svar.domene.trim() || foreslaDomene(svar.navn) || 'hansen-ror.no'
 
@@ -53,34 +56,66 @@ export default function Estimat({
 
       <Topp>
         <Stikkord>{svar.navn.trim() ? `Anslag for ${svar.navn.trim()}` : 'Ditt anslag'}</Stikkord>
-        <Merke>Ligner på {estimat.pakke.navn}</Merke>
+        {estimat.klar && <Merke>Ligner på {estimat.pakke.navn}</Merke>}
       </Topp>
 
-      <Tall>
-        <strong>
-          <Ramme verdi={estimat.ramme} animert />
-        </strong>
-        <span>kr</span>
-      </Tall>
-      <Under>Der de fleste i din situasjon lander. Den endelige prisen setter vi etter en prat.</Under>
+      {/*
+        Ingen tall før kunden har valgt omfang. Med et forhåndsvalg møtte alle
+        det mellomste spennet før de hadde svart på noe – det leste som en
+        prislapp, ikke som et anslag. Nå kommer tallet når det er hans eget.
+      */}
+      {estimat.klar ? (
+        <>
+          <Tall>
+            <strong>
+              <Ramme verdi={estimat.ramme} animert />
+            </strong>
+            <span>kr</span>
+          </Tall>
+          {estimat.kortvarig ? (
+            <Under>med {estimat.pakke.driftInkludertMnd} måneders drift inkludert · klar på 1–2 uker</Under>
+          ) : (
+            <Under>
+              eller ca. <Ramme verdi={estimat.avdrag} /> kr/mnd over {ANTALL_AVDRAG} måneder
+            </Under>
+          )}
+          <Kontekst>
+            {estimat.kortvarig
+              ? 'Vi skriver, designer og setter siden opp – du sender program og praktisk info. Den endelige prisen setter vi etter en prat.'
+              : 'Det meste av dette er arbeid vi gjør for deg – tekst, bilder, design og oppsett. Du bruker rundt to timer. Den endelige prisen setter vi etter en prat.'}
+          </Kontekst>
+        </>
+      ) : (
+        <>
+          <Venter>Hvor mye skal fram på siden?</Venter>
+          <Kontekst>
+            Velg omfang, så regner vi ut et anslag ut fra svarene dine. Under ser du hva som er med
+            uansett.
+          </Kontekst>
+          <Velg type="button" onClick={onVelgOmfang}>
+            Velg omfang
+            <Icon navn="pilHoyre" storrelse={15} tykkelse={2} />
+          </Velg>
+        </>
+      )}
 
-      <Deretter>
-        <Icon navn="pilNed" storrelse={14} tykkelse={2.5} />
-        Drift etterpå{' '}
-        <strong>
-          <Belop verdi={estimat.drift.pris} /> kr/mnd
-        </strong>
-      </Deretter>
-
-      <Under>
-        Kan deles over {ANTALL_AVDRAG} måneder: <Ramme verdi={estimat.avdrag} /> kr/mnd
-      </Under>
+      {!estimat.kortvarig && (
+        <Deretter>
+          <Icon navn="pilNed" storrelse={14} tykkelse={2.5} />
+          Drift etterpå{' '}
+          <strong>
+            <Belop verdi={estimat.drift.pris} /> kr/mnd
+          </strong>
+        </Deretter>
+      )}
 
       <Fakta>
-        <li>
-          <Icon navn="dokument" storrelse={14} tykkelse={2} />
-          {estimat.omfang}
-        </li>
+        {estimat.klar && (
+          <li>
+            <Icon navn="dokument" storrelse={14} tykkelse={2} />
+            {estimat.omfang}
+          </li>
+        )}
         <li>
           <Icon navn="enheter" storrelse={14} tykkelse={2} />
           Mobil, nettbrett og PC
@@ -95,7 +130,7 @@ export default function Estimat({
       </Avklaring>
 
       <Bolk>
-        <Tittel>Dette pleier å inngå</Tittel>
+        <Tittel>{estimat.klar ? 'Dette pleier å inngå' : 'Dette er alltid med'}</Tittel>
         <Liste>
           {estimat.inkludert.map((punkt) => (
             <li key={punkt}>
@@ -129,17 +164,23 @@ export default function Estimat({
 
       {/* Bygget pluss tre års drift – det ærligste tallet for hva siden
           faktisk koster å ha. */}
-      <Drift>
-        <span>Å eie siden i tre år</span>
-        <strong>
-          <Ramme verdi={estimat.treAr} animert /> kr
-        </strong>
-      </Drift>
+      {estimat.klar && (
+        <>
+          {!estimat.kortvarig && (
+          <Drift>
+            <span>Å eie siden i tre år</span>
+            <strong>
+              <Ramme verdi={estimat.treAr} animert /> kr
+            </strong>
+          </Drift>
+          )}
 
-      <Send type="button" onClick={onSend}>
-        Ta en prat om dette
-        <Icon navn="pilHoyre" storrelse={16} tykkelse={2} />
-      </Send>
+          <Send type="button" onClick={onSend}>
+            Ta en prat om dette
+            <Icon navn="pilHoyre" storrelse={16} tykkelse={2} />
+          </Send>
+        </>
+      )}
 
       <Note>Et anslag, ikke et tilbud. Ingenting sendes før du selv trykker send. Alle beløp er eks. mva.</Note>
     </Flate>
@@ -510,4 +551,44 @@ const Note = styled.p`
   font-size: 0.875rem;
   line-height: 1.5;
   color: rgba(252, 252, 250, 0.52);
+`
+
+/** Linja under tallet: hva pengene går til, i samme øyeblikk som de vises. */
+const Kontekst = styled.p`
+  margin: 0.75rem 0 0;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: rgba(252, 252, 250, 0.72);
+`
+
+/** Tallets plass før det finnes et tall. Ord, ikke sifre – det er et spørsmål. */
+const Venter = styled.p`
+  margin: 0;
+  font-size: clamp(1.5rem, 2.4vw, 1.9rem);
+  font-weight: 650;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+  color: ${({ theme }) => theme.colors.accentLight};
+`
+
+const Velg = styled.button`
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  gap: 0.45rem;
+  margin-top: 1rem;
+  padding: 0.6rem 1.1rem;
+  border: 1px solid rgba(182, 169, 255, 0.4);
+  border-radius: ${({ theme }) => theme.borderRadius.pill};
+  background: rgba(182, 169, 255, 0.1);
+  color: ${({ theme }) => theme.colors.accentLight};
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background ${({ theme }) => theme.transitions.default};
+
+  &:hover {
+    background: rgba(182, 169, 255, 0.18);
+  }
 `

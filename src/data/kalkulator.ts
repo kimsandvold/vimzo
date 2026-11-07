@@ -35,7 +35,7 @@ export const BRIEF_NOKKEL = 'vimzo-brief'
 /* ------------------------------------------------------------------- svar */
 
 export type Domenevalg = 'trenger' | 'har'
-export type Omfang = 'enkel' | 'tjenestesider' | 'omfattende'
+export type Omfang = 'enkel' | 'tjenestesider' | 'omfattende' | 'arrangement'
 export type Bildevalg = 'har' | 'trenger'
 export type Logovalg = 'har' | 'trenger' | 'profil'
 
@@ -57,7 +57,12 @@ export interface Svar {
   /** Domenet han vil ha, eller det han allerede eier. Tomt er greit. */
   domene: string
   bransje: Bransje
-  omfang: Omfang
+  /**
+   * `null` til kunden har valgt. Det er med vilje: med et forhåndsvalg møtte
+   * alle det mellomste prisspennet før de hadde svart på noe, og da leste
+   * tallet som «dette koster det» i stedet for «dette er ditt anslag».
+   */
+  omfang: Omfang | null
   bilder: Bildevalg
   logo: Logovalg
   /** Verktøy som skal bygges inn i siden. Id-er fra `VERKTOY`. */
@@ -70,8 +75,10 @@ export const STARTSVAR: Svar = {
   domenevalg: 'trenger',
   domene: '',
   bransje: BRANSJER[0],
-  omfang: 'tjenestesider',
-  bilder: 'trenger',
+  omfang: null,
+  // Ingen tillegg før kunden selv velger dem. Sto det «kom og ta dem» her,
+  // ville anslaget inneholdt en fotojobb ingen hadde bedt om.
+  bilder: 'har',
   logo: 'har',
   verktoy: [],
 }
@@ -105,6 +112,7 @@ export const OMFANG: readonly Alternativ<Omfang>[] = [
   { verdi: 'enkel', navn: 'Én side holder', hint: 'Hvem vi er, hva vi gjør, ta kontakt' },
   { verdi: 'tjenestesider', navn: 'Egen side per tjeneste', hint: 'Hver tjeneste kan treffe i Google for seg' },
   { verdi: 'omfattende', navn: 'Mer enn det', hint: 'Flere steder, produkter eller fagstoff' },
+  { verdi: 'arrangement', navn: 'Bare for et arrangement', hint: 'En messe, en konferanse eller en kampanje – i en periode' },
 ]
 
 export const BILDER: readonly Alternativ<Bildevalg>[] = [
@@ -187,6 +195,7 @@ export interface Verktoy {
 
 export const VERKTOY: readonly Verktoy[] = [
   { id: 'befaring', navn: 'Bestill befaring', ikon: 'kamera', hint: 'Kunden sender bilde av problemet og får et anslag', pris: tilleggPris('Regneverktøy eller kalkulator').pris, fraPris: true, lagrerData: true },
+  { id: 'pamelding', navn: 'Påmelding', ikon: 'dokument', hint: 'Deltakerne melder seg på, begge får bekreftelse', pris: tilleggPris('Påmelding til arrangement').pris, fraPris: true, lagrerData: true },
   { id: 'timebestilling', navn: 'Timebestilling', ikon: 'klokke', hint: 'Kunden booker ledig tid, begge får bekreftelse', pris: tilleggPris('Regneverktøy eller kalkulator').pris, fraPris: true, lagrerData: true },
   { id: 'kalkulator', navn: 'Priskalkulator', ikon: 'graf', hint: 'Kunden regner ut prisen sin selv, før han ringer', pris: tilleggPris('Regneverktøy eller kalkulator').pris, fraPris: true },
   { id: 'omtaler', navn: 'Google-omtaler', ikon: 'gnist', hint: 'Stjernene hentes inn og bakes rett i siden', pris: 3900 },
@@ -210,6 +219,18 @@ export interface Linje {
 }
 
 export interface Estimat {
+  /**
+   * Sant når kunden har svart nok til at et anslag gir mening – i praksis når
+   * omfanget er valgt. Før det viser kortet hva som pleier å inngå, men ikke
+   * noe tall.
+   */
+  klar: boolean
+  /**
+   * Sant for en kortvarig side der driften er med i prisen. Da vises verken
+   * løpende drift, nedbetaling over tolv måneder eller treårstotal – ingen
+   * av dem gir mening for en side som skal leve i tre måneder.
+   */
+  kortvarig: boolean
   pakke: Pakke
   /** Det pakken dekker, ordrett fra `pakker.ts`. */
   inkludert: readonly string[]
@@ -246,9 +267,19 @@ export interface Estimat {
  * om hver tjeneste skal kunne treffe i Google, kan han svare.
  */
 function velgPakke(svar: Svar): Pakke {
-  const id = svar.omfang === 'omfattende' ? 'vekst' : svar.omfang === 'tjenestesider' ? 'bedrift' : 'start'
+  const id =
+    svar.omfang === 'arrangement'
+      ? 'arrangement'
+      : svar.omfang === 'omfattende'
+        ? 'vekst'
+        : svar.omfang === 'tjenestesider'
+          ? 'bedrift'
+          : 'start'
   return pakker.find((p) => p.id === id) ?? pakker[0]
 }
+
+/** Pakkene som har en fotojobb med i prisen. */
+const MED_FOTO = ['bedrift', 'vekst']
 
 /**
  * Sant når pakken svarene lander på allerede dekker fotojobben.
@@ -258,7 +289,7 @@ function velgPakke(svar: Svar): Pakke {
  * tar betalt to ganger for det samme.
  */
 export function fotoInngar(svar: Svar): boolean {
-  return velgPakke(svar).id !== 'start'
+  return MED_FOTO.includes(velgPakke(svar).id)
 }
 
 /**
@@ -282,7 +313,7 @@ export function regnUt(svar: Svar): Estimat {
   const tillegg: Linje[] = []
 
   if (svar.bilder === 'trenger') {
-    const dekket = pakke.id !== 'start'
+    const dekket = MED_FOTO.includes(pakke.id)
     tillegg.push({ navn: dekket ? 'Foto hos deg' : 'Foto hos deg, halv dag', pris: dekket ? 0 : TILLEGG.foto, dekket, fraPris: !dekket })
   }
 
@@ -307,6 +338,8 @@ export function regnUt(svar: Svar): Estimat {
   const drift = driftsnivaer[0]
 
   return {
+    klar: svar.omfang !== null,
+    kortvarig: !!pakke.driftInkludertMnd,
     pakke,
     inkludert: pakke.punkter,
     tillegg,
@@ -333,7 +366,7 @@ export function lagBrief(svar: Svar, estimat: Estimat): string {
       ? `Domene: har allerede ${svar.domene.trim() || '(ikke oppgitt)'} – må pekes hit, sjekk e-post og gamle lenker`
       : `Domene: trenger nytt. Ønske: ${svar.domene.trim() || 'ingen – vi foreslår'}`,
     '',
-    `Omfang: ${OMFANG.find((o) => o.verdi === svar.omfang)?.navn}`,
+    `Omfang: ${OMFANG.find((o) => o.verdi === svar.omfang)?.navn ?? '(ikke valgt)'}`,
     `Bilder: ${BILDER.find((b) => b.verdi === svar.bilder)?.navn}`,
     `Logo: ${LOGO.find((l) => l.verdi === svar.logo)?.navn}`,
     `Verktøy: ${svar.verktoy.length ? VERKTOY.filter((v) => svar.verktoy.includes(v.id)).map((v) => v.navn).join(', ') : 'Ingen'}`,
@@ -348,8 +381,10 @@ export function lagBrief(svar: Svar, estimat: Estimat): string {
 
   linjer.push(
     '',
-    `Anslag: ${formaterRamme(estimat.ramme)} kr, eller ${formaterRamme(estimat.avdrag)} kr/mnd over ${ANTALL_AVDRAG} måneder.`,
-    `Drift: ${estimat.drift.pris} kr/mnd.`,
+    estimat.kortvarig
+      ? `Anslag: ${formaterRamme(estimat.ramme)} kr, med ${estimat.pakke.driftInkludertMnd} måneders drift inkludert.`
+      : `Anslag: ${formaterRamme(estimat.ramme)} kr, eller ${formaterRamme(estimat.avdrag)} kr/mnd over ${ANTALL_AVDRAG} måneder.`,
+    ...(estimat.kortvarig ? [] : [`Drift: ${estimat.drift.pris} kr/mnd.`]),
     '',
     'Anslag fra kalkulatoren på forsiden – den endelige prisen avtales etter en prat. Alle beløp er eks. mva.',
   )
