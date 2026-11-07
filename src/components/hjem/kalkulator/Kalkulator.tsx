@@ -68,7 +68,9 @@ export default function Kalkulator() {
   }
 
   return (
-    <Rute>
+    // «Fri sone»: kalkulatoren har sin egen «Ta en prat om dette», så den
+    // flytende kontaktknappen viker mens den er på skjermen.
+    <Rute data-fri-sone>
       <Panel>
         <Stegrad role="tablist" aria-label="Steg i kalkulatoren">
           {STEG.map((navn, i) => (
@@ -88,10 +90,8 @@ export default function Kalkulator() {
         </Stegrad>
 
         <Lommesum aria-hidden="true">
-          <span>{estimat.klar ? estimat.pakke.navn : 'Ditt anslag'}</span>
-          <strong>
-            {estimat.klar ? `${formaterRamme(estimat.ramme)} kr` : 'Velg omfang i steg 2'}
-          </strong>
+          <span>{estimat.klar ? `Anslag · ${estimat.pakke.navn}` : 'Ditt anslag'}</span>
+          {estimat.klar ? <strong>{formaterRamme(estimat.ramme)} kr</strong> : <em>Velg omfang i steg 2</em>}
         </Lommesum>
 
         <Felt>
@@ -104,7 +104,7 @@ export default function Kalkulator() {
                     id={navnId}
                     value={svar.navn}
                     onChange={(e) => sett('navn', e.target.value)}
-                    placeholder="Hansen Rør"
+                    placeholder="F.eks. Hansen Rør"
                     autoComplete="organization"
                   />
                 </Merkelapp>
@@ -114,7 +114,7 @@ export default function Kalkulator() {
                     id={stedId}
                     value={svar.sted}
                     onChange={(e) => sett('sted', e.target.value)}
-                    placeholder="Lillehammer"
+                    placeholder="F.eks. Lillehammer"
                     autoComplete="address-level2"
                   />
                 </Merkelapp>
@@ -519,28 +519,35 @@ const Lommesum = styled.div`
 
   @media (max-width: 1040px) {
     display: flex;
-    align-items: baseline;
+    align-items: center;
     justify-content: space-between;
     gap: 1rem;
-    margin-top: 0.9rem;
-    padding: 0.6rem 0.85rem;
+    margin-top: 1rem;
+    padding: 0.8rem 1rem;
     border-radius: ${({ theme }) => theme.borderRadius.medium};
-    background: ${({ theme }) => theme.colors.accentSoft};
+    background: ${({ theme }) => theme.colors.deep};
+    color: ${({ theme }) => theme.colors.inkInverted};
 
     span {
-      font-size: 0.75rem;
-      font-weight: 650;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      color: ${({ theme }) => theme.colors.accentInk};
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: ${({ theme }) => theme.colors.inkInvertedMuted};
     }
 
     strong {
-      font-family: ${({ theme }) => theme.fonts.mono};
       font-size: 1.0625rem;
-      font-weight: 600;
-      letter-spacing: -0.03em;
-      color: ${({ theme }) => theme.colors.accentInk};
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+      color: ${({ theme }) => theme.colors.inkInverted};
+    }
+
+    em {
+      font-size: 0.875rem;
+      font-style: normal;
+      font-weight: 500;
+      color: ${({ theme }) => theme.colors.accentLight};
     }
   }
 `
@@ -556,7 +563,7 @@ const Gruppe = styled.fieldset`
 const Overskrift = styled.p`
   margin: 0 0 0.2rem;
   padding: 0;
-  font-size: 0.95rem;
+  font-size: 0.9375rem;
   font-weight: 600;
   letter-spacing: -0.015em;
   color: ${({ theme }) => theme.colors.ink};
@@ -584,15 +591,19 @@ const Parrad = styled.div`
   }
 `
 
+/**
+ * Etikett med felt under. Samme stil som spørsmålene («Hva driver du med?») –
+ * de sto i versaler før, og da hadde kalkulatoren tre ulike etikettstiler på
+ * én skjerm.
+ */
 const Merkelapp = styled.label`
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
-  font-size: 0.75rem;
-  font-weight: 650;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: ${({ theme }) => theme.colors.inkSubtle};
+  gap: 0.5rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  color: ${({ theme }) => theme.colors.ink};
 
   input {
     width: 100%;
@@ -603,7 +614,8 @@ const Merkelapp = styled.label`
        forsvinner. Feltet skal lese som et felt. */
     background: ${({ theme }) => theme.colors.surface};
     font-family: inherit;
-    font-size: 0.9375rem;
+    /* 16 px: under det zoomer iPhone inn når feltet får fokus. */
+    font-size: 1rem;
     font-weight: 500;
     letter-spacing: -0.01em;
     color: ${({ theme }) => theme.colors.ink};
@@ -634,6 +646,12 @@ const Etikettrad = styled.span`
   display: flex;
   align-items: baseline;
   gap: 0.4rem;
+  margin: 0;
+  padding: 0;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  color: ${({ theme }) => theme.colors.ink};
 `
 
 /** «valgfritt» inne i en feltetikett. Små bokstaver, så den ikke roper. */
@@ -700,7 +718,7 @@ const Domenefelt = styled.input`
   border-radius: ${({ theme }) => theme.borderRadius.medium};
   background: ${({ theme }) => theme.colors.surface};
   font-family: inherit;
-  font-size: 0.9375rem;
+  font-size: 1rem;
   font-weight: 500;
   letter-spacing: -0.01em;
   color: ${({ theme }) => theme.colors.ink};

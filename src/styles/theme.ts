@@ -128,7 +128,17 @@ const theme = {
      * En display-skrift oppå det ville vært pynt på noe som alt virker.
      */
     display: '"Geist", -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Segoe UI", sans-serif',
-    mono: '"Geist Mono", "SF Mono", ui-monospace, Menlo, Consolas, monospace',
+    /**
+     * «Tallskriften» – nå samme skrift som resten.
+     *
+     * Den var Geist Mono før, til priser, tall og små etiketter. Det ga to
+     * skriftstemmer på samme flate, og der den ble brukt til vanlig tekst
+     * («Velg omfang i steg 2») leste den som en terminal. Nå er det Geist
+     * overalt, med `tabular-nums` der tall står, så sifrene fortsatt har lik
+     * bredde og ikke hopper når et beløp teller seg fram. Én font mindre å
+     * laste, også.
+     */
+    mono: '"Geist", -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Segoe UI", Arial, sans-serif',
   },
 
   /**

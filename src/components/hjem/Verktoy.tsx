@@ -5,10 +5,10 @@ import { verktoy } from '../../data/verktoy'
 /**
  * Regneverktøyene, satt som en liste – ikke som kort.
  *
- * En liste med store, klikkbare rader leser raskere enn seks bokser, og den
+ * En liste med store, klikkbare rader leser raskere enn et rutenett av bokser, og den
  * tåler at vi legger til flere eksempler uten at gitteret blir rotete.
  * Bransjen står til venstre som en kolonne, så leseren finner sin egen med
- * øynene i stedet for å lese alle seks.
+ * øynene i stedet for å lese alle.
  */
 export default function Verktoy() {
   return (
@@ -67,7 +67,7 @@ const Bransje = styled.span`
 `
 
 const Navn = styled.span`
-  /* Grotesk, ikke serif. Seks radnavn i displayserif leste som seks
+  /* Grotesk, ikke serif. Radnavn i displayserif leste som
      overskrifter stablet oppå hverandre – da betyr ikke serifen noe lenger. */
   font-family: ${({ theme }) => theme.fonts.body};
   font-size: clamp(1.15rem, 1.8vw, 1.5rem);

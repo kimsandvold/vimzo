@@ -30,6 +30,14 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', vedRulling)
   }, [])
 
+  // Ved sidebytte: slipp fokus fra menylenken som ble klikket. Ellers
+  // beholder den fokus på den nye siden, og første tastetrykk – også en
+  // snarvei – får nettleseren til å tegne fokusringen rundt den.
+  useEffect(() => {
+    const aktiv = document.activeElement
+    if (aktiv instanceof HTMLElement && aktiv.closest('header, #mobilmeny')) aktiv.blur()
+  }, [pathname])
+
   // Lås rulling mens menyen er åpen. Selve lukkingen skjer der den hører
   // hjemme – i klikket på en lenke – ikke som en effekt på ruteendring.
   useEffect(() => {
@@ -133,12 +141,23 @@ const Topp = styled.header<{ $rullet: boolean; $mork: boolean }>`
     width: 100%;
   }
 
-  ${({ $rullet, theme }) =>
+  /*
+   * Frostet glass når man har rullet: mer gjennomsiktig enn før, men med
+   * kraftigere blur, så innholdet under skimtes uten å konkurrere med
+   * lenkene. Kanten er en svak linje i stedet for en hel strek.
+   */
+  ${({ $rullet }) =>
     $rullet &&
     css`
-      background: rgba(247, 248, 250, 0.82);
-      backdrop-filter: saturate(180%) blur(14px);
-      border-bottom-color: ${theme.colors.border};
+      background: rgba(250, 250, 252, 0.7);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      backdrop-filter: saturate(180%) blur(20px);
+      border-bottom-color: rgba(12, 13, 12, 0.07);
+
+      /* Uten blur ville gjennomsiktigheten gjort teksten vanskelig å lese. */
+      @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+        background: rgba(250, 250, 252, 0.94);
+      }
     `}
 `
 

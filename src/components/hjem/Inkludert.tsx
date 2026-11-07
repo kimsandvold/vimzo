@@ -31,7 +31,7 @@ export default function Inkludert() {
           <Kolonner>
             <Spalte>
               <Overskrift>
-                Vi gjør <Antall>{viGjor.length}</Antall>
+                Vi gjør
               </Overskrift>
               <Liste>
                 {viGjor.map((p) => (
@@ -46,7 +46,7 @@ export default function Inkludert() {
             {/* Den korte spalta er poenget. Den skal se kort ut. */}
             <Spalte $din>
               <Overskrift>
-                Du gjør <Antall>{duGjor.length}</Antall>
+                Du gjør
               </Overskrift>
               <Liste>
                 {duGjor.map((p) => (
@@ -108,22 +108,6 @@ const Overskrift = styled.h3`
   letter-spacing: -0.025em;
 `
 
-/** Tallet står med, fordi åtte mot to er hele poenget. */
-const Antall = styled.span`
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 1.75rem;
-  height: 1.75rem;
-  padding: 0 0.4rem;
-  border-radius: ${({ theme }) => theme.borderRadius.pill};
-  background: ${({ theme }) => theme.colors.surface};
-  font-family: ${({ theme }) => theme.fonts.mono};
-  font-size: 0.875rem;
-  font-weight: 600;
-  letter-spacing: -0.03em;
-  color: ${({ theme }) => theme.colors.ink};
-`
 
 const Liste = styled.ul`
   display: grid;
