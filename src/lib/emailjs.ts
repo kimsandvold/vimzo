@@ -26,6 +26,9 @@ const BEKREFTELSE = import.meta.env.VITE_EMAILJS_BEKREFTELSE_ID as string | unde
 
 export const emailjsKlar = Boolean(SERVICE && MAL && NOKKEL)
 
+/** Sant når kunden får en bekreftelse på e-post – så kvitteringen kan si det. */
+export const bekreftelseKlar = emailjsKlar && Boolean(import.meta.env.VITE_EMAILJS_BEKREFTELSE_ID)
+
 export interface Henvendelse {
   emne: string
   navn: string
@@ -92,3 +95,17 @@ export function lesSkjema(skjema: HTMLFormElement): Record<string, string> {
  * ved en feil, skal ikke bli stående foran en knapp som ikke gjør noe.
  */
 export const erRobot = (data: Record<string, string>) => Boolean(data.nettsted)
+
+/**
+ * Varsle Vimzo om noe som skjer på Min side – en ny melding, et godtatt
+ * tilbud. Bruker hovedmalen, ikke bekreftelsen: dette skal til deg, ikke til
+ * kunden. Feiler det, er det ingen skade skjedd – det står uansett i /admin.
+ */
+export async function varsleVimzo(varsel: Henvendelse): Promise<void> {
+  if (!emailjsKlar) return
+  try {
+    await send(MAL as string, varsel)
+  } catch (feil) {
+    console.error('Varselet til Vimzo ble ikke sendt:', feil)
+  }
+}

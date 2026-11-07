@@ -6,6 +6,7 @@ import { brodsmuler } from '../../../lib/jsonLd'
 import Sidehode from '../../layout/Sidehode'
 import { firma } from '../../../data/firma'
 import { emailjsKlar } from '../../../lib/emailjs'
+import { firebaseKlar } from '../../../lib/firebase'
 
 /**
  * Personvernerklæring.
@@ -64,6 +65,24 @@ export default function PersonvernSide() {
             </p>
             {/* TODO: fyll inn hvor EmailJS lagrer og behandler data, og
                 overføringsgrunnlaget hvis det er utenfor EØS (art. 13 nr. 1 f). */}
+            {/* TODO: bekreft at Firestore-databasen er opprettet i et europeisk
+                datasenter (f.eks. europe-west1/eur3) før denne teksten publiseres. */}
+            {firebaseKlar && (
+              <p>
+                Henvendelser lagres også i en database hos Google Firebase, i et datasenter i Europa,
+                slik at vi kan følge dem opp. Bare Vimzo har tilgang, og bare etter innlogging. Google
+                er databehandler for oss. Henvendelser som ikke fører til et oppdrag, slettes innen
+                tolv måneder, som beskrevet under.
+              </p>
+            )}
+            {firebaseKlar && (
+              <p>
+                Kunder vi har et oppdrag for, kan få tilgang til Min side. Logger du inn der, lagres
+                e-postadressen din – og navnet ditt hvis du bruker Google – hos Google Firebase, slik at
+                vi kan vise deg ditt eget prosjekt. Kontoen slettes når du ber om det, eller når
+                oppdraget er avsluttet og det ikke lenger er behov for den.
+              </p>
+            )}
             {emailjsKlar && (
               <p>
                 Kontaktskjemaet og oppsummeringen fra kalkulatoren sendes via EmailJS, en

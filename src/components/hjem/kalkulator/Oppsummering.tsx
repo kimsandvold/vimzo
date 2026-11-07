@@ -3,7 +3,8 @@ import styled from 'styled-components'
 import Icon from '../../shared/Icon'
 import { epost } from '../../../data/firma'
 import { formaterRamme } from '../../../data/pakker'
-import { emailjsKlar, erRobot, lesSkjema, sendHenvendelse } from '../../../lib/emailjs'
+import { bekreftelseKlar, erRobot, lesSkjema } from '../../../lib/emailjs'
+import { kanSende, sendInn } from '../../../lib/innsending'
 import type { Estimat, Svar } from '../../../data/kalkulator'
 
 type Status = 'klar' | 'sender' | 'sendt' | 'feil'
@@ -41,6 +42,7 @@ export default function Oppsummering({
    */
   const sender = useRef(false)
   const tittelId = useId()
+  const [mottaker, setMottaker] = useState<{ navn: string; epost: string } | null>(null)
 
   useEffect(() => {
     const dialog = ref.current
@@ -87,7 +89,7 @@ export default function Oppsummering({
       brief,
     }
 
-    if (!emailjsKlar) {
+    if (!kanSende) {
       const linjer = [
         `Navn: ${henvendelse.navn || '–'}`,
         `E-post: ${henvendelse.epost || '–'}`,
@@ -105,7 +107,18 @@ export default function Oppsummering({
     sender.current = true
     setStatus('sender')
     try {
-      await sendHenvendelse(henvendelse)
+      setMottaker({ navn: henvendelse.navn.split(' ')[0], epost: henvendelse.epost })
+      await sendInn(henvendelse, {
+        kilde: 'kalkulator',
+        navn: henvendelse.navn,
+        bedrift: henvendelse.bedrift,
+        epost: henvendelse.epost,
+        telefon: henvendelse.telefon,
+        melding: henvendelse.melding,
+        brief,
+        pakke: estimat.pakke.navn,
+        anslag: estimat.ramme,
+      })
       setStatus('sendt')
     } catch (feil) {
       console.error(feil)
@@ -123,11 +136,27 @@ export default function Oppsummering({
 
       {status === 'sendt' ? (
         <Kvittering role="status">
-          <Icon navn="sjekk" storrelse={26} tykkelse={2.4} />
-          <h2 id={tittelId}>Takk – det er sendt</h2>
+          <Hake aria-hidden="true">
+            <Icon navn="sjekk" storrelse={22} tykkelse={2.6} />
+          </Hake>
+          <h2 id={tittelId}>{mottaker?.navn ? `Takk, ${mottaker.navn}!` : 'Takk!'} Det er sendt.</h2>
           <p>
-            Du hører fra oss innen to virkedager, så finner vi en halvtime til å snakke sammen.
+            Du hører fra oss innen to virkedager, så finner vi en halvtime til å snakke sammen – på
+            telefon eller video.
           </p>
+          {mottaker?.epost && (
+            <Bekreftet>
+              {bekreftelseKlar ? (
+                <>
+                  En bekreftelse med svarene dine er sendt til <strong>{mottaker.epost}</strong>.
+                </>
+              ) : (
+                <>
+                  Vi svarer til <strong>{mottaker.epost}</strong>.
+                </>
+              )}
+            </Bekreftet>
+          )}
           {/* Fokus hit, så tastatur og skjermleser ikke mister plassen sin
               når skjemaet de sto i forsvinner. */}
           <Hovedknapp type="button" onClick={lukk} autoFocus>
@@ -196,7 +225,7 @@ export default function Oppsummering({
                 Endre svarene
               </Tilbake>
               <Hovedknapp type="submit" disabled={status === 'sender'}>
-                {status === 'sender' ? 'Sender …' : emailjsKlar ? 'Send til Vimzo' : 'Åpne som e-post'}
+                {status === 'sender' ? 'Sender …' : kanSende ? 'Send til Vimzo' : 'Åpne som e-post'}
                 {status !== 'sender' && <Icon navn="pilHoyre" storrelse={16} tykkelse={2} />}
               </Hovedknapp>
             </Bunn>
@@ -467,21 +496,41 @@ const Kvittering = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 0.25rem;
 
-  > svg {
-    margin-bottom: 0.75rem;
-    color: ${({ theme }) => theme.colors.accent};
+  h2 {
+    margin: 1.1rem 2.5rem 0.6rem 0;
   }
 
-  p {
+  > p {
     margin: 0 0 1.25rem;
-    font-size: 0.9375rem;
+    font-size: 1rem;
     line-height: 1.6;
     color: ${({ theme }) => theme.colors.inkMuted};
   }
+`
 
-  a {
-    color: ${({ theme }) => theme.colors.accent};
+const Hake = styled.span`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: ${({ theme }) => theme.colors.successSoft};
+  color: ${({ theme }) => theme.colors.success};
+`
+
+const Bekreftet = styled.p`
+  align-self: stretch;
+  margin: 0 0 1.25rem;
+  padding: 0.8rem 1rem;
+  border-radius: ${({ theme }) => theme.borderRadius.medium};
+  background: ${({ theme }) => theme.colors.sunken};
+  font-size: 0.9rem;
+  color: ${({ theme }) => theme.colors.inkMuted};
+
+  strong {
+    font-weight: 600;
+    color: ${({ theme }) => theme.colors.ink};
   }
 `

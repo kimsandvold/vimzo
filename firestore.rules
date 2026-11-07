@@ -1,0 +1,121 @@
+rules_version = '2';
+
+// Sikkerhetsreglene for vimzo.no.
+//
+// Dette er det som faktisk beskytter dataene. Firebase-konfigurasjonen i
+// nettleseren er offentlig; uten disse reglene kunne hvem som helst lese
+// databasen.
+//
+// Tre samlinger, tre nivåer:
+//
+//  henvendelser/{id}  Den interne saken, med notater og alt. Bare admin.
+//                     Offentlige skjemaer kan OPPRETTE – aldri lese.
+//
+//  prosjekter/{id}    Det kunden ser på Min side: status, tidslinje, tilbud,
+//                     faktura. Skrives av admin. Kunden kan lese sitt eget –
+//                     koblet via bekreftet e-postadresse – og endre nøyaktig
+//                     to ting: godta tilbudet, og stemple at det er skrevet
+//                     en ny melding.
+//
+//  …/meldinger/{id}   Tråden mellom kunden og Vimzo. Begge kan skrive, ingen
+//                     kan endre noe som er skrevet.
+//
+// Legges inn med `firebase deploy --only firestore:rules`, eller i
+// Firebase-konsollen under Firestore → Regler.
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function innlogget() {
+      return request.auth != null && request.auth.token.email_verified == true;
+    }
+
+    function erAdmin() {
+      return innlogget() && request.auth.token.email in ['kimsandvold@gmail.com', 'post@vimzo.no'];
+    }
+
+    function minEpost() {
+      return request.auth.token.email.lower();
+    }
+
+    function tekst(felt, maks) {
+      return request.resource.data[felt] is string && request.resource.data[felt].size() <= maks;
+    }
+
+    function gyldigAnslag() {
+      let a = request.resource.data.anslag;
+      return a == null || (a is map && a.keys().hasOnly(['fra', 'til']) && a.fra is number && (a.til == null || a.til is number));
+    }
+
+    // En henvendelse fra et offentlig skjema.
+    function gyldigNy() {
+      let d = request.resource.data;
+      return d.keys().hasOnly(['kilde', 'navn', 'bedrift', 'epost', 'telefon', 'melding', 'brief', 'pakke', 'anslag', 'status', 'opprettet'])
+        && d.kilde in ['kalkulator', 'kontakt']
+        && d.status == 'ny'
+        && d.opprettet == request.time
+        && tekst('navn', 200) && d.navn.size() > 0
+        && tekst('bedrift', 200)
+        && tekst('epost', 254) && d.epost.matches('^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$')
+        && tekst('telefon', 40)
+        && tekst('melding', 5000)
+        && tekst('brief', 5000)
+        && tekst('pakke', 200)
+        && gyldigAnslag();
+    }
+
+    match /henvendelser/{id} {
+      allow create: if erAdmin() || gyldigNy();
+      allow read, update, delete: if erAdmin();
+    }
+
+    match /prosjekter/{id} {
+      function egetProsjekt() {
+        return innlogget() && resource.data.kundeEpost == minEpost();
+      }
+
+      // Det eneste kunden får endre. Hvert felt kan bare settes til
+      // serverens klokkeslett – kunden kan ikke datere noe selv.
+      function godtarTilbud() {
+        return request.resource.data.diff(resource.data).affectedKeys().hasOnly(['tilbudGodtatt'])
+          && resource.data.tilbud != null
+          && resource.data.tilbudGodtatt == null
+          && request.resource.data.tilbudGodtatt == request.time;
+      }
+
+      function stemplerMelding() {
+        return request.resource.data.diff(resource.data).affectedKeys().hasOnly(['sistKundemelding'])
+          && request.resource.data.sistKundemelding == request.time;
+      }
+
+      allow read: if erAdmin() || egetProsjekt();
+      allow create, delete: if erAdmin();
+      allow update: if erAdmin() || (egetProsjekt() && (godtarTilbud() || stemplerMelding()));
+
+      match /meldinger/{melding} {
+        function erKunde() {
+          return innlogget()
+            && get(/databases/$(database)/documents/prosjekter/$(id)).data.kundeEpost == minEpost();
+        }
+
+        function gyldigMelding(fra) {
+          let d = request.resource.data;
+          return d.keys().hasOnly(['fra', 'navn', 'tekst', 'tid'])
+            && d.fra == fra
+            && d.tid == request.time
+            && d.tekst is string && d.tekst.size() > 0 && d.tekst.size() <= 5000
+            && d.navn is string && d.navn.size() <= 200;
+        }
+
+        allow read: if erAdmin() || erKunde();
+        allow create: if (erAdmin() && gyldigMelding('vimzo')) || (erKunde() && gyldigMelding('kunde'));
+        allow delete: if erAdmin();
+      }
+    }
+
+    // Alt annet er stengt.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

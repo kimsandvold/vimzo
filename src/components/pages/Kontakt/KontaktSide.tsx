@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import styled from 'styled-components'
 import { Knapp, Seksjon, Wrap } from '../../../ui'
 import { useSEO } from '../../../hooks/useSEO'
@@ -8,7 +8,8 @@ import Sidehode from '../../layout/Sidehode'
 import Icon from '../../shared/Icon'
 import { firma, epost } from '../../../data/firma'
 import { pakker, formaterRamme } from '../../../data/pakker'
-import { emailjsKlar, erRobot, lesSkjema, sendHenvendelse } from '../../../lib/emailjs'
+import { bekreftelseKlar, erRobot, lesSkjema } from '../../../lib/emailjs'
+import { kanSende, sendInn } from '../../../lib/innsending'
 
 /*
  * Skjemaet sendes via EmailJS (se `src/lib/emailjs.ts`), samme vei som
@@ -22,6 +23,8 @@ type Status = 'klar' | 'sender' | 'sendt' | 'feil'
 export default function KontaktSide() {
   const [status, setStatus] = useState<Status>('klar')
   const kvitteringRef = useRef<HTMLDivElement>(null)
+  /** Hvem kvitteringen er til – hentes før skjemaet tømmes. */
+  const [mottaker, setMottaker] = useState<{ navn: string; epost: string } | null>(null)
   /** Sperre mot dobbel innsending – en ref, fordi et dobbeltklikk kommer før neste render. */
   const sender = useRef(false)
 
@@ -86,7 +89,7 @@ export default function KontaktSide() {
 
     const emne = `Forespørsel fra ${data.bedrift || data.navn}`
 
-    if (!emailjsKlar) {
+    if (!kanSende) {
       const linjer = [
         `Bedrift: ${data.bedrift || '–'}`,
         `Navn: ${data.navn || '–'}`,
@@ -102,7 +105,7 @@ export default function KontaktSide() {
     sender.current = true
     setStatus('sender')
     try {
-      await sendHenvendelse({
+      await sendInn({
         emne,
         navn: data.navn,
         bedrift: data.bedrift,
@@ -112,7 +115,18 @@ export default function KontaktSide() {
         // Malen har en egen bolk for kalkulatoren. Fra kontaktsiden står den
         // ellers tom, og da ser det ut som noe har falt bort.
         brief: 'Sendt fra kontaktskjemaet – kalkulatoren ble ikke brukt.',
+      }, {
+        kilde: 'kontakt',
+        navn: data.navn,
+        bedrift: data.bedrift,
+        epost: data.epost,
+        telefon: data.telefon,
+        melding: data.melding,
+        brief: '',
+        pakke: data.pakke,
+        anslag: null,
       })
+      setMottaker({ navn: data.navn.split(' ')[0], epost: data.epost })
       setStatus('sendt')
       skjema.reset()
     } catch (feil) {
@@ -138,9 +152,27 @@ export default function KontaktSide() {
             <Skjemaside>
               {status === 'sendt' ? (
                 <Kvittering role="status" ref={kvitteringRef} tabIndex={-1}>
-                  <Icon navn="sjekk" storrelse={26} tykkelse={2.2} />
-                  <h2>Takk — meldingen er sendt</h2>
-                  <p>Du hører fra oss innen to virkedager, så finner vi en halvtime til å snakke sammen.</p>
+                  <Hake aria-hidden="true">
+                    <Icon navn="sjekk" storrelse={22} tykkelse={2.6} />
+                  </Hake>
+                  <h2>{mottaker?.navn ? `Takk, ${mottaker.navn}!` : 'Takk!'} Meldingen er sendt.</h2>
+                  <p>
+                    Du hører fra oss innen to virkedager, så finner vi en halvtime til å snakke sammen –
+                    på telefon eller video.
+                  </p>
+                  {mottaker?.epost && (
+                    <Bekreftet>
+                      {bekreftelseKlar
+                        ? <>En bekreftelse er sendt til <strong>{mottaker.epost}</strong>. Finner du den ikke, sjekk søppelpost.</>
+                        : <>Vi svarer til <strong>{mottaker.epost}</strong>.</>}
+                    </Bekreftet>
+                  )}
+                  <Videre>
+                    <Knapp til="/" variant="myk">
+                      Til forsiden
+                    </Knapp>
+                    <Link to="/guider">Les guidene mens du venter</Link>
+                  </Videre>
                 </Kvittering>
               ) : (
                 <form onSubmit={send} noValidate={false}>
@@ -362,30 +394,81 @@ const Feilmelding = styled.p`
   }
 `
 
+/**
+ * Kvitteringen etter sending.
+ *
+ * Nøytral og rolig: hvit flate, en grønn hake og mørk tekst. Den var lilla
+ * på lilla med lilla kant før – og fikk i tillegg nettleserens fokusring
+ * utenpå når den fikk fokus, så den så ut som en dobbel ramme.
+ */
 const Kvittering = styled.div`
-  padding: 2.5rem 2rem;
-  border: 1px solid ${({ theme }) => theme.colors.accent};
+  padding: clamp(1.75rem, 4vw, 2.5rem);
+  border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: ${({ theme }) => theme.borderRadius.large};
-  background: ${({ theme }) => theme.colors.accentSoft};
-  color: ${({ theme }) => theme.colors.accentInk};
+  background: ${({ theme }) => theme.colors.surface};
+  box-shadow: ${({ theme }) => theme.shadows.md};
+  color: ${({ theme }) => theme.colors.ink};
 
-  svg {
-    margin-bottom: 1rem;
+  /* Fokus flyttes hit for skjermlesere; ringen trengs ikke på en flate
+     man ikke kan gjøre noe med. */
+  &:focus {
+    outline: none;
   }
 
   h2 {
+    margin: 1.1rem 0 0.6rem;
     font-size: ${({ theme }) => theme.fontSizes.xl};
-    margin-bottom: 0.6rem;
-    color: ${({ theme }) => theme.colors.accentInk};
+    letter-spacing: -0.03em;
+    color: ${({ theme }) => theme.colors.ink};
   }
 
-  p {
+  > p {
+    margin: 0;
+    max-width: 52ch;
+    font-size: 1rem;
+    line-height: 1.6;
+    color: ${({ theme }) => theme.colors.inkMuted};
+  }
+`
+
+const Hake = styled.span`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: ${({ theme }) => theme.colors.successSoft};
+  color: ${({ theme }) => theme.colors.success};
+`
+
+const Bekreftet = styled.p`
+  margin: 1.25rem 0 0 !important;
+  padding: 0.8rem 1rem;
+  border-radius: ${({ theme }) => theme.borderRadius.medium};
+  background: ${({ theme }) => theme.colors.sunken};
+  font-size: 0.9rem !important;
+  color: ${({ theme }) => theme.colors.inkMuted};
+
+  strong {
+    font-weight: 600;
+    color: ${({ theme }) => theme.colors.ink};
+  }
+`
+
+const Videre = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1.5rem;
+  margin-top: 1.75rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid ${({ theme }) => theme.colors.border};
+
+  > a:last-child {
     font-size: 0.9375rem;
-    line-height: 1.65;
-  }
-
-  a {
-    color: inherit;
+    font-weight: 600;
+    color: ${({ theme }) => theme.colors.accent};
   }
 `
 
