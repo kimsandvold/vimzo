@@ -1,171 +1,98 @@
-import type { IkonNavn } from '../components/shared/Icon'
+import { drift, tilleggstjenester, type Tillegg } from './pakker'
+
+export type Gruppe = 'inngar' | 'tillegg'
 
 export interface Tjeneste {
   /** Brukes som anker på /tjenester og i strukturerte data. */
   id: string
-  ikon: IkonNavn
+  gruppe: Gruppe
   navn: string
-  /** Én setning. Står i kortet på forsiden. */
-  kort: string
-  /** To–tre setninger. Står på tjenestesiden. */
-  lang: string
+  /** To setninger. Hva det er, og hvorfor det betyr noe for kunden. */
+  tekst: string
   /** Konkret hva som faktisk gjøres – det er dette kunden kjøper. */
   punkter: readonly string[]
+  /**
+   * Når tjenesten ikke er med i alle pakker, eller inngår i noen av dem.
+   * Står som en liten merkelapp på kortet. Må stemme med `pakker.ts`.
+   */
+  merknad?: string
+  /** Navn i `tilleggstjenester` – prisen hentes derfra, aldri skrevet her. */
+  priser?: readonly string[]
 }
 
 /**
- * Tjenestene vi selger, i den rekkefølgen en kunde tenker på dem: først
- * selve siden, så innholdet som skal stå på den, så det som gjør at noen
- * finner den, og til slutt det som holder den i live.
+ * Tjenestene, delt i det som inngår og det som er tillegg.
  *
- * Skrivereglene her er strenge, fordi leseren som regel ikke er teknisk:
- * ingen fagord uten forklaring, ingen «skreddersydde helhetsløsninger», og
- * hvert punkt skal være noe vi faktisk gjør – ikke noe vi «kan tilby».
+ * Skillet er hele poenget med siden. Kunden lurer ikke på hva vi «kan
+ * tilby», men på hva som koster ekstra. Står alt i én liste, må han lete i
+ * prislisten for å finne ut av det – og det er der tilliten ryker.
  *
- * Hver tjeneste publiseres også som `Service` i strukturerte data, så dette
- * er teksten både mennesker og AI-assistenter leser.
+ * Skrivereglene er strenge, fordi leseren som regel ikke er teknisk: ingen
+ * fagord uten forklaring, ingen «skreddersydde helhetsløsninger», og hvert
+ * punkt skal være noe vi faktisk gjør. Alt her publiseres også som `Service`
+ * i strukturerte data, så det er teksten både mennesker og AI-assistenter
+ * leser – og den må stemme med `pakker.ts` til siste krone.
  */
 export const tjenester: readonly Tjeneste[] = [
+  /* ---------------------------------------------------------- inngår */
   {
     id: 'ny-nettside',
-    ikon: 'kode',
+    gruppe: 'inngar',
     navn: 'Hele nettsiden, ferdig laget',
-    kort: 'Vi ordner alt – også domenet. Du svarer på noen spørsmål.',
-    lang:
-      'Du trenger ikke vite hva et domene er, hva siden bør hete eller hvilke sider du skal ha. ' +
-      'Vi finner ut av det, kjøper domenet i ditt navn, lager designet, skriver innholdet og ' +
-      'setter siden på lufta. Du bruker rundt to timer til sammen: én prat i starten og én ' +
+    tekst:
+      'Vi kjøper domenet i ditt navn, finner ut hvilke sider du trenger, designer siden og ' +
+      'setter den på nett. Du bruker rundt to timer til sammen: én prat i starten og én ' +
       'gjennomlesing før vi publiserer.',
     punkter: [
       'Domene kjøpt og registrert i ditt navn',
-      'Vi bestemmer hvilke sider du trenger, sammen med deg',
-      'Design laget for din bedrift – ingen ferdigmal',
-      'Virker like godt på mobil som på stor skjerm',
-      'E-post på ditt eget domene',
+      'Design laget for bedriften din – ingen ferdigmal',
+      'Like god på mobil som på stor skjerm',
       'Kontaktskjema som lander i innboksen din',
       'Lesbar for alle, også med skjermleser',
-      'Du eier siden, koden og domenet',
+      'En testadresse du kan følge med på fra første dag',
     ],
   },
   {
-    id: 'innhold',
-    ikon: 'penn',
-    navn: 'Tekst og innhold',
-    kort: 'Du slipper å skrive. Vi intervjuer deg og gjør resten.',
-    lang:
-      'Det som stopper de fleste nettsider er teksten. Vi tar en prat med deg om hva bedriften ' +
-      'gjør, hvem som ringer og hva de pleier å spørre om – og skriver sidene ferdig på norsk. ' +
-      'Du leser gjennom og sier ja. Du trenger ikke være flink til å skrive, bare å fortelle.',
+    // Ikke «innhold» – den id-en har <main>, og to like id-er gir kortet sidens stil.
+    id: 'tekst',
+    gruppe: 'inngar',
+    navn: 'Tekstene skriver vi',
+    tekst:
+      'Det som stopper de fleste nettsider er teksten. Vi tar en prat om hva bedriften gjør og ' +
+      'hva kundene pleier å spørre om, og skriver sidene ferdig på norsk. Du leser gjennom og ' +
+      'sier ja.',
     punkter: [
       'Vi intervjuer deg – du trenger ikke forberede noe',
-      'Alle sider skrevet ferdig på norsk',
       'Språk kundene dine kjenner igjen, ikke konsulentspråk',
       'Spørsmål og svar som fanger opp det folk lurer på',
-      'Fagartikler som svarer på det kundene googler',
       'Du godkjenner alt før det publiseres',
     ],
   },
   {
-    id: 'foto',
-    ikon: 'kamera',
-    navn: 'Foto og dronevideo',
-    kort: 'Ekte bilder av din bedrift. Ikke arkivbilder av noen andres.',
-    lang:
-      'Har du ikke bilder, kommer vi og tar dem. Lokalene, produktene, arbeidet og folkene – og ' +
-      'fra lufta med drone når motivet fortjener det. Egne bilder er det enkleste grepet som ' +
-      'skiller en troverdig bedriftsside fra en som ser ut som alle andre.',
-    punkter: [
-      'Halv eller hel dag med fotografering hos deg',
-      'Dronefoto og -video av bygg, anlegg og uteområder',
-      'Kortvideo til forsiden og sosiale medier',
-      'Ferdig redigert og klargjort for nett',
-      'Du eier alle bildene og kan bruke dem til hva du vil',
-    ],
-  },
-  {
-    id: 'profil',
-    ikon: 'gnist',
-    navn: 'Logo og visuell profil',
-    kort: 'Mangler du logo? Vi tegner en – eller du lager den selv i verktøyet vårt.',
-    lang:
-      'En nettside trenger noe å bygge utseendet rundt. Har du ikke en logo, eller har du en som ' +
-      'ble laget i Word i 2011, tegner vi en ny og setter sammen farger og skrifttyper som ' +
-      'passer bedriften. Vil du prøve deg fram selv først, har vi et gratis logoverktøy du kan ' +
-      'leke med – og det du lager der kan vi ta videre.',
-    punkter: [
-      'Tre logoforslag, du velger ett',
-      'Alle filformater: nett, trykk, skilt og bil',
-      'Fargepalett og skrifttyper som hører sammen',
-      'Kort profilark som viser hvordan det brukes',
-      'Gratis logoverktøy du kan prøve selv, uten å bestille noe',
-      'Logo fra 2 900 kr, hele profilen 5 900 kr',
-    ],
-  },
-  {
-    id: 'verktoy',
-    ikon: 'panel',
-    navn: 'Kalkulatorer og regneverktøy',
-    kort: 'La kunden regne ut prisen selv – og sende forespørselen ferdig utfylt.',
-    lang:
-      'En priskalkulator, en bookingløsning eller et tilbudsskjema i flere steg, bygget rett inn ' +
-      'i siden. Kunden får svar med én gang i stedet for å ringe, og du får en henvendelse med ' +
-      'tall i. Ingen tredjepartstjeneste med månedsavgift, og dataene lagres i Europa.',
-    punkter: [
-      'Priskalkulator tilpasset det du selger',
-      'Tilbudsskjema som stiller ett spørsmål om gangen',
-      'Booking med bekreftelse og påminnelse på e-post',
-      'Befaringsskjema der kunden legger ved bilde av jobben',
-      'Regner ut avstand, mengde, areal – det du trenger',
-      'Bygget inn i siden, uten månedsleie til andre',
-    ],
-  },
-  {
-    id: 'tredim',
-    ikon: 'kode',
-    navn: '3D-visning og designverktøy',
-    kort: 'La kunden snu på produktet, eller tegne sitt eget og få mål og pris.',
-    lang:
-      'Produkter som lages etter mål er vanskelige å selge med et flatt bilde. Vi bygger ' +
-      'produktet i 3D i nettleseren, så kunden kan snu på det, bytte materiale og se hva ' +
-      'valgene gjør med prisen. Det kjøres lokalt i nettleseren uten abonnement til noen, og ' +
-      'det er levert i praksis – se Minio, der kunden tegner hageproduktet sitt og får ' +
-      'materialliste og pris ut.',
-    punkter: [
-      'Produktet i 3D, som kunden kan snu og se fra alle kanter',
-      'Velg materiale, mål og tilvalg – modellen følger med',
-      'Materialliste og pris regnet ut fra valgene',
-      'Forespørselen kommer inn med hele tegningen lagret',
-      'Kjører i nettleseren, uten tung last eller månedsleie',
-      'Passer trevare, møbler, bygg og alt som lages etter mål',
-    ],
-  },
-  {
     id: 'synlighet',
-    ikon: 'sok',
-    navn: 'Bli funnet i Google',
-    kort: 'Riktig oppsett fra dag én, og en Google-profil som står ferdig.',
-    lang:
-      'At siden finnes er ikke det samme som at noen finner den. Vi setter opp alt Google ser ' +
-      'etter – titler, struktur, sitemap og en bedriftsprofil med kart og åpningstider – og ' +
-      'kobler til statistikk så du ser hva som faktisk skjer.',
+    gruppe: 'inngar',
+    navn: 'Synlig på Google og Google Maps',
+    tekst:
+      'At siden finnes er ikke det samme som at noen finner den. Vi setter den opp slik Google ' +
+      'forstår den fra dag én, og bedriftsprofilen med kart og åpningstider står klar når siden ' +
+      'går live.',
     punkter: [
       'Vi finner ut hva kundene dine søker etter',
       'Egen tittel og beskrivelse på hver side',
       'Google Business-profil med kart, bilder og åpningstider',
       'Sitemap og teknisk oppsett som Google forstår',
-      'Egne sider for stedene du jobber',
       'Besøksstatistikk du kan lese uten å være teknisk',
     ],
   },
   {
     id: 'ai-synlighet',
-    ikon: 'gnist',
-    navn: 'Bli funnet i ChatGPT',
-    kort: 'Stadig flere spør en AI-assistent i stedet for å google.',
-    lang:
-      'Når noen spør ChatGPT «hvem kan hjelpe meg med dette i Innlandet», får de ett svar med to ' +
-      'navn i – ikke ti lenker å velge mellom. Vi bygger og skriver siden slik at den faktisk ' +
-      'kan leses og gjengis av disse tjenestene, og sjekker etterpå hva de svarer om deg.',
+    gruppe: 'inngar',
+    navn: 'Synlig i AI-assistenter',
+    merknad: 'Fra Bedrift',
+    tekst:
+      'Spør noen ChatGPT hvem som kan hjelpe dem i Innlandet, får de ett svar med to navn – ' +
+      'ikke ti lenker. Vi skriver og merker opp siden slik at den kan leses og siteres, og ' +
+      'sjekker hva assistentene faktisk svarer om deg.',
     punkter: [
       'Hele innholdet leselig for maskiner, ikke bare for nettlesere',
       'Priser, sted og tjenester skrevet så de kan siteres ordrett',
@@ -176,20 +103,127 @@ export const tjenester: readonly Tjeneste[] = [
   },
   {
     id: 'drift',
-    ikon: 'globus',
-    navn: 'Domene, e-post og drift',
-    kort: 'Vi passer på at alt virker. Du slipper å tenke på det.',
-    lang:
-      'Domenet fornyes, sertifikatet holdes gyldig, sikkerhetskopien tas hver dag, og vi får ' +
-      'beskjed før du gjør det hvis noe slutter å svare. Siden har ingen database og ingen ' +
-      'tilleggsprogrammer, så det er lite som kan gå i stykker – og derfor er driften billig.',
+    gruppe: 'inngar',
+    navn: 'Drift, domene og sikkerhet',
+    tekst:
+      `Domenet fornyes, sikkerhetskopien tas hver dag, og vi får beskjed før deg hvis noe ` +
+      `slutter å svare. Én pris: ${drift.pris} kr i måneden, uten bindingstid.`,
     punkter: [
-      'Vi fornyer domenet og passer på e-posten',
+      'Vi fornyer domenet for deg',
       'Overvåking døgnet rundt, med varsling til oss',
       'Sikkerhetskopi hver dag',
-      'Inntil én time småendringer i måneden',
+      'Småendringer inngår – en pris, en setning, nye åpningstider',
       'Ingen lisenser eller tilleggsprogrammer å betale for',
-      'Ingen bindingstid',
     ],
   },
+  {
+    id: 'eierskap',
+    gruppe: 'inngar',
+    navn: 'Du eier alt',
+    tekst:
+      'Domenet, koden, tekstene og bildene står i ditt navn. Vil du bytte leverandør, tar du ' +
+      'med deg alt – uten å spørre oss.',
+    punkter: [
+      'Domenet registreres på deg, ikke på oss',
+      'Kildekoden er din',
+      'Tekster og bilder kan du bruke hvor du vil',
+      'Ingen bindingstid, verken på siden eller driften',
+    ],
+  },
+
+  /* --------------------------------------------------------- tillegg */
+  {
+    id: 'foto',
+    gruppe: 'tillegg',
+    navn: 'Foto og dronevideo',
+    merknad: 'Halv dag inngår i Bedrift',
+    priser: ['Foto og dronevideo'],
+    tekst:
+      'Lokalene, produktene, arbeidet og folkene – og fra lufta når motivet fortjener det. Egne ' +
+      'bilder er det enkleste grepet som skiller en troverdig side fra en som ser ut som alle ' +
+      'andre.',
+    punkter: [
+      'Halv eller hel dag med fotografering hos deg',
+      'Dronefoto og -video av bygg, anlegg og uteområder',
+      'Kortvideo til forsiden og sosiale medier',
+      'Du eier bildene og kan bruke dem til hva du vil',
+    ],
+  },
+  {
+    id: 'profil',
+    gruppe: 'tillegg',
+    navn: 'Logo og visuell profil',
+    priser: ['Logo', 'Visuell profil'],
+    tekst:
+      'Har du ikke en logo – eller en som ble laget i Word i 2011 – tegner vi en ny, med farger ' +
+      'og skrifttyper som hører sammen. Vil du prøve selv først, er logoverktøyet vårt gratis.',
+    punkter: [
+      'Tre logoforslag, du velger ett',
+      'Alle filformater: nett, trykk, skilt og bil',
+      'Fargepalett og skrifttyper som hører sammen',
+      'Kort profilark som viser hvordan det brukes',
+    ],
+  },
+  {
+    id: 'verktoy',
+    gruppe: 'tillegg',
+    navn: 'Kalkulator eller booking',
+    merknad: 'Inngår i Vekst',
+    priser: ['Regneverktøy eller kalkulator'],
+    tekst:
+      'Kunden regner ut prisen selv eller booker en tid, og du får henvendelsen ferdig utfylt ' +
+      'i stedet for en telefon. Bygget inn i siden, uten månedsleie til andre.',
+    punkter: [
+      'Priskalkulator tilpasset det du selger',
+      'Tilbudsskjema som stiller ett spørsmål om gangen',
+      'Booking med bekreftelse på e-post',
+      'Befaringsskjema der kunden legger ved bilde av jobben',
+      'Dataene lagres i Europa',
+    ],
+  },
+  {
+    id: 'tredim',
+    gruppe: 'tillegg',
+    navn: '3D-visning og designverktøy',
+    priser: ['3D-visning og designverktøy'],
+    tekst:
+      'Kunden snur på produktet, velger mål og materiale, og ser pris og materialliste endre ' +
+      'seg. Levert i praksis på minio.no. Spennet er stort, så prisen settes etter en prat.',
+    punkter: [
+      'Produktet i 3D, sett fra alle kanter',
+      'Mål, materiale og tilvalg – modellen følger med',
+      'Materialliste og pris regnet ut fra valgene',
+      'Forespørselen kommer inn med tegningen lagret',
+    ],
+  },
+  {
+    id: 'ekstra-side',
+    gruppe: 'tillegg',
+    navn: 'Ekstra side',
+    priser: ['Ekstra side'],
+    tekst:
+      'En ny tjeneste-, produkt- eller stedsside utover det pakken dekker, ferdig skrevet av oss. ' +
+      'Du får prisen før vi begynner.',
+    punkter: ['Skrevet etter en kort prat med deg', 'Samme design og oppsett som resten av siden'],
+  },
+  {
+    id: 'fagartikler',
+    gruppe: 'tillegg',
+    navn: 'Fagartikler',
+    merknad: 'Seks inngår i Vekst',
+    priser: ['Fagartikkel'],
+    tekst:
+      'En artikkel på 800–1 200 ord som svarer på noe kundene dine faktisk googler. Det er den ' +
+      'typen innhold både Google og AI-assistenter siterer.',
+    punkter: ['Tema valgt ut fra hva kundene dine søker etter', 'Skrevet etter en prat med deg'],
+  },
 ] as const
+
+/** Tilleggene en tjeneste viser pris for, slått opp i `pakker.ts`. */
+export function prisFor(t: Tjeneste): Tillegg[] {
+  return (t.priser ?? []).map((navn) => {
+    const funnet = tilleggstjenester.find((x) => x.navn === navn)
+    if (!funnet) throw new Error(`Fant ikke tillegget «${navn}» i pakker.ts`)
+    return funnet
+  })
+}
