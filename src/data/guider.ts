@@ -377,9 +377,9 @@ export const guider: readonly Guide[] = [
               'Vi legger prisene åpent ut fordi det sparer begge parter for tid. En liten side ' +
               `på én til tre sider lander typisk på ${formaterRamme(pakker[0].pris)} kroner, og en ` +
               `bedriftsside på fire til åtte sider på ${formaterRamme(pakker[1].pris)}. Drift koster ` +
-              `${drift.pris} kroner i måneden. Småendringer inngår; større endringer har fast pris, ` +
-              `og timepris på ${formaterPris(timepris)} kroner bruker vi bare når ingenting annet ` +
-              'passer. Alt eks. mva.',
+              `${drift.pris} kroner i måneden. Endringer etter lansering faktureres med ` +
+              `${formaterPris(timepris)} kroner timen, per påbegynte halvtime, og en ny side har ` +
+              'fast pris. Alt eks. mva.',
           },
           {
             type: 'p',

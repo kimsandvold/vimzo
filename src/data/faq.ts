@@ -1,4 +1,4 @@
-import { AVDRAGSPASLAG, domenepris, drift, formaterPris, formaterRamme, pakker, tillegg, timepris } from './pakker'
+import { AVDRAGSPASLAG, arrangement, domenepris, drift, formaterPris, formaterRamme, minsteEndring, pakker, tillegg, timepris } from './pakker'
 
 /**
  * Spørsmål og svar. Dette er den enkeltseksjonen som gir mest igjen for
@@ -13,7 +13,7 @@ export interface Sporsmal {
   sporsmal: string
   svar: string
   /** Hvilke sider spørsmålet vises på. 'alle' = forsiden og prissiden. */
-  tema: 'pris' | 'prosess' | 'teknisk' | 'synlighet'
+  tema: 'pris' | 'prosess' | 'teknisk' | 'synlighet' | 'arrangement'
 }
 
 export const faq: readonly Sporsmal[] = [
@@ -32,8 +32,8 @@ export const faq: readonly Sporsmal[] = [
     sporsmal: 'Kommer det løpende kostnader i tillegg?',
     svar:
       `Drift koster ${drift.pris} kroner i måneden – én pris uansett hva siden gjør. Den dekker ` +
-      'at siden er oppe, sikkerhetskopi hver dag, fornyelse av domenet og småendringer ' +
-      'underveis. Den er lav fordi det er lite å drifte: siden er ferdige filer uten database ' +
+      'webhotell, fornyelse av domenet, sikkerhetskopi hver dag og varsling hvis siden går ' +
+      'ned. Endringer på innholdet faktureres for seg. Driften er lav fordi det er lite å drifte: siden er ferdige filer uten database ' +
       'eller tillegg som må oppdateres. Første års domene er inkludert; etter det koster det ' +
       `rundt ${domenepris} kroner i året. Det finnes ingen lisenser å betale for.`,
   },
@@ -110,11 +110,11 @@ export const faq: readonly Sporsmal[] = [
     tema: 'prosess',
     sporsmal: 'Hva koster det å endre noe etterpå?',
     svar:
-      'Småendringer koster ingenting – nytt telefonnummer, nye åpningstider, en pris eller en ' +
-      'setning. Si fra, så retter vi det, og det inngår i driften. Skal du ha noe nytt, får ' +
-      `du fast pris før vi gjør det: en ny side fra ${formaterPris(tillegg('Ekstra side').pris)} kroner, ` +
-      `en fagartikkel ${formaterPris(tillegg('Fagartikkel').pris)}. Timepris på ${formaterPris(timepris)} ` +
-      'bruker vi bare når ingenting annet passer, og du får alltid et anslag først.',
+      `Endringer faktureres med ${formaterPris(timepris)} kroner timen, per påbegynte halvtime. ` +
+      `Et nytt telefonnummer eller nye åpningstider koster altså ${formaterPris(minsteEndring)} ` +
+      `kroner. En ny side har fast pris fra ${formaterPris(tillegg('Ekstra side').pris)} kroner, ` +
+      `en fagartikkel ${formaterPris(tillegg('Fagartikkel').pris)}. Ved større jobber får du ` +
+      'alltid et anslag før vi begynner.',
   },
   {
     tema: 'prosess',
@@ -122,9 +122,9 @@ export const faq: readonly Sporsmal[] = [
     svar:
       'Fordi det sjelden gjør siden bedre, og alltid gjør den dyrere. Å skrive innhold som ' +
       'både leser godt og rangerer er et fag, og en nettside eieren skal fylle selv mellom ' +
-      'alt annet, forfaller nesten alltid. Derfor skriver og oppdaterer vi innholdet – ' +
-      'småendringer inngår i driften, i stedet for lisens og vedlikehold hver måned for et ' +
-      'system du bruker to ganger i året. Siden blir også raskere og tryggere ' +
+      'alt annet, forfaller nesten alltid. Derfor skriver og oppdaterer vi innholdet, og du ' +
+      'betaler for timene det faktisk tar – i stedet for lisens og vedlikehold hver måned for ' +
+      'et system du bruker to ganger i året. Siden blir også raskere og tryggere ' +
       'av å være rene filer uten innlogging.',
   },
   {
@@ -197,6 +197,44 @@ export const faq: readonly Sporsmal[] = [
       'Nei. Vi holder til på Lillehammer og møter gjerne kunder i Innlandet ansikt til ' +
       'ansikt, men hele prosessen fungerer på video og e-post. Vi leverer til bedrifter i ' +
       'hele Norge.',
+  },
+  {
+    tema: 'arrangement',
+    sporsmal: 'Hva koster en nettside til et arrangement?',
+    svar:
+      `En arrangementsside lander typisk på ${formaterRamme(arrangement.pris)} kroner eks. mva., ` +
+      `med ${arrangement.driftInkludertMnd} måneders drift inkludert. Egen påmelding kommer i ` +
+      `tillegg, fra ${formaterPris(tillegg('Påmelding til arrangement').pris)} kroner. Den endelige ` +
+      'prisen avtaler vi etter en kort prat, skriftlig.',
+  },
+  {
+    tema: 'arrangement',
+    sporsmal: 'Hvor fort kan dere lage en side til messen eller konferansen vår?',
+    svar:
+      'Vanligvis på én til to uker fra vi har snakket sammen og fått program og praktisk ' +
+      'informasjon. Haster det mer enn det, si fra – en enkel side kan ofte stå klar raskere.',
+  },
+  {
+    tema: 'arrangement',
+    sporsmal: 'Hva skjer med siden etter arrangementet?',
+    svar:
+      `Driften i ${arrangement.driftInkludertMnd} måneder er med i prisen. Etterpå kan siden bli en ` +
+      '«takk for i år»-side med bilder og dato for neste gang, den kan tas ned, eller vi kan ' +
+      'holde den oppe videre for vanlig driftspris.',
+  },
+  {
+    tema: 'arrangement',
+    sporsmal: 'Kan vi bruke siden igjen neste år?',
+    svar:
+      'Ja. Designet står, så neste utgave handler om nye datoer, nytt program og nye bilder. ' +
+      `Det koster fra ${formaterPris(tillegg('Ny utgave av arrangementsside').pris)} kroner.`,
+  },
+  {
+    tema: 'arrangement',
+    sporsmal: 'Trenger vi eget domene?',
+    svar:
+      'Nei. Har dere et domene fra før, legger vi siden på en egen adresse under det, som ' +
+      'messe.firma.no. Vil dere ha et eget domene for arrangementet, ordner vi det.',
   },
 ] as const
 

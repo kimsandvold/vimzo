@@ -35,6 +35,11 @@ export interface Pakke {
   punkter: readonly string[]
   /** Det som oftest flytter prisen innenfor spennet. */
   drivere: readonly string[]
+  /**
+   * Satt for kortvarige sider: så mange måneder drift er med i prisen. Da
+   * finnes det ingen løpende driftskostnad å vise, og ingen treårstotal.
+   */
+  driftInkludertMnd?: number
 }
 
 export const ANTALL_AVDRAG = 12
@@ -92,7 +97,35 @@ export const pakker: readonly Pakke[] = [
     ],
     drivere: ['Hva verktøyet skal regne ut eller ta imot', 'Innlogging, betaling eller koblinger til andre systemer'],
   },
+  {
+    /*
+     * Kortvarige sider til messer, konferanser, lanseringer og kampanjer.
+     * Jobben er smal og forutsigbar, så spennet er trangere enn for de andre.
+     * Tre måneders drift er med – etterpå blir den en «takk for i år»-side
+     * eller tas ned. Se /arrangement.
+     */
+    id: 'arrangement',
+    navn: 'Arrangement',
+    for: 'For en messe, en konferanse, en lansering eller en kampanje – en side som skal se ordentlig ut den perioden den gjelder.',
+    pris: { fra: 12000, til: 18000 },
+    omfang: 'Én side · 3 måneder drift inkludert',
+    driftInkludertMnd: 3,
+    punkter: [
+      'Program, tid, sted og praktisk info',
+      'Eget design i arrangementets farger',
+      'Nedtelling og delingsbilde for sosiale medier',
+      'QR-kode til plakat og messestand',
+      'Klar på 1–2 uker',
+    ],
+    drivere: ['Hvor mange programposter, talere eller utstillere', 'Om dere trenger egen påmelding'],
+  },
 ] as const
+
+/** Sidene som skal leve over tid – det de fleste mener med «en nettside». */
+export const varigePakker = pakker.filter((p) => !p.driftInkludertMnd)
+
+/** Den kortvarige arrangementssiden. */
+export const arrangement = pakker.find((p) => p.id === 'arrangement') as Pakke
 
 /** Månedsbeløpet når et beløp deles over tolv avdrag, rundet til nærmeste tier. */
 export function avdrag(belop: number): number {
@@ -121,14 +154,22 @@ export function avdragRamme(r: Prisramme): Prisramme {
  * i og fylle selv. Å skrive innhold som både leser godt og rangerer er et fag,
  * og sider eieren skal fylle mellom alt annet, forfaller nesten alltid.
  *
- * Men timeprisen er unntaket, ikke mekanismen. Siden er skreddersydd og har
- * ingen innlogging, så kunden kan ikke rette en telefonnummer selv om han
- * ville. Satte vi en teller på hver småting, ville han sluttet å spørre – og
- * da forfaller siden akkurat slik vi sier at den ikke skal. Derfor inngår
- * småendringer i driften, det forutsigbare har fast pris, og timer bruker vi
- * bare når ingenting annet passer.
+ * Alle endringer etter leveranse faktureres – også de små. Driften dekker det
+ * som holder siden i live, ikke arbeid på den. Det er ærligere enn å love
+ * «småendringer inngår» og så måtte trekke grensen i hver enkelt sak, og det
+ * er det eneste som holder en sidejobb innenfor det den har kapasitet til.
+ *
+ * Endringer faktureres per påbegynte halvtime. Det forutsigbare – en ny
+ * side, en fagartikkel – har fast pris, og kunden får alltid et anslag før
+ * større jobber.
  */
 export const timepris = 1250
+
+/** Minste fakturerbare enhet for endringer, i minutter. */
+export const ENDRINGSENHET_MIN = 30
+
+/** Hva den minste endringen koster: en påbegynt halvtime. */
+export const minsteEndring = Math.round((timepris * ENDRINGSENHET_MIN) / 60)
 
 export interface Tillegg {
   navn: string
@@ -202,13 +243,30 @@ export const tilleggstjenester: readonly Tillegg[] = [
       'etter en prat med deg.',
   },
   {
-    navn: 'Større endringer senere',
+    navn: 'Påmelding til arrangement',
+    pris: 4900,
+    fraPris: true,
+    beskrivelse:
+      'Påmeldingsskjema på arrangementssiden, med bekreftelse på e-post til deltakeren og ' +
+      'en oversikt over hvem som kommer. Uten billettsystem og uten avgift per påmelding.',
+  },
+  {
+    navn: 'Ny utgave av arrangementsside',
+    pris: 6000,
+    fraPris: true,
+    beskrivelse:
+      'Samme side neste år, med nye datoer, nytt program og nye bilder. Designet står, så ' +
+      'det meste av jobben er allerede gjort.',
+  },
+  {
+    navn: 'Endringer etter lansering',
     pris: timepris,
     enhet: 'per time',
     beskrivelse:
-      'Småendringer inngår i driften, og det forutsigbare har fast pris. Timer bruker vi bare ' +
-      'når ingenting annet passer – en ombygging, en ny funksjon, noe vi ikke har gjort før. ' +
-      'Du får alltid et anslag før vi setter i gang.',
+      'Alt fra et nytt telefonnummer til en ny funksjon. Faktureres per påbegynte halvtime, så ' +
+      'en liten endring koster ' +
+      `${formaterPris(Math.round((timepris * 30) / 60))} kroner. Ved større jobber får du alltid et anslag før ` +
+      'vi setter i gang.',
   },
 ] as const
 
@@ -243,13 +301,13 @@ export const driftsnivaer: readonly Driftsniva[] = [
     navn: 'Drift',
     pris: 449,
     periode: 'per måned',
-    for: 'Én pris, enten siden bare står der eller tar imot bestillinger.',
+    for: 'Det som holder siden i live. Endringer på innholdet faktureres for seg.',
     anbefalt: true,
     punkter: [
-      'Vi passer på at siden er oppe, hele døgnet',
+      'Webhotell og fornyelse av domenet',
+      'Automatisk overvåking, med varsling hvis siden går ned',
       'Sikkerhetskopi hver dag',
-      'Småendringer inngår – en pris, en setning, nye åpningstider',
-      'Hjelp med domene og e-post når du trenger det',
+      'Sikkerhetssertifikat (https) som holdes gyldig',
       'Ingen bindingstid',
     ],
   },
@@ -284,11 +342,11 @@ export const prisnotat =
  * avgjør om siden holder seg oppdatert.
  */
 export const endringsnotat =
-  'Småendringer inngår i driften: telefon, åpningstider, en pris eller en setning. Si fra, så ' +
-  'retter vi det. Skal du ha noe nytt, får du fast pris før vi gjør det – en ny side fra ' +
-  `${formaterPris(tillegg('Ekstra side').pris)} kroner, en fagartikkel ` +
-  `${formaterPris(tillegg('Fagartikkel').pris)}. Timepris på ${formaterPris(timepris)} bruker vi ` +
-  'bare når ingenting annet passer, og da får du et anslag først.'
+  'Endringer etter lansering faktureres, også de små – driften dekker det som holder siden i ' +
+  `live, ikke arbeid på den. Timeprisen er ${formaterPris(timepris)} kroner, per påbegynte ` +
+  `halvtime, så et nytt telefonnummer eller nye åpningstider koster ${formaterPris(minsteEndring)}. ` +
+  `En ny side har fast pris fra ${formaterPris(tillegg('Ekstra side').pris)} kroner, en fagartikkel ` +
+  `${formaterPris(tillegg('Fagartikkel').pris)}. Ved større jobber får du alltid et anslag først.`
 
 export const delbetalingsnotat =
   `Du kan dele beløpet over ${ANTALL_AVDRAG} måneder, med 0 kroner i oppstart. Påslaget er ` +

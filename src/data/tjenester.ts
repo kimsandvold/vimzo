@@ -1,4 +1,4 @@
-import { drift, tilleggstjenester, type Tillegg } from './pakker'
+import { drift, formaterPris, tilleggstjenester, timepris, type Tillegg } from './pakker'
 
 export type Gruppe = 'inngar' | 'tillegg'
 
@@ -106,14 +106,14 @@ export const tjenester: readonly Tjeneste[] = [
     gruppe: 'inngar',
     navn: 'Drift, domene og sikkerhet',
     tekst:
-      `Domenet fornyes, sikkerhetskopien tas hver dag, og vi får beskjed før deg hvis noe ` +
-      `slutter å svare. Én pris: ${drift.pris} kr i måneden, uten bindingstid.`,
+      `Webhotell, domene, sikkerhetskopi hver dag og automatisk varsling hvis siden går ned. ` +
+      `Én pris: ${drift.pris} kr i måneden, uten bindingstid. Endringer på innholdet faktureres for seg.`,
     punkter: [
-      'Vi fornyer domenet for deg',
-      'Overvåking døgnet rundt, med varsling til oss',
+      'Webhotell og fornyelse av domenet',
+      'Automatisk overvåking, med varsling hvis siden går ned',
       'Sikkerhetskopi hver dag',
-      'Småendringer inngår – en pris, en setning, nye åpningstider',
       'Ingen lisenser eller tilleggsprogrammer å betale for',
+      `Endringer etter lansering: ${formaterPris(timepris)} kr/t, per påbegynte halvtime`,
     ],
   },
   {

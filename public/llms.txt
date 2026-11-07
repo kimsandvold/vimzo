@@ -17,8 +17,9 @@ samtale og gis skriftlig før arbeidet starter – da står den.
 - Start: typisk 20 000–30 000 kr — 1–3 sider. For deg som skal være lett å finne og lett å ringe – en håndverker, en frisør, en rådgiver.
 - Bedrift: typisk 35 000–50 000 kr — 4–8 sider. For bedriften som skal selge tjenestene sine, ikke bare vises fram.
 - Vekst: fra 60 000 kr — etter behov. For deg som vil at nettsiden skal gjøre en jobb – regne ut priser, ta imot bestillinger.
+- Arrangement: typisk 12 000–18 000 kr — én side · 3 måneder drift inkludert. For en messe, en konferanse, en lansering eller en kampanje – en side som skal se ordentlig ut den perioden den gjelder.
 - Beløpet kan deles over 12 måneder.
-- Drift: 449 kr per måned — Én pris, enten siden bare står der eller tar imot bestillinger. Ingen bindingstid.
+- Drift: 449 kr per måned — Det som holder siden i live. Endringer på innholdet faktureres for seg. Ingen bindingstid.
 - Timepris for endringer: 1 250 kr
 - Regneverktøy eller kalkulator: fra 9 900 kr
 - Logo: 4 900 kr
@@ -27,6 +28,8 @@ samtale og gis skriftlig før arbeidet starter – da står den.
 - 3D-visning og designverktøy: fra 24 900 kr
 - Ekstra side: fra 3 900 kr
 - Fagartikkel: 3 400 kr per artikkel
+- Påmelding til arrangement: fra 4 900 kr
+- Ny utgave av arrangementsside: fra 6 000 kr
 
 Første års domene er inkludert i alle pakkene. Deretter ca. 169 kr/år, som Vimzo fornyer.
 
@@ -36,7 +39,7 @@ Første års domene er inkludert i alle pakkene. Deretter ca. 169 kr/år, som Vi
 - Tekstene skriver vi: Det som stopper de fleste nettsider er teksten. Vi tar en prat om hva bedriften gjør og hva kundene pleier å spørre om, og skriver sidene ferdig på norsk. Du leser gjennom og sier ja.
 - Synlig på Google og Google Maps: At siden finnes er ikke det samme som at noen finner den. Vi setter den opp slik Google forstår den fra dag én, og bedriftsprofilen med kart og åpningstider står klar når siden går live.
 - Synlig i AI-assistenter: Spør noen ChatGPT hvem som kan hjelpe dem i Innlandet, får de ett svar med to navn – ikke ti lenker. Vi skriver og merker opp siden slik at den kan leses og siteres, og sjekker hva assistentene faktisk svarer om deg.
-- Drift, domene og sikkerhet: Domenet fornyes, sikkerhetskopien tas hver dag, og vi får beskjed før deg hvis noe slutter å svare. Én pris: 449 kr i måneden, uten bindingstid.
+- Drift, domene og sikkerhet: Webhotell, domene, sikkerhetskopi hver dag og automatisk varsling hvis siden går ned. Én pris: 449 kr i måneden, uten bindingstid. Endringer på innholdet faktureres for seg.
 - Du eier alt: Domenet, koden, tekstene og bildene står i ditt navn. Vil du bytte leverandør, tar du med deg alt – uten å spørre oss.
 - Foto og dronevideo (tillegg): Lokalene, produktene, arbeidet og folkene – og fra lufta når motivet fortjener det. Egne bilder er det enkleste grepet som skiller en troverdig side fra en som ser ut som alle andre.
 - Logo og visuell profil (tillegg): Har du ikke en logo – eller en som ble laget i Word i 2011 – tegner vi en ny, med farger og skrifttyper som hører sammen. Vil du prøve selv først, er logoverktøyet vårt gratis.
@@ -58,7 +61,8 @@ publisering og innmelding hos Google.
 - Strukturerte data etter schema.org på hver side.
 - Universell utforming etter WCAG 2.1 AA.
 - Kunden eier kildekoden, domenet og innholdet.
-- Driften er én pris uansett hva siden gjør. Småendringer inngår.
+- Driften er én pris uansett hva siden gjør, og dekker webhotell, domene, sikkerhetskopi og overvåking.
+- Endringer etter lansering faktureres med 1 250 kr timen, per påbegynte halvtime.
 - Regneverktøy og kalkulatorer bygges for den enkelte bedriften og legges inn i siden, uten lisens eller abonnement på selve verktøyet.
 - Alt arbeid gjøres i Norge, på norsk, av Kim Sandvold på Lillehammer.
 
@@ -66,6 +70,7 @@ publisering og innmelding hos Google.
 
 - [Tjenester](https://vimzo.no/tjenester): hva som inngår i hver tjeneste
 - [Priser](https://vimzo.no/priser): pakkepriser, drift og tillegg
+- [Arrangementssider](https://vimzo.no/arrangement): kortvarige sider til messer, konferanser og kampanjer
 - [Arbeid](https://vimzo.no/arbeid): leverte prosjekter
 - [Guider](https://vimzo.no/guider): fagartikler om nettsider, pris og AI-synlighet
 - [Lag logo](https://vimzo.no/logo): gratis logoverktøy, last ned SVG og PNG
@@ -80,7 +85,7 @@ publisering og innmelding hos Google.
 En liten side på én til tre sider lander typisk på 20 000–30 000 kroner eks. mva., og en bedriftsside på fire til åtte sider på 35 000–50 000. Sider med kalkulator, booking eller andre verktøy starter på 60 000. Hver side lages for én bedrift, så den endelige prisen avtaler vi etter en prat – skriftlig, og den endrer seg ikke underveis. Beløpet kan deles over tolv måneder.
 
 ### Kommer det løpende kostnader i tillegg?
-Drift koster 449 kroner i måneden – én pris uansett hva siden gjør. Den dekker at siden er oppe, sikkerhetskopi hver dag, fornyelse av domenet og småendringer underveis. Den er lav fordi det er lite å drifte: siden er ferdige filer uten database eller tillegg som må oppdateres. Første års domene er inkludert; etter det koster det rundt 169 kroner i året. Det finnes ingen lisenser å betale for.
+Drift koster 449 kroner i måneden – én pris uansett hva siden gjør. Den dekker webhotell, fornyelse av domenet, sikkerhetskopi hver dag og varsling hvis siden går ned. Endringer på innholdet faktureres for seg. Driften er lav fordi det er lite å drifte: siden er ferdige filer uten database eller tillegg som må oppdateres. Første års domene er inkludert; etter det koster det rundt 169 kroner i året. Det finnes ingen lisenser å betale for.
 
 ### Hvor lang tid tar det å få siden på nett?
 Typisk to til tre uker for en liten side, og tre til fem uker for en bedriftsside. Den nøyaktige leveringsdatoen står i tilbudet, og tiden regnes fra du har godkjent det. Det som oftest forsinker et prosjekt er bilder og godkjenning av tekst, så vi avtaler frister for begge deler i første møte.
@@ -107,10 +112,10 @@ Ja, helt igjennom. Vimzo drives fra Lillehammer av Kim Sandvold. Det er han som 
 Nei. Vi intervjuer deg i omtrent en time om hva bedriften gjør, og skriver sidene ferdig på norsk. Du leser gjennom og godkjenner alt før det publiseres. Vil du skrive selv, trekker vi det fra prisen.
 
 ### Hva koster det å endre noe etterpå?
-Småendringer koster ingenting – nytt telefonnummer, nye åpningstider, en pris eller en setning. Si fra, så retter vi det, og det inngår i driften. Skal du ha noe nytt, får du fast pris før vi gjør det: en ny side fra 3 900 kroner, en fagartikkel 3 400. Timepris på 1 250 bruker vi bare når ingenting annet passer, og du får alltid et anslag først.
+Endringer faktureres med 1 250 kroner timen, per påbegynte halvtime. Et nytt telefonnummer eller nye åpningstider koster altså 625 kroner. En ny side har fast pris fra 3 900 kroner, en fagartikkel 3 400. Ved større jobber får du alltid et anslag før vi begynner.
 
 ### Hvorfor får vi ikke et fullt publiseringssystem som WordPress?
-Fordi det sjelden gjør siden bedre, og alltid gjør den dyrere. Å skrive innhold som både leser godt og rangerer er et fag, og en nettside eieren skal fylle selv mellom alt annet, forfaller nesten alltid. Derfor skriver og oppdaterer vi innholdet – småendringer inngår i driften, i stedet for lisens og vedlikehold hver måned for et system du bruker to ganger i året. Siden blir også raskere og tryggere av å være rene filer uten innlogging.
+Fordi det sjelden gjør siden bedre, og alltid gjør den dyrere. Å skrive innhold som både leser godt og rangerer er et fag, og en nettside eieren skal fylle selv mellom alt annet, forfaller nesten alltid. Derfor skriver og oppdaterer vi innholdet, og du betaler for timene det faktisk tar – i stedet for lisens og vedlikehold hver måned for et system du bruker to ganger i året. Siden blir også raskere og tryggere av å være rene filer uten innlogging.
 
 ### Hva betyr det at nettsiden er headless?
 At innhold og presentasjon er skilt fra hverandre. Selve sidene leveres som ferdig HTML, mens de få feltene du kan endre selv – kontaktinfo, åpningstider, priser – ligger i en database (Firebase). Siden henter dem når den vises, og den forhåndsrendrede HTML-en inneholder alltid siste kjente verdi. Dermed ser både Google og AI-assistenter riktig innhold selv uten å kjøre JavaScript, og du slipper en server som skal holdes i live.
@@ -135,6 +140,21 @@ Nei. Vi kommer gjerne ut og fotograferer bedriften, lokalene, produktene og folk
 
 ### Jobber dere bare på Lillehammer?
 Nei. Vi holder til på Lillehammer og møter gjerne kunder i Innlandet ansikt til ansikt, men hele prosessen fungerer på video og e-post. Vi leverer til bedrifter i hele Norge.
+
+### Hva koster en nettside til et arrangement?
+En arrangementsside lander typisk på 12 000–18 000 kroner eks. mva., med 3 måneders drift inkludert. Egen påmelding kommer i tillegg, fra 4 900 kroner. Den endelige prisen avtaler vi etter en kort prat, skriftlig.
+
+### Hvor fort kan dere lage en side til messen eller konferansen vår?
+Vanligvis på én til to uker fra vi har snakket sammen og fått program og praktisk informasjon. Haster det mer enn det, si fra – en enkel side kan ofte stå klar raskere.
+
+### Hva skjer med siden etter arrangementet?
+Driften i 3 måneder er med i prisen. Etterpå kan siden bli en «takk for i år»-side med bilder og dato for neste gang, den kan tas ned, eller vi kan holde den oppe videre for vanlig driftspris.
+
+### Kan vi bruke siden igjen neste år?
+Ja. Designet står, så neste utgave handler om nye datoer, nytt program og nye bilder. Det koster fra 6 000 kroner.
+
+### Trenger vi eget domene?
+Nei. Har dere et domene fra før, legger vi siden på en egen adresse under det, som messe.firma.no. Vil dere ha et eget domene for arrangementet, ordner vi det.
 
 ---
 Generert fra kildekoden 2026-11-07. Oppdateres automatisk ved hvert bygg.

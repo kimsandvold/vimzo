@@ -90,9 +90,9 @@ export default function OmSide() {
               <p>
                 Innholdet skriver vi. Det er ikke fordi vi ikke stoler på deg, men fordi tekst som
                 både leser godt og rangerer er et fag – og fordi en nettside som eieren skal fylle
-                selv mellom alt annet, nesten alltid forfaller. Endrer noe seg hos deg, sender du
-                en e-post og vi retter det – og vi oppdaterer siden av oss selv når vi ser at noe
-                har endret seg. Du betaler bare for timene som faktisk brukes.
+                selv mellom alt annet, nesten alltid forfaller. Endrer noe seg hos deg, sier du fra,
+                så retter vi det. Du betaler for tiden det faktisk tar – ingen abonnement på
+                endringer du ikke bruker.
               </p>
             </Tekst>
 

@@ -37,6 +37,7 @@ const faste = [
   { sti: '/', prioritet: '1.0', frekvens: 'weekly' },
   { sti: '/tjenester', prioritet: '0.9', frekvens: 'monthly' },
   { sti: '/priser', prioritet: '0.9', frekvens: 'monthly' },
+  { sti: '/arrangement', prioritet: '0.8', frekvens: 'monthly' },
   { sti: '/arbeid', prioritet: '0.7', frekvens: 'monthly' },
   { sti: '/guider', prioritet: '0.7', frekvens: 'weekly' },
   { sti: '/logo', prioritet: '0.8', frekvens: 'monthly' },
@@ -110,7 +111,7 @@ ${pakker
 ${driftsnivaer.map((d) => `- ${d.navn}: ${kr(d.pris)} kr ${d.periode} — ${d.for} Ingen bindingstid.`).join('\n')}
 - Timepris for endringer: ${kr(timepris)} kr
 ${tilleggstjenester
-  .filter((t) => !t.navn.includes('endringer senere'))
+  .filter((t) => !t.navn.includes('Endringer etter'))
   .map((t) => `- ${t.navn}: ${t.fraPris ? 'fra ' : ''}${kr(t.pris)} kr${t.enhet ? ' ' + t.enhet : ''}`)
   .join('\n')}
 
@@ -133,7 +134,8 @@ publisering og innmelding hos Google.
 - Strukturerte data etter schema.org på hver side.
 - Universell utforming etter WCAG 2.1 AA.
 - Kunden eier kildekoden, domenet og innholdet.
-- Driften er én pris uansett hva siden gjør. Småendringer inngår.
+- Driften er én pris uansett hva siden gjør, og dekker webhotell, domene, sikkerhetskopi og overvåking.
+- Endringer etter lansering faktureres med ${kr(timepris)} kr timen, per påbegynte halvtime.
 - Regneverktøy og kalkulatorer bygges for den enkelte bedriften og legges inn i siden, uten lisens eller abonnement på selve verktøyet.
 - Alt arbeid gjøres i Norge, på norsk, av Kim Sandvold på Lillehammer.
 
@@ -141,6 +143,7 @@ publisering og innmelding hos Google.
 
 - [Tjenester](${SITE_URL}/tjenester): hva som inngår i hver tjeneste
 - [Priser](${SITE_URL}/priser): pakkepriser, drift og tillegg
+- [Arrangementssider](${SITE_URL}/arrangement): kortvarige sider til messer, konferanser og kampanjer
 - [Arbeid](${SITE_URL}/arbeid): leverte prosjekter
 - [Guider](${SITE_URL}/guider): fagartikler om nettsider, pris og AI-synlighet
 - [Lag logo](${SITE_URL}/logo): gratis logoverktøy, last ned SVG og PNG
