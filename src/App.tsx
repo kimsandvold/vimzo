@@ -39,7 +39,8 @@ export default function App() {
 }
 
 /**
- * Navbar, fot og kontaktknapp rundt innholdet – unntatt på eksempelsider.
+ * Navbar, fot og kontaktknapp rundt innholdet – unntatt på eksempelsider, i
+ * /admin og på /min-side, som har sin egen enkle topplinje.
  *
  * Eksempelet på en arrangementsside skal se ut som kundens side, ikke som
  * vår. Med Vimzos meny over og fot under ville det sett ut som en seksjon på
@@ -47,7 +48,8 @@ export default function App() {
  */
 function Ramme({ children }: { children: ReactNode }) {
   const { pathname } = useLocation()
-  if (pathname.endsWith('/eksempel')) return <>{children}</>
+  if (pathname.endsWith('/eksempel') || pathname.startsWith('/admin') || pathname.startsWith('/min-side'))
+    return <>{children}</>
   return (
     <>
       <SkipLink />

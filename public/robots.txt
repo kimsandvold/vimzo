@@ -6,6 +6,8 @@
 
 User-agent: *
 Allow: /
+Disallow: /admin
+Disallow: /min-side
 
 # Et kort sammendrag av hva nettstedet handler om, for språkmodeller:
 # https://vimzo.no/llms.txt
