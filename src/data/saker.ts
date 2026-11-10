@@ -70,6 +70,12 @@ export interface NyHenvendelse {
   pakke: string
   /** Anslaget fra kalkulatoren. `til: null` betyr «fra». */
   anslag: { fra: number; til: number | null } | null
+  /**
+   * Id-en til en logo kunden har laget i logoverktøyet og valgt i
+   * kalkulatoren, eller ''. Logoen faktureres med nettsiden; i saken kan
+   * Vimzo se den og frigi filene til kunden.
+   */
+  logodesign?: string
 }
 
 export interface Hendelse {

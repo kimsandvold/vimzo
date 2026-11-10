@@ -11,6 +11,25 @@ const GlobalStyles = createGlobalStyle`
        andre legger til. */
     --nav-hoyde: clamp(68px, 5vw, 80px);
 
+    /* Typeskalaen – se theme.fontSizes for hva hvert trinn er til. */
+    --fs-micro: 0.75rem;
+    --fs-small: 0.875rem;
+    --fs-body: 1rem;
+    --fs-lead: clamp(1.125rem, 0.35vw + 1.03rem, 1.25rem);
+    --fs-title: clamp(1.25rem, 0.6vw + 1.05rem, 1.5rem);
+    --fs-heading: clamp(1.875rem, 1.8vw + 1.3rem, 2.75rem);
+    --fs-display: clamp(2.5rem, 4.4vw + 0.9rem, 4.75rem);
+
+    /* Sporing per trinn: jo større, jo strammere. Versaletiketter har sin
+       egen, positive sporing (0.08em) der de står. */
+    --ls-micro: 0;
+    --ls-small: -0.005em;
+    --ls-body: -0.01em;
+    --ls-lead: -0.015em;
+    --ls-title: -0.025em;
+    --ls-heading: -0.035em;
+    --ls-display: -0.04em;
+
     --paper: ${({ theme }) => theme.colors.paper};
     --surface: ${({ theme }) => theme.colors.surface};
     --sunken: ${({ theme }) => theme.colors.sunken};
@@ -38,6 +57,11 @@ const GlobalStyles = createGlobalStyle`
     --ease-soft: ${({ theme }) => theme.easing.soft};
   }
 
+  /* Logoverktøyet i kalkulatorens modal har ingen meny (se lib/innebygd.ts). */
+  html[data-innebygd] {
+    --nav-hoyde: 0px;
+  }
+
   * {
     margin: 0;
     padding: 0;
@@ -62,8 +86,12 @@ const GlobalStyles = createGlobalStyle`
     }
   }
 
+  /* clip, ikke hidden. hidden gjør html og body til egne rulleflater, og da
+     slutter alt som er position: sticky å lime seg til skjermen – både
+     estimatkortet og kalkulatorens knapperad på mobil. clip kutter det
+     samme uten å lage en rulleflate. */
   html {
-    overflow-x: hidden;
+    overflow-x: clip;
     width: 100%;
     /* Fast offset for ankerlenker slik at den flytende navbaren ikke dekker målet. */
     scroll-padding-top: 6rem;
@@ -81,7 +109,7 @@ const GlobalStyles = createGlobalStyle`
      */
     font-size: 100%;
     font-weight: 400;
-    overflow-x: hidden;
+    overflow-x: clip;
     width: 100%;
     background-color: ${({ theme }) => theme.colors.paper};
     line-height: 1.65;
@@ -102,19 +130,14 @@ const GlobalStyles = createGlobalStyle`
   }
 
   /**
-   * Overskrifter i Instrument Serif.
-   *
-   * Sporingen er nesten nøytral, ikke stram som da de sto i Geist. En serif
-   * med høy strekkontrast har allerede sin egen rytme mellom bokstavene;
-   * klemmer man den sammen, går de tynne strekene i hverandre.
-   *
-   * Vekt 400 overalt – skriften har ingen andre, og en syntetisk fet er
-   * verre enn ingen fet.
+   * Overskriftene: Geist 600, med sporing og grad fra typeskalaen.
+   * Én vekt for alle nivåer – hierarkiet ligger i størrelsen, ikke i at
+   * hvert nivå har sin egen tykkelse.
    */
   h1, h2, h3 {
     font-family: ${({ theme }) => theme.fonts.display};
     font-weight: 600;
-    letter-spacing: -0.035em;
+    letter-spacing: var(--ls-heading);
     font-optical-sizing: auto;
     /* Bevisst ingen farge her — overskrifter arver fra flaten de står på,
        slik at mørke seksjoner ikke må overstyre hver enkelt. */
@@ -122,27 +145,27 @@ const GlobalStyles = createGlobalStyle`
 
   h1 {
     font-weight: 600;
-    font-size: ${({ theme }) => theme.fontSizes['4xl']};
-    letter-spacing: -0.042em;
+    font-size: var(--fs-display);
+    letter-spacing: var(--ls-display);
     line-height: 0.98;
   }
 
   h2 {
-    font-weight: 700;
-    font-size: ${({ theme }) => theme.fontSizes['3xl']};
-    letter-spacing: -0.038em;
+    font-weight: 600;
+    font-size: var(--fs-heading);
+    letter-spacing: var(--ls-heading);
     line-height: 1.04;
   }
 
   h3 {
     font-weight: 600;
-    font-size: ${({ theme }) => theme.fontSizes.xl};
+    font-size: var(--fs-lead);
   }
 
   h4, h5, h6 {
     font-family: ${({ theme }) => theme.fonts.body};
     font-weight: 600;
-    letter-spacing: -0.01em;
+    letter-spacing: var(--ls-title);
   }
 
   /** Én synlig fokusring i hele appen, med nok kontrast mot begge flater. */

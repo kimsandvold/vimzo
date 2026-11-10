@@ -118,6 +118,7 @@ export default function Oppsummering({
         brief,
         pakke: estimat.pakke.navn,
         anslag: estimat.ramme,
+        logodesign: svar.logo === 'verktoy' ? (svar.logodesign?.id ?? '') : '',
       })
       setStatus('sendt')
     } catch (feil) {
@@ -173,6 +174,25 @@ export default function Oppsummering({
             <strong>{formaterRamme(estimat.ramme)} kr</strong>
             <span>anslag · drift {estimat.drift.pris} kr/mnd</span>
           </Prislinje>
+
+          {/* Logoen fra verktøyet, synlig før kunden sender – så han ser at
+              det er den riktige som følger med. */}
+          {svar.logo === 'verktoy' && svar.logodesign && (
+            <Medfolgende>
+              <span>
+                {svar.logodesign.forhandsvisning ? (
+                  <img
+                    src={`data:image/svg+xml;charset=utf-8,${encodeURIComponent(svar.logodesign.forhandsvisning)}`}
+                    alt=""
+                  />
+                ) : null}
+              </span>
+              <p>
+                <strong>Logoen din følger med.</strong> Den faktureres sammen med nettsiden – ikke nå. Når siden
+                er ferdig, får du filene på Min side.
+              </p>
+            </Medfolgende>
+          )}
 
           <Brief>{brief}</Brief>
 
@@ -257,8 +277,8 @@ const Dialog = styled.dialog`
 
   h2 {
     margin: 0 2.5rem 1rem 0;
-    font-size: ${({ theme }) => theme.fontSizes.xl};
-    letter-spacing: -0.03em;
+    font-size: var(--fs-title);
+    letter-spacing: var(--ls-title);
     line-height: 1.15;
   }
 
@@ -300,9 +320,9 @@ const Lukk = styled.button`
 
 const Stikkord = styled.p`
   margin: 0 0 0.4rem;
-  font-size: 0.75rem;
-  font-weight: 650;
-  letter-spacing: 0.07em;
+  font-size: var(--fs-micro);
+  font-weight: 600;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: ${({ theme }) => theme.colors.inkSubtle};
 `
@@ -316,14 +336,14 @@ const Prislinje = styled.div`
 
   strong {
     font-family: ${({ theme }) => theme.fonts.mono};
-    font-size: 1.5rem;
+    font-size: var(--fs-title);
     font-weight: 600;
-    letter-spacing: -0.04em;
+    letter-spacing: var(--ls-title);
     color: ${({ theme }) => theme.colors.ink};
   }
 
   span {
-    font-size: 0.875rem;
+    font-size: var(--fs-small);
     color: ${({ theme }) => theme.colors.inkSubtle};
   }
 `
@@ -335,9 +355,47 @@ const Merke = styled.em`
   /* Nøytral – en merkelapp, ikke en knapp. */
   background: ${({ theme }) => theme.colors.sunken};
   color: ${({ theme }) => theme.colors.inkMuted};
-  font-size: 0.75rem;
+  font-size: var(--fs-micro);
   font-style: normal;
-  font-weight: 650;
+  font-weight: 600;
+`
+
+const Medfolgende = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 0 0 1rem;
+  padding: 0.85rem 1rem;
+  border-radius: ${({ theme }) => theme.borderRadius.medium};
+  background: ${({ theme }) => theme.colors.accentSoft};
+
+  span {
+    display: grid;
+    flex-shrink: 0;
+    place-items: center;
+    width: 72px;
+    height: 56px;
+    border-radius: 10px;
+    background: ${({ theme }) => theme.colors.surface};
+  }
+
+  img {
+    max-width: 60px;
+    max-height: 42px;
+    object-fit: contain;
+  }
+
+  p {
+    margin: 0;
+    font-size: var(--fs-small);
+    line-height: 1.5;
+    color: ${({ theme }) => theme.colors.inkMuted};
+  }
+
+  strong {
+    font-weight: 600;
+    color: ${({ theme }) => theme.colors.ink};
+  }
 `
 
 const Brief = styled.pre`
@@ -346,7 +404,7 @@ const Brief = styled.pre`
   border-radius: ${({ theme }) => theme.borderRadius.medium};
   background: ${({ theme }) => theme.colors.sunken};
   font-family: inherit;
-  font-size: 0.875rem;
+  font-size: var(--fs-small);
   line-height: 1.6;
   white-space: pre-wrap;
   color: ${({ theme }) => theme.colors.inkMuted};
@@ -354,7 +412,7 @@ const Brief = styled.pre`
 
 const Tekst = styled.p`
   margin: 0;
-  font-size: 0.9375rem;
+  font-size: var(--fs-body);
   line-height: 1.5;
   color: ${({ theme }) => theme.colors.inkMuted};
 `
@@ -375,13 +433,13 @@ const Felt = styled.div`
   gap: 0.4rem;
 
   label {
-    font-size: 0.875rem;
-    font-weight: 550;
+    font-size: var(--fs-small);
+    font-weight: 500;
     color: ${({ theme }) => theme.colors.ink};
   }
 
   label small {
-    font-size: 0.75rem;
+    font-size: var(--fs-micro);
     font-weight: 400;
     color: ${({ theme }) => theme.colors.inkSubtle};
   }
@@ -394,7 +452,7 @@ const Felt = styled.div`
     border-radius: ${({ theme }) => theme.borderRadius.medium};
     background: ${({ theme }) => theme.colors.surface};
     font-family: inherit;
-    font-size: 1rem;
+    font-size: var(--fs-body);
     color: ${({ theme }) => theme.colors.ink};
 
     &::placeholder {
@@ -428,7 +486,7 @@ const Feilmelding = styled.p`
   border-radius: ${({ theme }) => theme.borderRadius.medium};
   background: ${({ theme }) => theme.colors.errorSoft};
   color: ${({ theme }) => theme.colors.error};
-  font-size: 0.9375rem;
+  font-size: var(--fs-body);
 
   a {
     color: inherit;
@@ -449,8 +507,8 @@ const Tilbake = styled.button`
   border: 0;
   background: none;
   font-family: inherit;
-  font-size: 0.875rem;
-  font-weight: 550;
+  font-size: var(--fs-small);
+  font-weight: 500;
   color: ${({ theme }) => theme.colors.inkSubtle};
   cursor: pointer;
 
@@ -470,7 +528,7 @@ const Hovedknapp = styled.button`
   background: ${({ theme }) => theme.colors.accentVivid};
   color: ${({ theme }) => theme.colors.accentOn};
   font-family: inherit;
-  font-size: 0.9375rem;
+  font-size: var(--fs-body);
   font-weight: 600;
   cursor: pointer;
   transition: background ${({ theme }) => theme.transitions.default};
@@ -487,7 +545,7 @@ const Hovedknapp = styled.button`
 
 const Notat = styled.p`
   margin: 0;
-  font-size: 0.8125rem;
+  font-size: var(--fs-small);
   line-height: 1.5;
   color: ${({ theme }) => theme.colors.inkSubtle};
 `
@@ -503,7 +561,7 @@ const Kvittering = styled.div`
 
   > p {
     margin: 0 0 1.25rem;
-    font-size: 1rem;
+    font-size: var(--fs-body);
     line-height: 1.6;
     color: ${({ theme }) => theme.colors.inkMuted};
   }
@@ -526,7 +584,7 @@ const Bekreftet = styled.p`
   padding: 0.8rem 1rem;
   border-radius: ${({ theme }) => theme.borderRadius.medium};
   background: ${({ theme }) => theme.colors.sunken};
-  font-size: 0.9rem;
+  font-size: var(--fs-small);
   color: ${({ theme }) => theme.colors.inkMuted};
 
   strong {

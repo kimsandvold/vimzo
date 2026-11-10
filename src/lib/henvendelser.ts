@@ -5,7 +5,7 @@ import type { Drift, Hendelse, NyHenvendelse, Notat, Sak, Status } from '../data
 const SAMLING = 'henvendelser'
 
 /** Grenser som også håndheves i firestore.rules. Holdes like. */
-export const MAKS = { kort: 200, epost: 254, telefon: 40, melding: 5000, brief: 5000 } as const
+export const MAKS = { kort: 200, epost: 254, telefon: 40, melding: 5000, brief: 5000, id: 100 } as const
 
 const kutt = (s: string, n: number) => s.slice(0, n)
 
@@ -29,6 +29,7 @@ export async function lagreHenvendelse(h: NyHenvendelse): Promise<boolean> {
     brief: kutt(h.brief, MAKS.brief),
     pakke: kutt(h.pakke, MAKS.kort),
     anslag: h.anslag,
+    logodesign: kutt(h.logodesign ?? '', MAKS.id),
     status: 'ny',
     opprettet: serverTimestamp(),
   })
@@ -52,6 +53,7 @@ function tilSak(id: string, d: DocumentData): Sak {
     brief: d.brief ?? '',
     pakke: d.pakke ?? '',
     anslag: d.anslag ?? null,
+    logodesign: d.logodesign ?? '',
     opprettet: ms(d.opprettet),
     status: d.status ?? 'ny',
     historikk: d.historikk ?? [],

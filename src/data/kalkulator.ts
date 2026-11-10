@@ -1,4 +1,5 @@
 import type { IkonNavn } from '../components/shared/Icon'
+import { PRODUKTER } from './logoprodukter'
 import {
   ANTALL_AVDRAG,
   avdragRamme,
@@ -35,7 +36,19 @@ import { BRANSJER, type Bransje } from './bransjer'
 export type Domenevalg = 'trenger' | 'har'
 export type Omfang = 'enkel' | 'tjenestesider' | 'omfattende' | 'arrangement'
 export type Bildevalg = 'har' | 'trenger'
-export type Logovalg = 'har' | 'trenger' | 'profil'
+export type Logovalg = 'har' | 'verktoy' | 'trenger' | 'profil'
+
+/**
+ * En logo kunden har laget selv i logoverktøyet, valgt i kalkulatoren.
+ * Bare det vi trenger for å vise og knytte den til saken – selve designet
+ * ligger i Firestore (logodesign) og hentes i /admin.
+ */
+export interface ValgtLogo {
+  id: string
+  navn: string
+  /** Liten SVG, til forhåndsvisningen i kalkulatoren og estimatet. */
+  forhandsvisning: string
+}
 
 export interface Svar {
   navn: string
@@ -63,6 +76,8 @@ export interface Svar {
   omfang: Omfang | null
   bilder: Bildevalg
   logo: Logovalg
+  /** Logoen fra logoverktøyet, når `logo` er 'verktoy'. */
+  logodesign: ValgtLogo | null
   /** Verktøy som skal bygges inn i siden. Id-er fra `VERKTOY`. */
   verktoy: readonly string[]
 }
@@ -78,6 +93,7 @@ export const STARTSVAR: Svar = {
   // ville anslaget inneholdt en fotojobb ingen hadde bedt om.
   bilder: 'har',
   logo: 'har',
+  logodesign: null,
   verktoy: [],
 }
 
@@ -86,6 +102,8 @@ const TILLEGG = {
   foto: tilleggPris('Foto og dronevideo').pris,
   logo: tilleggPris('Logo').pris,
   profil: tilleggPris('Visuell profil').pris,
+  /** Logoen kunden har laget selv – samme pris som i verktøyet, men fakturert med nettsiden. */
+  verktoy: PRODUKTER.logo.pris,
 } as const
 
 /* -------------------------------------------------------------- spørsmål */
@@ -120,7 +138,13 @@ export const BILDER: readonly Alternativ<Bildevalg>[] = [
 
 export const LOGO: readonly Alternativ<Logovalg>[] = [
   { verdi: 'har', navn: 'Jeg har logo', hint: 'Vi bruker den du har' },
-  { verdi: 'trenger', navn: 'Lag en logo', hint: 'Tre forslag, du velger én', pris: TILLEGG.logo },
+  {
+    verdi: 'verktoy',
+    navn: 'Jeg lager den selv i logoverktøyet',
+    hint: 'Velg en du har laget – den faktureres sammen med nettsiden, ikke nå',
+    pris: TILLEGG.verktoy,
+  },
+  { verdi: 'trenger', navn: 'Vi lager logoen', hint: 'Tre forslag tegnet for deg, du velger én', pris: TILLEGG.logo },
   { verdi: 'profil', navn: 'Hele profilen', hint: 'Logo, farger og skrift – til bil og skilt også', pris: TILLEGG.profil },
 ]
 
@@ -315,7 +339,13 @@ export function regnUt(svar: Svar): Estimat {
     tillegg.push({ navn: dekket ? 'Foto hos deg' : 'Foto hos deg, halv dag', pris: dekket ? 0 : TILLEGG.foto, dekket, fraPris: !dekket })
   }
 
-  if (svar.logo === 'trenger') {
+  if (svar.logo === 'verktoy') {
+    tillegg.push({
+      navn: svar.logodesign ? `Logo fra verktøyet («${svar.logodesign.navn || 'uten navn'}»)` : 'Logo fra logoverktøyet',
+      pris: TILLEGG.verktoy,
+      dekket: false,
+    })
+  } else if (svar.logo === 'trenger') {
     tillegg.push({ navn: 'Logo, tre forslag', pris: TILLEGG.logo, dekket: false })
   } else if (svar.logo === 'profil') {
     tillegg.push({ navn: 'Visuell profil med logo', pris: TILLEGG.profil, dekket: false })
@@ -366,7 +396,11 @@ export function lagBrief(svar: Svar, estimat: Estimat): string {
     '',
     `Omfang: ${OMFANG.find((o) => o.verdi === svar.omfang)?.navn ?? '(ikke valgt)'}`,
     `Bilder: ${BILDER.find((b) => b.verdi === svar.bilder)?.navn}`,
-    `Logo: ${LOGO.find((l) => l.verdi === svar.logo)?.navn}`,
+    svar.logo === 'verktoy'
+      ? svar.logodesign
+        ? `Logo: laget i logoverktøyet – «${svar.logodesign.navn || 'uten navn'}» (design ${svar.logodesign.id}). Faktureres med nettsiden; frigis i saken i /admin.`
+        : 'Logo: vil lage den selv i logoverktøyet (ikke valgt ennå)'
+      : `Logo: ${LOGO.find((l) => l.verdi === svar.logo)?.navn}`,
     `Verktøy: ${svar.verktoy.length ? VERKTOY.filter((v) => svar.verktoy.includes(v.id)).map((v) => v.navn).join(', ') : 'Ingen'}`,
     '',
     `Ligner mest på: ${estimat.pakke.navn} (${estimat.omfang}).`,

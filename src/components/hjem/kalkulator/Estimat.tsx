@@ -15,8 +15,9 @@ import { foreslaDomene, type Estimat as EstimatData, type Svar } from '../../../
  * Bygget og driften holdes fra hverandre. Slår man dem sammen får man et
  * penere tall og en kunde som føler seg lurt i måned tretten.
  *
- * Flaten er den eneste mørke på forsiden. Den skal lese som en kvittering som
- * ligger over siden, ikke som enda en seksjon.
+ * Flaten var mørk før – en svart kvittering midt på en hvit side. Det trakk
+ * blikket, men det var også det hardeste på hele forsiden. Nå er den en lys
+ * grå flate, og det er tallet selv, stort og tydelig, som bærer vekten.
  */
 export default function Estimat({
   estimat,
@@ -43,11 +44,6 @@ export default function Estimat({
         fyller ut.
       */}
       <Adresselinje aria-hidden="true">
-        <Prikker>
-          <i />
-          <i />
-          <i />
-        </Prikker>
         <Felt>
           <Icon navn="skjold" storrelse={11} tykkelse={2.4} />
           {adresse}
@@ -79,19 +75,11 @@ export default function Estimat({
               eller ca. <Ramme verdi={estimat.avdrag} /> kr/mnd over {ANTALL_AVDRAG} måneder
             </Under>
           )}
-          <Kontekst>
-            {estimat.kortvarig
-              ? 'Vi skriver, designer og setter siden opp – du sender program og praktisk info. Den endelige prisen setter vi etter en prat.'
-              : 'Det meste av dette er arbeid vi gjør for deg – tekst, bilder, design og oppsett. Du bruker rundt to timer. Den endelige prisen setter vi etter en prat.'}
-          </Kontekst>
         </>
       ) : (
         <>
-          <Venter>Hvor mye skal fram på siden?</Venter>
-          <Kontekst>
-            Velg omfang, så regner vi ut et anslag ut fra svarene dine. Under ser du hva som er med
-            uansett.
-          </Kontekst>
+          <Venter>Prisen kommer her.</Venter>
+          <Kontekst>Velg hvor mye som skal fram på siden.</Kontekst>
           <Velg type="button" onClick={onVelgOmfang}>
             Velg omfang
             <Icon navn="pilHoyre" storrelse={15} tykkelse={2} />
@@ -109,25 +97,7 @@ export default function Estimat({
         </Deretter>
       )}
 
-      <Fakta>
-        {estimat.klar && (
-          <li>
-            <Icon navn="dokument" storrelse={14} tykkelse={2} />
-            {estimat.omfang}
-          </li>
-        )}
-        <li>
-          <Icon navn="enheter" storrelse={14} tykkelse={2} />
-          Mobil, nettbrett og PC
-        </li>
-      </Fakta>
 
-      {/* Det viktigste forbeholdet på kortet, og derfor ikke i småskrift
-          nederst: tallet over er et utgangspunkt for en samtale. */}
-      <Avklaring>
-        Slik blir prisen til: vi tar en prat på en halvtime om hva bedriften trenger. Etterpå får du
-        et skriftlig tilbud med fast pris og leveringsdato – og da står prisen.
-      </Avklaring>
 
       <Bolk>
         <Tittel>{estimat.klar ? 'Dette pleier å inngå' : 'Dette er alltid med'}</Tittel>
@@ -162,19 +132,8 @@ export default function Estimat({
         </Bolk>
       )}
 
-      {/* Bygget pluss tre års drift – det ærligste tallet for hva siden
-          faktisk koster å ha. */}
       {estimat.klar && (
         <>
-          {!estimat.kortvarig && (
-          <Drift>
-            <span>Å eie siden i tre år</span>
-            <strong>
-              <Ramme verdi={estimat.treAr} animert /> kr
-            </strong>
-          </Drift>
-          )}
-
           <Send type="button" onClick={onSend}>
             Ta en prat om dette
             <Icon navn="pilHoyre" storrelse={16} tykkelse={2} />
@@ -182,7 +141,9 @@ export default function Estimat({
         </>
       )}
 
-      <Note>Et anslag, ikke et tilbud. Ingenting sendes før du selv trykker send. Alle beløp er eks. mva.</Note>
+      {/* Det eneste forbeholdet, sagt én gang og kort: tallet er et
+          utgangspunkt. Fast pris kommer skriftlig etter en prat. */}
+      <Note>Anslag eks. mva. Fast pris får du skriftlig etter en prat.</Note>
     </Flate>
   )
 }
@@ -203,14 +164,13 @@ const Flate = styled.aside`
   display: flex;
   flex-direction: column;
   padding: clamp(1.5rem, 2vw, 1.9rem);
-  border-radius: ${({ theme }) => theme.borderRadius.xxl};
-  background: ${({ theme }) => theme.colors.deep};
-  color: ${({ theme }) => theme.colors.inkInverted};
+  border-radius: ${({ theme }) => theme.borderRadius.xl};
+  background: ${({ theme }) => theme.colors.sunken};
+  color: ${({ theme }) => theme.colors.ink};
   /* Kantlys langs øvre kant. Ett piksel lys der flaten vender opp er det
      som skiller et objekt fra et hull – uten det leser kortet flatt. */
-  box-shadow:
-    ${({ theme }) => theme.shadows.svev},
-    inset 0 1px 0 rgba(182, 169, 255, 0.22);
+  /* Ingen skygge. Kortet skiller seg fra papiret med en tone, ikke med et
+     svev – det er nok, og det er roligere. */
 
   /* Følger med når man blar gjennom stegene på en høy skjerm – tallet er det
      man ser etter, og det skal ikke rulle vekk. */
@@ -239,22 +199,9 @@ const Adresselinje = styled.div`
   gap: 0.7rem;
   margin: calc(-1 * clamp(1.5rem, 2vw, 1.9rem)) calc(-1 * clamp(1.5rem, 2vw, 1.9rem)) clamp(1.3rem, 2vw, 1.7rem);
   padding: 0.75rem clamp(1.5rem, 2vw, 1.9rem);
-  border-bottom: 1px solid ${({ theme }) => theme.colors.borderInverted};
-  border-radius: ${({ theme }) => theme.borderRadius.xxl} ${({ theme }) => theme.borderRadius.xxl} 0 0;
-  background: rgba(252, 252, 250, 0.045);
-`
-
-const Prikker = styled.span`
-  display: inline-flex;
-  gap: 0.3rem;
-  flex-shrink: 0;
-
-  i {
-    width: 8px;
-    height: 8px;
-    border-radius: ${({ theme }) => theme.borderRadius.round};
-    background: rgba(252, 252, 250, 0.18);
-  }
+  border-bottom: 1px solid ${({ theme }) => theme.colors.border};
+  border-radius: ${({ theme }) => theme.borderRadius.xl} ${({ theme }) => theme.borderRadius.xl} 0 0;
+  background: transparent;
 `
 
 /** Selve adressefeltet. Mono, fordi et domene er en adresse og ikke en tittel. */
@@ -265,18 +212,18 @@ const Felt = styled.span`
   min-width: 0;
   padding: 0.3rem 0.7rem;
   border-radius: ${({ theme }) => theme.borderRadius.pill};
-  background: rgba(252, 252, 250, 0.07);
+  background: ${({ theme }) => theme.colors.surface};
   font-family: ${({ theme }) => theme.fonts.mono};
-  font-size: 0.75rem;
-  letter-spacing: -0.01em;
+  font-size: var(--fs-micro);
+  letter-spacing: var(--ls-micro);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  color: rgba(252, 252, 250, 0.62);
+  color: ${({ theme }) => theme.colors.inkMuted};
 
   svg {
     flex-shrink: 0;
-    color: ${({ theme }) => theme.colors.accentLight};
+    color: ${({ theme }) => theme.colors.accent};
     opacity: 0.8;
   }
 `
@@ -292,13 +239,13 @@ const Topp = styled.div`
 const Stikkord = styled.p`
   margin: 0;
   overflow: hidden;
-  font-size: 0.75rem;
-  font-weight: 650;
-  letter-spacing: 0.07em;
+  font-size: var(--fs-micro);
+  font-weight: 600;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   text-overflow: ellipsis;
   white-space: nowrap;
-  color: ${({ theme }) => theme.colors.inkInvertedMuted};
+  color: ${({ theme }) => theme.colors.inkMuted};
 `
 
 const Merke = styled.span`
@@ -306,11 +253,11 @@ const Merke = styled.span`
   padding: 0.25rem 0.6rem;
   border-radius: ${({ theme }) => theme.borderRadius.pill};
   /* Nøytral – en merkelapp, ikke en knapp. */
-  background: rgba(252, 252, 250, 0.1);
-  color: ${({ theme }) => theme.colors.inkInverted};
-  font-size: 0.75rem;
-  font-weight: 650;
-  letter-spacing: -0.01em;
+  background: ${({ theme }) => theme.colors.surface};
+  color: ${({ theme }) => theme.colors.ink};
+  font-size: var(--fs-micro);
+  font-weight: 600;
+  letter-spacing: var(--ls-micro);
 `
 
 /**
@@ -328,19 +275,19 @@ const Tall = styled.p`
     font-family: ${({ theme }) => theme.fonts.mono};
     /* Mindre enn da det sto ett tall her: et spenn er dobbelt så langt, og
        skal fortsatt holde seg på én linje i spalten. */
-    font-size: clamp(1.9rem, 3.2vw, 2.7rem);
+    font-size: var(--fs-heading);
     font-weight: 600;
     line-height: 1;
-    letter-spacing: -0.045em;
-    color: ${({ theme }) => theme.colors.accentLight};
+    letter-spacing: var(--ls-heading);
+    color: ${({ theme }) => theme.colors.ink};
   }
 
   /* Direkte barn: ellers treffer regelen også spans inne i <Belop>, og
      beløpet arver småskriften i stedet for sin egen grad. */
   > span {
-    font-size: 0.9375rem;
-    font-weight: 550;
-    color: ${({ theme }) => theme.colors.inkInvertedMuted};
+    font-size: var(--fs-body);
+    font-weight: 500;
+    color: ${({ theme }) => theme.colors.inkMuted};
   }
 `
 
@@ -348,14 +295,14 @@ const Tall = styled.p`
 const Fradel = styled.span`
   font-family: ${({ theme }) => theme.fonts.body};
   font-weight: 500;
-  color: ${({ theme }) => theme.colors.inkInvertedMuted};
+  color: ${({ theme }) => theme.colors.inkMuted};
 `
 
 
 const Under = styled.p`
   margin: 0.5rem 0 0;
-  font-size: 0.875rem;
-  color: ${({ theme }) => theme.colors.inkInvertedMuted};
+  font-size: var(--fs-small);
+  color: ${({ theme }) => theme.colors.inkMuted};
 `
 
 /** Driften, løftet opp til tallet. Aksentfarget fordi den er gode nyheter. */
@@ -364,14 +311,14 @@ const Deretter = styled.p`
   align-items: center;
   gap: 0.45rem;
   margin: 0.7rem 0 0;
-  font-size: 0.875rem;
-  color: ${({ theme }) => theme.colors.inkInverted};
+  font-size: var(--fs-small);
+  color: ${({ theme }) => theme.colors.ink};
 
   strong {
     font-family: ${({ theme }) => theme.fonts.mono};
-    font-size: 1rem;
+    font-size: var(--fs-body);
     font-weight: 600;
-    letter-spacing: -0.03em;
+    letter-spacing: var(--ls-body);
   }
 
   svg {
@@ -379,56 +326,19 @@ const Deretter = styled.p`
   }
 `
 
-const Fakta = styled.ul`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem 1.2rem;
-  margin: 1.1rem 0 0;
-  padding: 0;
-  list-style: none;
-
-  li {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    font-size: 0.8125rem;
-    font-weight: 500;
-    color: rgba(252, 252, 250, 0.82);
-  }
-
-  svg {
-    color: ${({ theme }) => theme.colors.accentLight};
-  }
-`
-
-/**
- * Forbeholdet om tid.
- *
- * Det står midt på kortet, og ikke med liten skrift nederst.
- * En side som selger fast pris har ikke råd til å gjemme det ene stedet den
- * faktisk tar forbehold – da mister resten av kortet troverdighet.
- */
-const Avklaring = styled.p`
-  margin: 0.8rem 0 0;
-  /* Hele setninger – de følger prosagulvet på 14px, ikke etikettgulvet. */
-  font-size: 0.875rem;
-  line-height: 1.5;
-  color: rgba(252, 252, 250, 0.62);
-`
-
 const Bolk = styled.div`
   margin-top: 1.25rem;
   padding-top: 1.25rem;
-  border-top: 1px solid ${({ theme }) => theme.colors.borderInverted};
+  border-top: 1px solid ${({ theme }) => theme.colors.border};
 `
 
 const Tittel = styled.p`
   margin: 0 0 0.6rem;
-  font-size: 0.75rem;
-  font-weight: 650;
-  letter-spacing: 0.07em;
+  font-size: var(--fs-micro);
+  font-weight: 600;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: ${({ theme }) => theme.colors.inkInvertedMuted};
+  color: ${({ theme }) => theme.colors.inkMuted};
 `
 
 const Liste = styled.ul`
@@ -442,15 +352,15 @@ const Liste = styled.ul`
     display: flex;
     align-items: flex-start;
     gap: 0.55rem;
-    font-size: 0.875rem;
+    font-size: var(--fs-small);
     line-height: 1.45;
-    color: rgba(252, 252, 250, 0.88);
+    color: ${({ theme }) => theme.colors.ink};
   }
 
   svg {
     flex-shrink: 0;
     margin-top: 0.3rem;
-    color: ${({ theme }) => theme.colors.accentLight};
+    color: ${({ theme }) => theme.colors.accent};
   }
 `
 
@@ -466,57 +376,27 @@ const Tilleggsliste = styled.ul`
     align-items: baseline;
     justify-content: space-between;
     gap: 1rem;
-    font-size: 0.875rem;
-    color: rgba(252, 252, 250, 0.88);
+    font-size: var(--fs-small);
+    color: ${({ theme }) => theme.colors.ink};
   }
 `
 
 const Pris = styled.span`
   flex-shrink: 0;
   font-family: ${({ theme }) => theme.fonts.mono};
-  font-size: 0.8125rem;
-  font-weight: 550;
-  letter-spacing: -0.02em;
-  color: ${({ theme }) => theme.colors.inkInverted};
+  font-size: var(--fs-small);
+  font-weight: 500;
+  letter-spacing: var(--ls-small);
+  color: ${({ theme }) => theme.colors.ink};
 `
 
 /** «inngår» skal lese som en god nyhet, ikke som en tom celle. */
 const Dekket = styled.span`
   flex-shrink: 0;
-  font-size: 0.75rem;
+  font-size: var(--fs-micro);
   font-weight: 600;
-  letter-spacing: -0.005em;
-  color: ${({ theme }) => theme.colors.inkInverted};
-`
-
-/**
- * Driften står for seg, med egen flate.
- *
- * Den er det eneste beløpet på kortet som fortsetter etter at de tolv
- * avdragene er betalt, og den forskjellen er verdt en strek.
- */
-const Drift = styled.div`
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 1rem;
-  margin-top: 1.25rem;
-  padding: 0.8rem 1rem;
-  border-radius: ${({ theme }) => theme.borderRadius.medium};
-  background: rgba(252, 252, 250, 0.06);
-
-  /* Direkte barn, av samme grunn som i <Tall>. */
-  > span {
-    font-size: 0.8125rem;
-    color: ${({ theme }) => theme.colors.inkInvertedMuted};
-  }
-
-  > strong {
-    font-family: ${({ theme }) => theme.fonts.mono};
-    font-size: 0.9375rem;
-    font-weight: 600;
-    letter-spacing: -0.02em;
-  }
+  letter-spacing: var(--ls-micro);
+  color: ${({ theme }) => theme.colors.ink};
 `
 
 const Send = styled.button`
@@ -532,9 +412,9 @@ const Send = styled.button`
   background: ${({ theme }) => theme.colors.accentVivid};
   color: ${({ theme }) => theme.colors.accentOn};
   font-family: inherit;
-  font-size: 0.9375rem;
+  font-size: var(--fs-body);
   font-weight: 600;
-  letter-spacing: -0.015em;
+  letter-spacing: var(--ls-body);
   cursor: pointer;
   transition: all ${({ theme }) => theme.transitions.default};
 
@@ -549,27 +429,27 @@ const Send = styled.button`
 
 const Note = styled.p`
   margin: 0.85rem 0 0;
-  font-size: 0.875rem;
+  font-size: var(--fs-small);
   line-height: 1.5;
-  color: rgba(252, 252, 250, 0.52);
+  color: ${({ theme }) => theme.colors.inkSubtle};
 `
 
 /** Linja under tallet: hva pengene går til, i samme øyeblikk som de vises. */
 const Kontekst = styled.p`
   margin: 0.75rem 0 0;
-  font-size: 0.875rem;
+  font-size: var(--fs-small);
   line-height: 1.5;
-  color: rgba(252, 252, 250, 0.72);
+  color: ${({ theme }) => theme.colors.inkMuted};
 `
 
 /** Tallets plass før det finnes et tall. Ord, ikke sifre – det er et spørsmål. */
 const Venter = styled.p`
   margin: 0;
-  font-size: clamp(1.5rem, 2.4vw, 1.9rem);
-  font-weight: 650;
+  font-size: var(--fs-title);
+  font-weight: 600;
   line-height: 1.15;
-  letter-spacing: -0.03em;
-  color: ${({ theme }) => theme.colors.accentLight};
+  letter-spacing: var(--ls-title);
+  color: ${({ theme }) => theme.colors.ink};
 `
 
 const Velg = styled.button`
@@ -579,17 +459,17 @@ const Velg = styled.button`
   gap: 0.45rem;
   margin-top: 1rem;
   padding: 0.6rem 1.1rem;
-  border: 1px solid rgba(182, 169, 255, 0.4);
+  border: 0;
   border-radius: ${({ theme }) => theme.borderRadius.pill};
-  background: rgba(182, 169, 255, 0.1);
-  color: ${({ theme }) => theme.colors.accentLight};
+  background: ${({ theme }) => theme.colors.surface};
+  color: ${({ theme }) => theme.colors.accent};
   font-family: inherit;
-  font-size: 0.875rem;
+  font-size: var(--fs-small);
   font-weight: 600;
   cursor: pointer;
   transition: background ${({ theme }) => theme.transitions.default};
 
   &:hover {
-    background: rgba(182, 169, 255, 0.18);
+    background: ${({ theme }) => theme.colors.accentSoft};
   }
 `
