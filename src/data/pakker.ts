@@ -205,8 +205,8 @@ export const tilleggstjenester: readonly Tillegg[] = [
     pris: 4900,
     beskrivelse:
       'En ny logo tegnet for bedriften din, levert i alle filformatene du trenger – til nett, ' +
-      'til trykk, til bil og skilt. Du får tre forslag og velger ett. Vil du prøve deg fram ' +
-      'selv først, kan du bruke logoverktøyet vårt gratis.',
+      'til trykk, til bil og skilt. Du får tre forslag og velger ett. Vil du heller lage den ' +
+      'selv, kan du bruke logoverktøyet vårt.',
   },
   {
     navn: 'Visuell profil',

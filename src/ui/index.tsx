@@ -54,12 +54,18 @@ export const Seksjon = styled.section<{ $flate?: Flate; $tett?: boolean }>`
  * det og tekst man kunne klikke på. Aksentfargen er for lenker og knapper.
  */
 export const Stikkord = styled.p<{ $lys?: boolean }>`
-  margin: 0 0 1.1rem;
-  font-size: ${({ theme }) => theme.fontSizes.xs};
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: ${({ theme, $lys }) => ($lys ? theme.colors.inkInvertedMuted : theme.colors.inkSubtle)};
+  /* && gir dobbel klasse, så stikkordet vinner over en seksjons egen
+     «p { … }»-regel. Uten det arvet det ingressens grad noen steder, og
+     samme etikett sto i tre ulike størrelser rundt på nettstedet. */
+  && {
+    margin: 0 0 1rem;
+    font-size: var(--fs-micro);
+    font-weight: 600;
+    line-height: 1.4;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: ${({ theme, $lys }) => ($lys ? theme.colors.inkInvertedMuted : theme.colors.inkSubtle)};
+  }
 `
 
 /**
@@ -75,18 +81,20 @@ export const Stikkord = styled.p<{ $lys?: boolean }>`
  */
 export const Tittel = styled.h2<{ $niva?: 'stor' | 'medium' }>`
   margin: 0;
-  font-size: ${({ theme, $niva }) => theme.fontSizes[$niva === 'medium' ? '2xl' : '3xl']};
-  font-weight: 700;
+  font-size: var(--fs-heading);
+  font-weight: 600;
   line-height: 1.04;
-  letter-spacing: -0.038em;
-  max-width: 15ch;
+  letter-spacing: var(--ls-heading);
+  /* Ingen smal sperre. 15ch tvang fram linjeskift i overskrifter som fint
+     fikk plass på én linje («La kunden regne / ut prisen selv.»). */
+  max-width: 28ch;
   text-wrap: balance;
 `
 
 export const Ingress = styled.p<{ $lys?: boolean }>`
   margin: 1.25rem 0 0;
   max-width: 48ch;
-  font-size: ${({ theme }) => theme.fontSizes.lg};
+  font-size: var(--fs-lead);
   line-height: 1.55;
   color: ${({ theme, $lys }) => ($lys ? theme.colors.inkInvertedMuted : theme.colors.inkMuted)};
 `
@@ -146,9 +154,9 @@ const knappStil = css<{ $variant: KnappVariant; $stor?: boolean }>`
   border: 0;
   border-radius: ${({ theme }) => theme.borderRadius.pill};
   font-family: inherit;
-  font-size: ${({ theme, $stor }) => ($stor ? theme.fontSizes.md : theme.fontSizes.base)};
-  font-weight: 550;
-  letter-spacing: -0.01em;
+  font-size: var(--fs-body);
+  font-weight: 500;
+  letter-spacing: var(--ls-body);
   text-decoration: none;
   white-space: nowrap;
   cursor: pointer;
@@ -165,12 +173,12 @@ const knappStil = css<{ $variant: KnappVariant; $stor?: boolean }>`
     switch ($variant) {
       case 'aksent':
         return css`
-          background: ${theme.colors.accent};
+          background: ${theme.colors.accentVivid};
           color: #fff;
-          box-shadow: 0 10px 24px -12px rgba(79, 63, 214, 0.55);
+          /* Ingen farget skygge. Den fikk knappen til å gløde, og en knapp
+             som gløder ser ut som reklame – ikke som et trygt valg. */
           &:hover {
             background: ${theme.colors.accentHover};
-            box-shadow: 0 16px 32px -14px rgba(79, 63, 214, 0.7);
           }
         `
       case 'hvit':
@@ -198,7 +206,7 @@ const knappStil = css<{ $variant: KnappVariant; $stor?: boolean }>`
           background: ${theme.colors.accentSoft};
           color: ${theme.colors.accentInk};
           &:hover {
-            background: #DFD9FF;
+            background: #D9E6F8;
           }
         `
       default:
@@ -289,9 +297,9 @@ const PilStil = css<{ $lys?: boolean }>`
   align-items: center;
   gap: 0.5rem;
   flex: none;
-  font-size: ${({ theme }) => theme.fontSizes.base};
-  font-weight: 550;
-  letter-spacing: -0.01em;
+  font-size: var(--fs-body);
+  font-weight: 500;
+  letter-spacing: var(--ls-body);
   text-decoration: none;
   color: ${({ theme, $lys }) => ($lys ? theme.colors.inkInverted : theme.colors.accent)};
 

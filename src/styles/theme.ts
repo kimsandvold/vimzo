@@ -14,32 +14,44 @@
  *   4. Typografien bærer hierarkiet. Blir noe utydelig, er svaret større
  *      grad eller mer luft – aldri en boks rundt.
  *
- * Aksenten er indigo, og den finnes i tre styrker fordi hver av dem har en
- * jobb kontrasten krever:
- *   `accent` (#4F3FD6) er tekst og lenker på lyst — 6.8:1 mot lerretet.
- *   `accentVivid` (#5B4AE8) er flate: knapper og merkelapper, med hvit tekst
- *   oppå — 5.9:1. `accentLight` (#B6A9FF) brukes på mørke flater, der den
- *   måler 9.4:1 og bærer det store beløpet i estimatet.
+ * Aksenten er en klar, ren blå – ikke indigo, ikke lilla – og den finnes i
+ * tre styrker fordi hver av dem har en jobb kontrasten krever:
+ *   `accent` (#0052B4) er tekst og lenker på lyst — 7.6:1 mot hvitt.
+ *   `accentVivid` (#005CC8) er flate: knapper og merkelapper, med hvit tekst
+ *   oppå — 6.2:1. `accentLight` (#6CB4FF) brukes på mørke flater, 7.7:1.
  *
- * Grønt er med vilje borte. Det eneste grønne som er igjen er `success`,
- * og det er semantikk — aldri dekor.
+ * Hvorfor denne blåfargen: blått er fargen som sterkest leses som tillit og
+ * trygghet, og det er også fargen folk allerede forventer at en knapp har.
+ * Indigoen som lå her trakk mot lilla, og lilla leser som leketøy eller
+ * kampanje. Denne er klar og rolig – en fast hånd, ikke et rop. Den lå et
+ * hakk lysere en stund (#0071E3), men den leste som en app-knapp; et trinn
+ * dypere er det samme blå, bare med mer tyngde.
+ *
+ * `success` er fortsatt et eget, gulere grønt, og det er semantikk — aldri
+ * dekor.
  *
  * Alle tekstfarger er kontrastsjekket mot flatene de brukes på (AA, 4.5:1).
  * Se docs/designprinsipper.md for begrunnelsene og kildene.
  */
 
 /** Nesten nøytral gråskala med en hårfin varm snert. Ikke brun, ikke blå. */
+/*
+ * Mykere enn før. Den gamle skalaen gikk helt ned i nesten-sort (#0C0D0C) og
+ * opp i kritthvitt, og med svarte brikker og et svart kort midt på ble
+ * forsiden hard å se på. Nå er mørkeste tekst en dyp grafitt, og flatene er
+ * hvitt og en svak, kjølig grå – kontrasten holder AA, men den roper ikke.
+ */
 const neutral = {
-  50: '#FCFCFA',
-  100: '#F4F4F1',
-  200: '#E7E8E5',
-  300: '#D4D6D1',
-  400: '#9EA29C',
-  500: '#6B706A',
-  600: '#4E524D',
-  700: '#32352F',
-  800: '#1A1C19',
-  900: '#0C0D0C',
+  50: '#FFFFFF',
+  100: '#F5F5F7',
+  200: '#E8E8ED',
+  300: '#D2D2D7',
+  400: '#A1A1A8',
+  500: '#6E6E76',
+  600: '#55565C',
+  700: '#3A3B40',
+  800: '#26272B',
+  900: '#1D1D1F',
 } as const
 
 const theme = {
@@ -59,9 +71,9 @@ const theme = {
      * tonet mot indigo, så den mørke flaten er i slekt med aksenten.
      * Kontrasten er like høy; det er slektskapet som er nytt.
      */
-    deep: '#13111F',
+    deep: '#1D1D1F',
     /** Dyp flate, ett hakk lysere – for kort på `deep`. */
-    deepRaised: '#1E1B30',
+    deepRaised: '#2A2A2E',
 
     // --- Tekst ---
     ink: neutral[900],
@@ -70,7 +82,7 @@ const theme = {
     /** Metadata og bildetekst. Lysest mulige tone som klarer AA mot alle flater. */
     inkSubtle: neutral[500],
     inkInverted: '#FFFFFF',
-    inkInvertedMuted: 'rgba(252, 252, 250, 0.68)',
+    inkInvertedMuted: 'rgba(255, 255, 255, 0.7)',
 
     // --- Kanter (brukes sparsomt – helst skygge i stedet) ---
     border: neutral[200],
@@ -82,24 +94,24 @@ const theme = {
      * Indigo som TEKST og lenke. 6.8:1 mot lerretet.
      * Bruk denne når aksenten skal leses, ikke ses.
      */
-    accent: '#4F3FD6',
-    accentHover: '#4133B8',
+    accent: '#0052B4',
+    accentHover: '#00449A',
     /**
      * Indigo som FLATE – knapper og merkelapper, med hvit tekst oppå (5.9:1).
      * Dyp nok til å bære en knapp uten å bli pastell.
      */
-    accentVivid: '#5B4AE8',
-    accentVividHover: '#4A3BD1',
-    /** Tekst oppå `accentVivid`. Hvit, 5.9:1. */
+    accentVivid: '#005CC8',
+    accentVividHover: '#004FAD',
+    /** Tekst oppå `accentVivid`. Hvit, 6.2:1. */
     accentOn: '#FFFFFF',
     /** Aksent på mørke flater. 9.4:1 mot `deep`. */
-    accentLight: '#B6A9FF',
+    accentLight: '#6CB4FF',
     /** Lys aksentflate: merkelapper og fremhevede felter. */
-    accentSoft: '#EDEAFF',
-    /** Tekst på `accentSoft`. 8.3:1. */
-    accentInk: '#3B2EA8',
-    focus: '#5B4AE8',
-    focusInverted: '#B6A9FF',
+    accentSoft: '#E8F0FB',
+    /** Tekst på `accentSoft`. 7.6:1. */
+    accentInk: '#003E8A',
+    focus: '#005CC8',
+    focusInverted: '#6CB4FF',
 
     // --- Semantikk (aldri som dekor) ---
     success: '#15803D',
@@ -142,19 +154,39 @@ const theme = {
   },
 
   /**
-   * Typeskala. Bevisst stor i toppen: en moderne, lett side får luft nettopp
-   * fordi overskriftene er store nok til å bære sin egen plass.
+   * Typeskalaen: sju trinn, ingen andre.
+   *
+   * Siden hadde vokst til femtifem ulike skriftstørrelser – 13, 14, 14,4,
+   * 14,8, 15, 15,2 piksler og så videre – fordi hver komponent fant sin egen.
+   * Det er den mest sikre måten å få en side til å se uferdig ut på: ingen
+   * ser tallene, men alle ser at ingenting stemmer.
+   *
+   * Nå er det sju trinn, og hvert har én jobb. Selve verdiene står som
+   * CSS-variabler i GlobalStyles (`--fs-*`), sammen med sporingen som hører
+   * til hvert trinn (`--ls-*`) – jo større skrift, jo strammere. Vekten har
+   * tre trinn: 400 for løpende tekst, 500 for grensesnitt og etiketter, 600
+   * for overskrifter og det som skal fram.
+   *
+   *   micro    12   etiketter i versaler, merkelapper
+   *   small    14   metadata, hjelpetekst, bildetekst
+   *   body     16   brødtekst, knapper, felt, navigasjon
+   *   lead     18–20  ingresser, korttitler
+   *   title    20–24  spørsmål, underoverskrifter, tall i kort
+   *   heading  30–44  seksjonsoverskrifter (h2) – én per seksjon
+   *
+   * Regelen som holder det rent: hver seksjon har ÉN stor ting, overskriften.
+   * Alt inni – korttitler, listepunkter, h3 – er lead eller mindre. Står to
+   * ting i heading- eller title-grad ved siden av hverandre, konkurrerer de.
+   *   display  40–76  sidetitler (h1)
    */
   fontSizes: {
-    xs: '0.75rem',
-    sm: '0.875rem',
-    base: '1rem',
-    md: '1.0625rem',
-    lg: 'clamp(1.125rem, 0.4vw + 1rem, 1.3125rem)',
-    xl: 'clamp(1.3rem, 1vw + 1rem, 1.6rem)',
-    '2xl': 'clamp(1.75rem, 2vw + 1.1rem, 2.4rem)',
-    '3xl': 'clamp(2.25rem, 3.6vw + 1.1rem, 3.6rem)',
-    '4xl': 'clamp(2.9rem, 6vw + 1rem, 5.6rem)',
+    micro: 'var(--fs-micro)',
+    small: 'var(--fs-small)',
+    body: 'var(--fs-body)',
+    lead: 'var(--fs-lead)',
+    title: 'var(--fs-title)',
+    heading: 'var(--fs-heading)',
+    display: 'var(--fs-display)',
   },
 
   breakpoints: {

@@ -12,7 +12,7 @@ const Boks = styled.div`
   justify-content: center;
   color: ${({ theme }) => theme.colors.inkSubtle};
   font-family: ${({ theme }) => theme.fonts.mono};
-  font-size: ${({ theme }) => theme.fontSizes.sm};
+  font-size: var(--fs-small);
   letter-spacing: 0.08em;
 `
 

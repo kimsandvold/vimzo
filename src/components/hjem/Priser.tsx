@@ -92,20 +92,20 @@ export default function Priser() {
 }
 
 const Topp = styled.div`
-  max-width: 44rem;
-  margin: 0 auto clamp(2rem, 4vw, 3rem);
-  text-align: center;
+  max-width: 48rem;
+  margin: 0 0 clamp(2rem, 4vw, 3rem);
 
   h2 {
     margin: 0;
-    font-size: ${({ theme }) => theme.fontSizes['2xl']};
+    font-size: var(--fs-heading);
     line-height: 1.08;
   }
 
-  p {
-    margin: 1rem auto 0;
+  /* Bare ingressen – ikke stikkordet over tittelen, som også er en <p>. */
+  h2 + p {
+    margin: 1rem 0 0;
     max-width: 52ch;
-    font-size: ${({ theme }) => theme.fontSizes.md};
+    font-size: var(--fs-lead);
     line-height: 1.6;
     color: ${({ theme }) => theme.colors.inkMuted};
   }
@@ -134,14 +134,14 @@ const Kort = styled.div`
 
   h3 {
     margin: 0;
-    font-size: 1.1875rem;
-    font-weight: 650;
-    letter-spacing: -0.025em;
+    font-size: var(--fs-lead);
+    font-weight: 600;
+    letter-spacing: var(--ls-lead);
   }
 
   p {
     margin: 0.6rem 0 0;
-    font-size: 0.9375rem;
+    font-size: var(--fs-body);
     line-height: 1.6;
     color: ${({ theme }) => theme.colors.inkMuted};
   }
@@ -157,9 +157,9 @@ const Spenn = styled.div`
 
   h3 {
     margin: 0 0 0.6rem;
-    font-size: 1.1875rem;
-    font-weight: 650;
-    letter-spacing: -0.025em;
+    font-size: var(--fs-lead);
+    font-weight: 600;
+    letter-spacing: var(--ls-lead);
   }
 
   ul {
@@ -175,12 +175,12 @@ const Spenn = styled.div`
     gap: 1rem;
     padding: 0.8rem 0;
     border-bottom: 1px solid ${({ theme }) => theme.colors.border};
-    font-size: 0.9375rem;
+    font-size: var(--fs-body);
     color: ${({ theme }) => theme.colors.inkMuted};
   }
 
   li strong {
-    font-weight: 650;
+    font-weight: 600;
     color: ${({ theme }) => theme.colors.ink};
   }
 
@@ -192,7 +192,7 @@ const Spenn = styled.div`
     flex-shrink: 0;
     font-family: ${({ theme }) => theme.fonts.mono};
     font-weight: 600;
-    letter-spacing: -0.03em;
+    letter-spacing: var(--ls-heading);
     color: ${({ theme }) => theme.colors.ink};
   }
 
@@ -211,6 +211,6 @@ const Bunnlinje = styled.div`
   justify-content: space-between;
   gap: 0.75rem 1.5rem;
   margin-top: 1rem;
-  font-size: 0.875rem;
+  font-size: var(--fs-small);
   color: ${({ theme }) => theme.colors.inkSubtle};
 `

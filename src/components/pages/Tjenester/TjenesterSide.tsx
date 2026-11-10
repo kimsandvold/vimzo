@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import styled from 'styled-components'
-import { Knapp, Seksjon, Stikkord, Wrap } from '../../../ui'
+import { Seksjon, Stikkord, Wrap } from '../../../ui'
 import { useSEO } from '../../../hooks/useSEO'
 import { brodsmuler, tjenesteLd } from '../../../lib/jsonLd'
 import Sidehode from '../../layout/Sidehode'
@@ -108,20 +108,6 @@ export default function TjenesterSide() {
         </Wrap>
       </Seksjon>
 
-      <Seksjon $flate="surface" $tett>
-        <Wrap>
-          <Usikker>
-            <h2>Usikker på hva du trenger?</h2>
-            <p>
-              De fleste begynner med en side som virker, og legger til mer når den gir noe tilbake.
-              Vi sier fra hvis du er i ferd med å kjøpe noe du ikke trenger ennå.
-            </p>
-            <Knapp til="/priser" variant="aksent">
-              Se pakker og priser
-            </Knapp>
-          </Usikker>
-        </Wrap>
-      </Seksjon>
 
       <Avslutt />
     </>
@@ -161,24 +147,27 @@ function Tjenestekort({ tjeneste: t }: { tjeneste: Tjeneste }) {
 
 /* ------------------------------------------------------------------ stil */
 
-/** Sentrert stikkord, overskrift og én linje – som seksjonsinngangene på fsnot.es. */
+/**
+ * Stikkord, overskrift og én linje – venstrestilt, som alle andre
+ * seksjonsinnganger på nettstedet. Den var sentrert før, og da byttet
+ * siden akse annenhver seksjon.
+ */
 const Topp = styled.div`
-  max-width: 44rem;
-  margin: 0 auto clamp(2rem, 4vw, 3rem);
-  text-align: center;
+  max-width: 48rem;
+  margin: 0 0 clamp(2rem, 4vw, 3rem);
 
   h2 {
     margin: 0;
-    font-size: ${({ theme }) => theme.fontSizes['2xl']};
-    font-weight: 700;
+    font-size: var(--fs-heading);
+    font-weight: 600;
     line-height: 1.08;
-    letter-spacing: -0.035em;
+    letter-spacing: var(--ls-heading);
   }
 
-  p {
-    margin: 1rem auto 0;
+  h2 + p {
+    margin: 1rem 0 0;
     max-width: 52ch;
-    font-size: ${({ theme }) => theme.fontSizes.md};
+    font-size: var(--fs-lead);
     line-height: 1.6;
     color: ${({ theme }) => theme.colors.inkMuted};
   }
@@ -216,17 +205,17 @@ const Kort = styled.article<{ $gruppe: Gruppe }>`
 
   h3 {
     margin: 0;
-    font-size: 1.1875rem;
-    font-weight: 650;
+    font-size: var(--fs-lead);
+    font-weight: 600;
     line-height: 1.25;
-    letter-spacing: -0.025em;
+    letter-spacing: var(--ls-lead);
     color: ${({ theme }) => theme.colors.ink};
   }
 
   > p {
     flex: 1;
     margin: 0.6rem 0 0;
-    font-size: 0.9375rem;
+    font-size: var(--fs-body);
     line-height: 1.6;
     color: ${({ theme }) => theme.colors.inkMuted};
   }
@@ -243,16 +232,16 @@ const Pris = styled.div`
   gap: 0.2rem 1rem;
   margin: 0 0 0.75rem;
   font-family: ${({ theme }) => theme.fonts.mono};
-  font-size: 0.9375rem;
+  font-size: var(--fs-body);
   font-weight: 600;
-  letter-spacing: -0.03em;
+  letter-spacing: var(--ls-body);
   color: ${({ theme }) => theme.colors.ink};
 
   small {
     font-family: ${({ theme }) => theme.fonts.body};
-    font-size: 0.8125rem;
+    font-size: var(--fs-small);
     font-weight: 500;
-    letter-spacing: 0;
+    letter-spacing: var(--ls-small);
     color: ${({ theme }) => theme.colors.inkSubtle};
   }
 `
@@ -264,7 +253,7 @@ const Merknad = styled.span`
   border-radius: ${({ theme }) => theme.borderRadius.pill};
   background: ${({ theme }) => theme.colors.sunken};
   color: ${({ theme }) => theme.colors.inkMuted};
-  font-size: 0.75rem;
+  font-size: var(--fs-micro);
   font-weight: 600;
 `
 
@@ -283,7 +272,7 @@ const Detaljer = styled.details`
     display: flex;
     align-items: center;
     justify-content: space-between;
-    font-size: 0.875rem;
+    font-size: var(--fs-small);
     font-weight: 600;
     color: ${({ theme }) => theme.colors.accent};
     cursor: pointer;
@@ -295,7 +284,7 @@ const Detaljer = styled.details`
 
     &::after {
       content: '+';
-      font-size: 1.1rem;
+      font-size: var(--fs-body);
       font-weight: 500;
       line-height: 1;
     }
@@ -313,27 +302,8 @@ const Detaljer = styled.details`
   }
 
   li {
-    font-size: 0.875rem;
+    font-size: var(--fs-small);
     line-height: 1.5;
-    color: ${({ theme }) => theme.colors.inkMuted};
-  }
-`
-
-const Usikker = styled.div`
-  max-width: 40rem;
-  margin: 0 auto;
-  text-align: center;
-
-  h2 {
-    margin: 0;
-    font-size: ${({ theme }) => theme.fontSizes.xl};
-    letter-spacing: -0.03em;
-  }
-
-  p {
-    margin: 0.75rem 0 1.5rem;
-    font-size: 0.9375rem;
-    line-height: 1.65;
     color: ${({ theme }) => theme.colors.inkMuted};
   }
 `
@@ -355,14 +325,14 @@ const Kortvarig = styled(Link)`
 
   h2 {
     margin: 0;
-    font-size: ${({ theme }) => theme.fontSizes.xl};
-    letter-spacing: -0.03em;
+    font-size: var(--fs-lead);
+    letter-spacing: var(--ls-lead);
   }
 
   p {
     margin: 0.6rem 0 0;
     max-width: 58ch;
-    font-size: 0.9375rem;
+    font-size: var(--fs-body);
     line-height: 1.6;
     color: ${({ theme }) => theme.colors.inkMuted};
   }

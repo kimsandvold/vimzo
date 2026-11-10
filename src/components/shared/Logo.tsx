@@ -53,9 +53,9 @@ const Ord = styled.span`
   /* Ordmerket står i grotesken, ikke i displayserifen – merket er geometrisk,
      og et ordbilde med seriffer ved siden av ville vært en annen bedrift. */
   font-family: ${({ theme }) => theme.fonts.body};
-  font-size: clamp(1.05rem, 0.42vw + 0.94rem, 1.42rem);
+  font-size: var(--fs-lead);
   font-weight: 600;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.08em;
   margin-right: -0.14em;
   white-space: nowrap;
 `
@@ -90,7 +90,7 @@ export default function Logo({ storrelse, kunMerke = false, mork = false }: Prop
         aria-label="Vimzo"
         focusable="false"
       >
-        {!mork && <rect width="1024" height="1024" rx="150" fill="#080808" />}
+        {!mork && <rect width="1024" height="1024" rx="150" fill="#1D1D1F" />}
         <g fill={mork ? 'currentColor' : '#fff'}>
           {BANER.map((d) => (
             <path key={d} d={d} />

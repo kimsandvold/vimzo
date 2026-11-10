@@ -167,7 +167,7 @@ const Tilgjengelig = styled.p`
   border-radius: ${({ theme }) => theme.borderRadius.small};
   background: ${({ theme }) => theme.colors.deep};
   color: ${({ theme }) => theme.colors.inkInverted};
-  font-size: 0.75rem;
+  font-size: var(--fs-micro);
   font-weight: 500;
   box-shadow: ${({ theme }) => theme.shadows.md};
 `
@@ -192,9 +192,9 @@ const Alternativ = styled.a`
   border-radius: ${({ theme }) => theme.borderRadius.pill};
   background: ${({ theme }) => theme.colors.surface};
   color: ${({ theme }) => theme.colors.accentInk};
-  font-size: 0.9375rem;
+  font-size: var(--fs-body);
   font-weight: 600;
-  letter-spacing: -0.015em;
+  letter-spacing: var(--ls-body);
   text-decoration: none;
   white-space: nowrap;
   box-shadow: ${({ theme }) => theme.shadows.lg};
@@ -220,9 +220,9 @@ const Hoved = styled.button<{ $apen: boolean }>`
   background: ${({ theme, $apen }) => ($apen ? theme.colors.ink : theme.colors.accentVivid)};
   color: ${({ theme }) => theme.colors.accentOn};
   font-family: inherit;
-  font-size: 0.9375rem;
+  font-size: var(--fs-body);
   font-weight: 600;
-  letter-spacing: -0.015em;
+  letter-spacing: var(--ls-body);
   white-space: nowrap;
   cursor: pointer;
   box-shadow:
@@ -241,6 +241,6 @@ const Hoved = styled.button<{ $apen: boolean }>`
   @media (max-width: ${({ theme }) => theme.breakpoints.smallMobile}) {
     min-height: 44px;
     padding: 0 1.1rem;
-    font-size: 0.875rem;
+    font-size: var(--fs-small);
   }
 `

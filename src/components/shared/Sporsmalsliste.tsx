@@ -63,9 +63,9 @@ const Knapp = styled.button`
   cursor: pointer;
   text-align: left;
   font-family: inherit;
-  font-size: 1.0625rem;
-  font-weight: 550;
-  letter-spacing: -0.015em;
+  font-size: var(--fs-body);
+  font-weight: 500;
+  letter-spacing: var(--ls-body);
   line-height: 1.45;
   color: ${({ theme }) => theme.colors.ink};
   transition: color ${({ theme }) => theme.transitions.default};
@@ -75,7 +75,7 @@ const Knapp = styled.button`
   }
 
   @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
-    font-size: 1rem;
+    font-size: var(--fs-body);
     gap: 1rem;
   }
 `
@@ -102,7 +102,7 @@ const Svar = styled.div<{ $apen: boolean }>`
     overflow: hidden;
     max-width: 68ch;
     padding-bottom: ${({ $apen }) => ($apen ? '1.5rem' : '0')};
-    font-size: 0.9375rem;
+    font-size: var(--fs-body);
     line-height: 1.7;
     color: ${({ theme }) => theme.colors.inkMuted};
     transition: padding-bottom ${({ theme }) => theme.transitions.soft};

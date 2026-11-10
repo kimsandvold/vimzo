@@ -18,10 +18,10 @@ export default function IkkeFunnetSide() {
         ingress="Siden du lette etter finnes ikke – eller den har flyttet. Si fra, så retter vi lenken."
         handlinger={
           <>
-            <Knapp til="/" variant="hvit">
+            <Knapp til="/" variant="aksent">
               Til forsiden
             </Knapp>
-            <Knapp til="/kontakt" variant="glass">
+            <Knapp til="/kontakt" variant="myk">
               Si fra om en død lenke
             </Knapp>
           </>

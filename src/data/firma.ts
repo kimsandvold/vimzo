@@ -23,8 +23,6 @@ interface Firma {
   tilgjengelig: string
   nettsted: string
   url: string
-  grunnlegger: string
-  grunnleggerTittel: string
   fagomrader: readonly string[]
   dekningsomrade: readonly string[]
 }
@@ -60,10 +58,6 @@ export const firma: Firma = {
   nettsted: 'vimzo.no',
   url: 'https://vimzo.no',
 
-  /** Den som står bak. En navngitt fagperson veier tyngre enn et foretaksnavn
-   *  i både søkeresultater og AI-genererte svar. */
-  grunnlegger: 'Kim Sandvold',
-  grunnleggerTittel: 'Utvikler og innehaver',
 
   /**
    * Fagområdene vi faktisk arbeider innenfor. Publiseres som `knowsAbout` på

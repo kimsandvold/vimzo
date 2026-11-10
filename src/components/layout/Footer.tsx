@@ -24,18 +24,14 @@ export default function Footer() {
   const ar = new Date().getFullYear()
 
   return (
-    <Fot data-surface="dark">
+    <Fot>
       <Wrap>
         <Topp>
           <Merke>
             <Link to="/" aria-label="Vimzo – til forsiden">
-              <Logo mork />
+              <Logo />
             </Link>
-            <p>
-              Håndkodede, forhåndsrendrede nettsider for små og mellomstore bedrifter. Raske å
-              laste, billige å drifte, og bygget for å bli funnet – både av Google og av
-              AI-assistenter.
-            </p>
+            <p>Nettsider for små bedrifter, med åpne priser. Vi skriver, designer og drifter – du driver bedriften.</p>
             <Kontaktrad>
               <Link to="/kontakt">
                 <Icon navn="epost" storrelse={17} />
@@ -46,7 +42,7 @@ export default function Footer() {
 
           <Spalter>
             <Spalte>
-              <h3>Tjenester</h3>
+              <h2>Tjenester</h2>
               <ul>
                 {tjenester
                   .filter((t) => t.gruppe === 'inngar')
@@ -62,7 +58,7 @@ export default function Footer() {
             </Spalte>
 
             <Spalte>
-              <h3>Nettstedet</h3>
+              <h2>Nettstedet</h2>
               <ul>
                 <li>
                   <Link to="/priser">Priser</Link>
@@ -77,10 +73,7 @@ export default function Footer() {
                   <Link to="/guider">Guider</Link>
                 </li>
                 <li>
-                  <Link to="/logo">Lag logo (gratis)</Link>
-                </li>
-                <li>
-                  <Link to="/om">Om oss</Link>
+                  <Link to="/logo">Lag logo</Link>
                 </li>
                 <li>
                   <Link to="/kontakt">Kontakt</Link>
@@ -89,25 +82,14 @@ export default function Footer() {
                   <Link to="/personvern">Personvern</Link>
                 </li>
                 <li>
+                  <Link to="/vilkar/logo">Kjøpsvilkår</Link>
+                </li>
+                <li>
                   <Link to="/min-side">Min side (for kunder)</Link>
                 </li>
               </ul>
             </Spalte>
 
-            <Spalte>
-              <h3>For maskiner</h3>
-              <ul>
-                <li>
-                  <a href="/llms.txt">llms.txt</a>
-                </li>
-                <li>
-                  <a href="/sitemap.xml">sitemap.xml</a>
-                </li>
-                <li>
-                  <a href="/robots.txt">robots.txt</a>
-                </li>
-              </ul>
-            </Spalte>
           </Spalter>
         </Topp>
 
@@ -117,16 +99,10 @@ export default function Footer() {
             {firma.orgNr && ` · Org.nr ${firma.orgNr}`}
           </p>
           <p className="sitat">
-            {analyseKlar
-              ? 'Denne siden er bygget på samme måte som dem vi selger: håndkodet, forhåndsrendret og uten tredjeparts-script før du selv sier ja.'
-              : 'Denne siden er bygget på samme måte som dem vi selger: håndkodet, forhåndsrendret og uten et eneste tredjeparts-script.'}
             {analyseKlar && (
-              <>
-                {' '}
-                <Samtykkelenke type="button" onClick={apneSamtykke}>
-                  Informasjonskapsler
-                </Samtykkelenke>
-              </>
+              <Samtykkelenke type="button" onClick={apneSamtykke}>
+                Informasjonskapsler
+              </Samtykkelenke>
             )}
           </p>
         </Bunn>
@@ -135,9 +111,17 @@ export default function Footer() {
   )
 }
 
+/**
+ * Foten, på en egen grå.
+ *
+ * Den sto på samme svake grå som kortene på siden, og da gled den inn i
+ * innholdet over – man så ikke helt hvor siden sluttet. Et hakk dypere grå
+ * og mørkere tekst gir en tydelig bunn uten å bli en tung, svart blokk.
+ * Alle tekstfarger er målt mot denne flaten: lenkene 10:1, brødteksten 6.2:1.
+ */
 const Fot = styled.footer`
-  background: ${({ theme }) => theme.colors.deep};
-  color: ${({ theme }) => theme.colors.inkInvertedMuted};
+  background: #ececf0;
+  color: ${({ theme }) => theme.colors.inkMuted};
   padding: 5rem 0 2.5rem;
 
   @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
@@ -162,9 +146,9 @@ const Merke = styled.div`
 
   p {
     margin-top: 1.25rem;
-    font-size: 0.9375rem;
+    font-size: var(--fs-body);
     line-height: 1.7;
-    color: ${({ theme }) => theme.colors.inkInvertedMuted};
+    color: ${({ theme }) => theme.colors.inkMuted};
   }
 `
 
@@ -178,24 +162,24 @@ const Kontaktrad = styled.div`
     display: inline-flex;
     align-items: center;
     gap: 0.6rem;
-    font-size: 0.9375rem;
-    color: ${({ theme }) => theme.colors.inkInverted};
+    font-size: var(--fs-body);
+    color: ${({ theme }) => theme.colors.ink};
     text-decoration: none;
     width: fit-content;
   }
 
   a:hover {
-    color: ${({ theme }) => theme.colors.accentLight};
+    color: ${({ theme }) => theme.colors.accent};
   }
 
   svg {
-    color: ${({ theme }) => theme.colors.accentLight};
+    color: ${({ theme }) => theme.colors.accent};
   }
 `
 
 const Spalter = styled.div`
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 2rem;
 
   @media (max-width: ${({ theme }) => theme.breakpoints.smallMobile}) {
@@ -205,15 +189,13 @@ const Spalter = styled.div`
 `
 
 const Spalte = styled.div`
-  h3 {
+  h2 {
     font-family: ${({ theme }) => theme.fonts.mono};
-    font-size: ${({ theme }) => theme.fontSizes.xs};
-    font-weight: 500;
-    letter-spacing: 0.1em;
+    font-size: var(--fs-micro);
+    font-weight: 600;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
-    /* Foten står på den mørke flaten: inkSubtle er en tone for LYS bakgrunn
-       og målte 3.7:1 her. Den inverterte varianten gir 8.7:1. */
-    color: ${({ theme }) => theme.colors.inkInvertedMuted};
+    color: ${({ theme }) => theme.colors.ink};
     margin-bottom: 1.1rem;
   }
 
@@ -225,13 +207,13 @@ const Spalte = styled.div`
   }
 
   a {
-    font-size: 0.9375rem;
-    color: ${({ theme }) => theme.colors.inkInvertedMuted};
+    font-size: var(--fs-body);
+    color: ${({ theme }) => theme.colors.neutral[700]};
     text-decoration: none;
     transition: color ${({ theme }) => theme.transitions.default};
 
     &:hover {
-      color: ${({ theme }) => theme.colors.inkInverted};
+      color: ${({ theme }) => theme.colors.ink};
     }
   }
 `
@@ -242,12 +224,11 @@ const Bunn = styled.div`
   justify-content: space-between;
   gap: 2rem;
   padding-top: 2rem;
-  border-top: 1px solid ${({ theme }) => theme.colors.borderInverted};
+  border-top: 1px solid ${({ theme }) => theme.colors.borderStrong};
 
   p {
-    font-size: 0.8125rem;
-    /* Mørk flate – samme grunn som overskriftene over. */
-    color: ${({ theme }) => theme.colors.inkInvertedMuted};
+    font-size: var(--fs-small);
+    color: ${({ theme }) => theme.colors.inkMuted};
   }
 
   .sitat {
@@ -270,7 +251,7 @@ const Samtykkelenke = styled.button`
   border: 0;
   background: none;
   font: inherit;
-  color: ${({ theme }) => theme.colors.inkInverted};
+  color: ${({ theme }) => theme.colors.ink};
   text-decoration: underline;
   text-underline-offset: 2px;
   cursor: pointer;

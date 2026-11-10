@@ -45,7 +45,7 @@ const INNHOLD = [
 /** Fra første prat til siden står. Ærlige tall – de blir et løfte. */
 const STEG = [
   { tid: 'Dag 1', tittel: 'En kort prat', tekst: 'Hva er arrangementet, hvem skal komme, og hva skal de gjøre på siden?' },
-  { tid: 'Dag 2–7', tittel: 'Vi lager siden', tekst: 'Du følger med på en testadresse og sender program og bilder når du har dem.' },
+  { tid: 'Dag 2–7', tittel: 'Vi lager siden', tekst: 'Du sender program og bilder når du har dem.' },
   { tid: 'Uke 1–2', tittel: 'Siden går live', tekst: 'Med delingsbilde og QR-kode, klar til invitasjonen og plakaten.' },
   { tid: 'Etterpå', tittel: 'Takk for i år', tekst: 'Siden oppdateres med bilder og neste dato – eller tas ned.' },
 ] as const
@@ -103,7 +103,7 @@ export default function ArrangementSide() {
         tittel="En egen side til arrangementet"
         ingress="Til messen, konferansen, lanseringen eller kampanjen. En side som ser ordentlig ut den perioden den gjelder – laget på 1–2 uker, uten at dere må bygge en hel nettside."
         handlinger={
-          <Knapp til="/arrangement/eksempel" variant="hvit" ikon="pilHoyre">
+          <Knapp til="/arrangement/eksempel" variant="aksent" ikon="pilHoyre">
             Se et eksempel
           </Knapp>
         }
@@ -239,13 +239,12 @@ export default function ArrangementSide() {
 /* ------------------------------------------------------------------ stil */
 
 const Topp = styled.div`
-  max-width: 44rem;
-  margin: 0 auto clamp(2rem, 4vw, 3rem);
-  text-align: center;
+  max-width: 48rem;
+  margin: 0 0 clamp(2rem, 4vw, 3rem);
 
   h2 {
     margin: 0;
-    font-size: ${({ theme }) => theme.fontSizes['2xl']};
+    font-size: var(--fs-heading);
     line-height: 1.08;
   }
 `
@@ -272,14 +271,14 @@ const Kort = styled.article`
 
   h3 {
     margin: 0;
-    font-size: 1.1875rem;
-    font-weight: 650;
-    letter-spacing: -0.025em;
+    font-size: var(--fs-lead);
+    font-weight: 600;
+    letter-spacing: var(--ls-lead);
   }
 
   p {
     margin: 0.6rem 0 0;
-    font-size: 0.9375rem;
+    font-size: var(--fs-body);
     line-height: 1.6;
     color: ${({ theme }) => theme.colors.inkMuted};
   }
@@ -295,14 +294,14 @@ const Eksempel = styled.div`
   /* Bare tekstspalten – kortet ved siden av har sine egne stiler. */
   > div > h2 {
     margin: 0;
-    font-size: ${({ theme }) => theme.fontSizes['2xl']};
+    font-size: var(--fs-heading);
     line-height: 1.08;
   }
 
   > div > p {
     margin: 1rem 0 1.5rem;
     max-width: 46ch;
-    font-size: ${({ theme }) => theme.fontSizes.md};
+    font-size: var(--fs-body);
     line-height: 1.6;
     color: ${({ theme }) => theme.colors.inkMuted};
   }
@@ -343,7 +342,7 @@ const Nettleserlinje = styled.div`
     border-radius: 999px;
     background: #f6f2ea;
     font-family: ${({ theme }) => theme.fonts.mono};
-    font-size: 0.75rem;
+    font-size: var(--fs-micro);
     color: #6b6255;
   }
 `
@@ -360,22 +359,22 @@ const Smak = styled.div`
   color: #f6f2ea;
 
   small {
-    font-size: 0.8125rem;
+    font-size: var(--fs-small);
     font-weight: 600;
-    letter-spacing: 0.04em;
+    letter-spacing: 0.08em;
     color: #f0a46e;
   }
 
   strong {
-    font-size: clamp(1.6rem, 3vw, 2.2rem);
-    font-weight: 750;
+    font-size: var(--fs-title);
+    font-weight: 600;
     line-height: 1.05;
-    letter-spacing: -0.035em;
+    letter-spacing: var(--ls-title);
   }
 
   em {
     font-style: normal;
-    font-size: 0.9375rem;
+    font-size: var(--fs-body);
     color: rgba(246, 242, 234, 0.75);
   }
 
@@ -385,7 +384,7 @@ const Smak = styled.div`
     border-radius: 999px;
     background: #e87434;
     color: #1f2a24;
-    font-size: 0.875rem;
+    font-size: var(--fs-small);
   }
 `
 
@@ -395,7 +394,7 @@ const Pris = styled(Eksempel)`
   > div > small {
     display: block;
     margin-top: 0.9rem;
-    font-size: 0.8125rem;
+    font-size: var(--fs-small);
     color: ${({ theme }) => theme.colors.inkSubtle};
   }
 `
@@ -411,7 +410,7 @@ const Tillegg = styled.ul`
     gap: 1rem;
     padding: 0.75rem 0;
     border-bottom: 1px solid ${({ theme }) => theme.colors.border};
-    font-size: 0.9375rem;
+    font-size: var(--fs-body);
     color: ${({ theme }) => theme.colors.inkMuted};
   }
 
@@ -419,7 +418,7 @@ const Tillegg = styled.ul`
     flex-shrink: 0;
     font-family: ${({ theme }) => theme.fonts.mono};
     font-weight: 600;
-    letter-spacing: -0.03em;
+    letter-spacing: var(--ls-body);
     color: ${({ theme }) => theme.colors.ink};
   }
 `
@@ -441,21 +440,21 @@ const Tidslinje = styled.ol`
 
   small {
     font-family: ${({ theme }) => theme.fonts.mono};
-    font-size: 0.8125rem;
+    font-size: var(--fs-small);
     font-weight: 600;
     color: ${({ theme }) => theme.colors.inkSubtle};
   }
 
   h3 {
     margin: 0.4rem 0 0;
-    font-size: 1.0625rem;
-    font-weight: 650;
-    letter-spacing: -0.02em;
+    font-size: var(--fs-body);
+    font-weight: 600;
+    letter-spacing: var(--ls-body);
   }
 
   p {
     margin: 0.5rem 0 0;
-    font-size: 0.9rem;
+    font-size: var(--fs-small);
     line-height: 1.55;
     color: ${({ theme }) => theme.colors.inkMuted};
   }
@@ -477,7 +476,7 @@ const Smal = styled.div`
 const Videre = styled.p`
   margin: 2rem 0 0;
   text-align: center;
-  font-size: 0.9375rem;
+  font-size: var(--fs-body);
   color: ${({ theme }) => theme.colors.inkMuted};
 
   a {

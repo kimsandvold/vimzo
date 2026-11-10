@@ -238,14 +238,14 @@ const Drivergitter = styled.ul`
 
   h3 {
     margin: 0;
-    font-size: 1.1875rem;
-    font-weight: 650;
-    letter-spacing: -0.025em;
+    font-size: var(--fs-lead);
+    font-weight: 600;
+    letter-spacing: var(--ls-lead);
   }
 
   p {
     margin: 0.6rem 0 0;
-    font-size: 0.9375rem;
+    font-size: var(--fs-body);
     line-height: 1.6;
     color: ${({ theme }) => theme.colors.inkMuted};
   }
@@ -270,7 +270,7 @@ const Gitter = styled.div`
 const Notat = styled.p`
   max-width: 76ch;
   margin-top: 2rem;
-  font-size: 0.875rem;
+  font-size: var(--fs-small);
   line-height: 1.7;
   color: ${({ theme }) => theme.colors.inkSubtle};
 `
@@ -302,7 +302,7 @@ const Driftstopp = styled.div`
 
 const Driftsfor = styled.p`
   margin-top: 0.35rem;
-  font-size: 0.9375rem;
+  font-size: var(--fs-body);
   color: ${({ theme }) => theme.colors.inkMuted};
 `
 
@@ -315,8 +315,8 @@ const Driftskort = styled.div<{ $anbefalt: boolean }>`
 
   h3 {
     font-family: ${({ theme }) => theme.fonts.body};
-    font-size: 1.25rem;
-    letter-spacing: -0.02em;
+    font-size: var(--fs-lead);
+    letter-spacing: var(--ls-lead);
   }
 
   ul {
@@ -332,7 +332,7 @@ const Driftskort = styled.div<{ $anbefalt: boolean }>`
   li {
     display: flex;
     gap: 0.65rem;
-    font-size: 0.9375rem;
+    font-size: var(--fs-body);
     line-height: 1.5;
   }
 
@@ -350,13 +350,13 @@ const Pris = styled.div`
 
   strong {
     font-family: ${({ theme }) => theme.fonts.mono};
-    font-size: 1.9rem;
+    font-size: var(--fs-title);
     font-weight: 500;
-    letter-spacing: -0.045em;
+    letter-spacing: var(--ls-title);
   }
 
   span {
-    font-size: 0.9375rem;
+    font-size: var(--fs-body);
     color: ${({ theme }) => theme.colors.inkSubtle};
   }
 `
@@ -369,8 +369,8 @@ const Tilleggsliste = styled.div`
 
   > h3 {
     font-family: ${({ theme }) => theme.fonts.body};
-    font-size: 1.25rem;
-    letter-spacing: -0.02em;
+    font-size: var(--fs-lead);
+    letter-spacing: var(--ls-lead);
     margin-bottom: 0.5rem;
   }
 `
@@ -393,25 +393,25 @@ const Rad = styled.div`
   }
 
   .navn {
-    font-weight: 550;
-    letter-spacing: -0.01em;
+    font-weight: 500;
+    letter-spacing: var(--ls-body);
   }
 
   .belop {
     font-family: ${({ theme }) => theme.fonts.mono};
-    font-size: 0.9375rem;
+    font-size: var(--fs-body);
     white-space: nowrap;
     color: ${({ theme }) => theme.colors.ink};
   }
 
   .belop em {
     font-style: normal;
-    font-size: 0.8125rem;
+    font-size: var(--fs-small);
     color: ${({ theme }) => theme.colors.inkSubtle};
   }
 
   dd {
-    font-size: 0.9rem;
+    font-size: var(--fs-small);
     line-height: 1.6;
     color: ${({ theme }) => theme.colors.inkMuted};
     max-width: 68ch;
@@ -427,7 +427,7 @@ const Endringer = styled.p`
   padding: 0.9rem 1.1rem;
   border-radius: ${({ theme }) => theme.borderRadius.medium};
   background: ${({ theme }) => theme.colors.accentSoft};
-  font-size: 0.875rem;
+  font-size: var(--fs-small);
   line-height: 1.6;
   color: ${({ theme }) => theme.colors.ink};
 `
@@ -448,14 +448,14 @@ const Kortvarig = styled.div`
   /* Bare tekstspalten – kortet ved siden av har sine egne stiler. */
   > div > h2 {
     margin: 0;
-    font-size: ${({ theme }) => theme.fontSizes['2xl']};
+    font-size: var(--fs-heading);
     line-height: 1.08;
   }
 
   > div > p {
     margin: 1rem 0 0;
     max-width: 46ch;
-    font-size: ${({ theme }) => theme.fontSizes.md};
+    font-size: var(--fs-body);
     line-height: 1.6;
     color: ${({ theme }) => theme.colors.inkMuted};
   }

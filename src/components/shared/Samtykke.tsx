@@ -95,7 +95,7 @@ const Banner = styled.div`
 
   p {
     margin: 0;
-    font-size: 0.9rem;
+    font-size: var(--fs-small);
     line-height: 1.55;
     color: ${({ theme }) => theme.colors.inkMuted};
   }
@@ -124,9 +124,9 @@ const Banner = styled.div`
 const Tittel = styled.h2`
   margin: 0;
   font-family: ${({ theme }) => theme.fonts.body};
-  font-size: 1.0625rem;
-  font-weight: 650;
-  letter-spacing: -0.02em;
+  font-size: var(--fs-body);
+  font-weight: 600;
+  letter-spacing: var(--ls-body);
   color: ${({ theme }) => theme.colors.ink};
 `
 
@@ -150,7 +150,7 @@ const Knapp = styled.button<{ $variant: 'ja' | 'nei' }>`
   background: ${({ theme }) => theme.colors.surface};
   color: ${({ theme }) => theme.colors.ink};
   font-family: inherit;
-  font-size: 0.9375rem;
+  font-size: var(--fs-body);
   font-weight: 600;
   cursor: pointer;
   transition:

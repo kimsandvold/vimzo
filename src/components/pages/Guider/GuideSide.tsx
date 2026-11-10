@@ -8,7 +8,6 @@ import Icon from '../../shared/Icon'
 import Avslutt from '../../hjem/Avslutt'
 import IkkeFunnetSide from '../IkkeFunnet/IkkeFunnetSide'
 import { guider, type Blokk, type Guide } from '../../../data/guider'
-import { firma } from '../../../data/firma'
 
 /** Gjør overskriften om til en id som tåler å stå i en URL. */
 function ankerId(tekst: string): string {
@@ -58,8 +57,6 @@ function Artikkel({ guide }: { guide: Guide }) {
         ingress={guide.ingress}
         barn={
           <Byline>
-            <span>{firma.grunnlegger}</span>
-            <span aria-hidden="true">·</span>
             <time dateTime={guide.publisert}>{visDato(guide.publisert)}</time>
             <span aria-hidden="true">·</span>
             <span>{guide.lesetid} minutter</span>
@@ -193,10 +190,9 @@ const Byline = styled.p`
   align-items: center;
   gap: 0.5rem;
   font-family: ${({ theme }) => theme.fonts.mono};
-  font-size: 0.8125rem;
-  letter-spacing: 0.04em;
-  /* Står på den mørke sidehode-flaten – inkSubtle ga 3,7:1 her. */
-  color: ${({ theme }) => theme.colors.inkInvertedMuted};
+  font-size: var(--fs-small);
+  letter-spacing: 0.08em;
+  color: ${({ theme }) => theme.colors.inkSubtle};
 `
 
 const Brodtekst = styled.article`
@@ -224,7 +220,7 @@ const Innhold = styled.div`
   max-width: ${({ theme }) => theme.spacing.proseMax};
 
   p {
-    font-size: ${({ theme }) => theme.fontSizes.md};
+    font-size: var(--fs-body);
     line-height: 1.75;
     color: ${({ theme }) => theme.colors.ink};
     margin-bottom: 1.15rem;
@@ -240,9 +236,9 @@ const Kortsvar = styled.div`
 
   h2 {
     font-family: ${({ theme }) => theme.fonts.mono};
-    font-size: ${({ theme }) => theme.fontSizes.xs};
+    font-size: var(--fs-micro);
     font-weight: 500;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
     color: ${({ theme }) => theme.colors.inkMuted};
     margin-bottom: 0.75rem;
@@ -251,7 +247,7 @@ const Kortsvar = styled.div`
   p {
     margin-bottom: 0;
     color: ${({ theme }) => theme.colors.ink} !important;
-    font-size: ${({ theme }) => theme.fontSizes.md};
+    font-size: var(--fs-body);
     line-height: 1.7;
   }
 `
@@ -260,7 +256,7 @@ const Bolk = styled.section`
   margin-bottom: 2.75rem;
 
   h2 {
-    font-size: ${({ theme }) => theme.fontSizes.xl};
+    font-size: var(--fs-title);
     margin-bottom: 1.1rem;
     scroll-margin-top: 7rem;
   }
@@ -270,7 +266,7 @@ const Punktliste = styled.ul`
   margin: 0 0 1.35rem 1.1rem;
 
   li {
-    font-size: ${({ theme }) => theme.fontSizes.md};
+    font-size: var(--fs-body);
     line-height: 1.7;
     margin-bottom: 0.55rem;
     padding-left: 0.35rem;
@@ -285,7 +281,7 @@ const Nummerliste = styled.ol`
   margin: 0 0 1.35rem 1.25rem;
 
   li {
-    font-size: ${({ theme }) => theme.fontSizes.md};
+    font-size: var(--fs-body);
     line-height: 1.7;
     margin-bottom: 0.55rem;
     padding-left: 0.35rem;
@@ -305,14 +301,14 @@ const Faktaboks = styled.aside`
   background: ${({ theme }) => theme.colors.sunken};
 
   h3 {
-    font-size: 1rem;
+    font-size: var(--fs-body);
     font-family: ${({ theme }) => theme.fonts.body};
     margin-bottom: 0.5rem;
   }
 
   p {
     margin-bottom: 0;
-    font-size: 0.9375rem !important;
+    font-size: var(--fs-body) !important;
     line-height: 1.65;
     color: ${({ theme }) => theme.colors.inkMuted} !important;
   }
@@ -328,7 +324,7 @@ const Tabellramme = styled.div`
   table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 0.9rem;
+    font-size: var(--fs-small);
     min-width: 34rem;
   }
 
@@ -342,7 +338,7 @@ const Tabellramme = styled.div`
 
   th {
     font-family: ${({ theme }) => theme.fonts.mono};
-    font-size: 0.75rem;
+    font-size: var(--fs-micro);
     font-weight: 500;
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -356,7 +352,7 @@ const Tabellramme = styled.div`
   }
 
   td:first-child {
-    font-weight: 550;
+    font-weight: 500;
   }
 `
 
@@ -375,7 +371,7 @@ const Avslutningsnotat = styled.div`
 
   p {
     margin-bottom: 0;
-    font-size: 0.9375rem !important;
+    font-size: var(--fs-body) !important;
     color: ${({ theme }) => theme.colors.inkMuted} !important;
   }
 
@@ -393,9 +389,9 @@ const Sidespalte = styled.aside`
 
   h2 {
     font-family: ${({ theme }) => theme.fonts.mono};
-    font-size: ${({ theme }) => theme.fontSizes.xs};
+    font-size: var(--fs-micro);
     font-weight: 500;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
     color: ${({ theme }) => theme.colors.inkSubtle};
     margin-bottom: 1rem;
@@ -419,14 +415,14 @@ const Innholdsfortegnelse = styled.nav`
     counter-increment: punkt;
     display: flex;
     gap: 0.6rem;
-    font-size: 0.875rem;
+    font-size: var(--fs-small);
     line-height: 1.45;
   }
 
   li::before {
     content: counter(punkt, decimal-leading-zero);
     font-family: ${({ theme }) => theme.fonts.mono};
-    font-size: 0.75rem;
+    font-size: var(--fs-micro);
     color: ${({ theme }) => theme.colors.inkSubtle};
     padding-top: 0.15em;
   }
@@ -453,7 +449,7 @@ const Videre = styled.nav`
   }
 
   a {
-    font-size: 0.875rem;
+    font-size: var(--fs-small);
     line-height: 1.45;
     color: ${({ theme }) => theme.colors.ink};
     text-decoration: none;

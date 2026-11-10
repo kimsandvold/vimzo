@@ -2,11 +2,11 @@ import styled from 'styled-components'
 import { Knapp, Wrap } from '../../ui'
 
 /**
- * Siste skjerm før foten. Én stor setning, to veier videre.
+ * Siste skjerm før foten. Én setning, sentrert, og to veier videre.
  *
- * Den deler flate med foten, så bunnen av siden leser som ett mørkt felt i
- * stedet for to – det er roligere, og det gjør at avslutningen får bære
- * tyngden alene.
+ * Den var mørk med en lilla glød under, og sammen med en mørk fot ble
+ * bunnen av siden en tung, svart blokk. Nå er den lys og stille – det er
+ * setningen som skal bære, ikke flaten.
  */
 export default function Avslutt({
   tittel = 'Skal vi lage den?',
@@ -19,17 +19,16 @@ export default function Avslutt({
   til?: string
 }) {
   return (
-    <Flate data-surface="dark">
-      <Sky aria-hidden="true" />
+    <Flate>
       <Wrap>
         <Innhold>
           <h2>{tittel}</h2>
           <p>{tekst}</p>
           <Knapper>
-            <Knapp til={til} variant="hvit" stor>
+            <Knapp til={til} variant="aksent" stor>
               Ta en prat
             </Knapp>
-            <Knapp til="/priser" variant="glass" stor>
+            <Knapp til="/priser" variant="myk" stor>
               Se prisene
             </Knapp>
           </Knapper>
@@ -40,48 +39,43 @@ export default function Avslutt({
 }
 
 const Flate = styled.section`
-  position: relative;
-  overflow: hidden;
-  padding: clamp(5rem, 9vw, 8rem) 0 clamp(4rem, 7vw, 6rem);
-  background: ${({ theme }) => theme.colors.deep};
-  color: ${({ theme }) => theme.colors.inkInverted};
-`
-
-const Sky = styled.div`
-  position: absolute;
-  bottom: -55%;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 85vw;
-  height: 60vw;
-  max-width: 1100px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(108, 92, 255, 0.45) 0%, rgba(108, 92, 255, 0) 66%);
-  pointer-events: none;
+  padding: clamp(6rem, 12vw, 10rem) 0;
+  background: ${({ theme }) => theme.colors.surface};
+  color: ${({ theme }) => theme.colors.ink};
+  text-align: center;
 `
 
 const Innhold = styled.div`
-  position: relative;
-  max-width: 44rem;
+  max-width: 52rem;
+  margin: 0 auto;
 
   h2 {
     margin: 0;
-    font-size: ${({ theme }) => theme.fontSizes['3xl']};
-    font-weight: 700;
+    font-size: var(--fs-heading);
+    font-weight: 600;
     line-height: 1.04;
-    letter-spacing: -0.038em;
+    letter-spacing: var(--ls-heading);
   }
 
   p {
-    margin-top: 1.1rem;
-    font-size: ${({ theme }) => theme.fontSizes.lg};
-    color: ${({ theme }) => theme.colors.inkInvertedMuted};
+    margin-top: 1rem;
+    font-size: var(--fs-lead);
+    color: ${({ theme }) => theme.colors.inkMuted};
   }
 `
 
 const Knapper = styled.div`
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   gap: 0.75rem;
   margin-top: 2.25rem;
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.smallMobile}) {
+    flex-direction: column;
+
+    > * {
+      width: 100%;
+    }
+  }
 `

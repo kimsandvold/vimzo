@@ -313,16 +313,16 @@ const Felt = styled.div`
   gap: 0.45rem;
 
   label {
-    font-size: 0.875rem;
-    font-weight: 550;
-    letter-spacing: -0.005em;
+    font-size: var(--fs-small);
+    font-weight: 500;
+    letter-spacing: var(--ls-small);
     color: ${({ theme }) => theme.colors.ink};
   }
 
   label small {
     /* Uten en egen grad arver <small> nettleserens «smaller», som er
        0.83 av etiketten – det ga 11.7px og brøt gulvet på 12. */
-    font-size: 0.75rem;
+    font-size: var(--fs-micro);
     font-weight: 400;
     color: ${({ theme }) => theme.colors.inkSubtle};
   }
@@ -336,7 +336,7 @@ const Felt = styled.div`
     border-radius: ${({ theme }) => theme.borderRadius.medium};
     background: ${({ theme }) => theme.colors.sunken};
     font-family: inherit;
-    font-size: 1rem;
+    font-size: var(--fs-body);
     color: ${({ theme }) => theme.colors.ink};
     transition:
       border-color ${({ theme }) => theme.transitions.default},
@@ -377,7 +377,7 @@ const Bunnrad = styled.div`
 const Personvernnotat = styled.p`
   flex: 1;
   min-width: 18rem;
-  font-size: 0.8125rem;
+  font-size: var(--fs-small);
   line-height: 1.55;
   color: ${({ theme }) => theme.colors.inkSubtle};
 `
@@ -387,7 +387,7 @@ const Feilmelding = styled.p`
   border-radius: ${({ theme }) => theme.borderRadius.medium};
   background: ${({ theme }) => theme.colors.errorSoft};
   color: ${({ theme }) => theme.colors.error};
-  font-size: 0.9375rem;
+  font-size: var(--fs-body);
 
   a {
     color: inherit;
@@ -417,15 +417,15 @@ const Kvittering = styled.div`
 
   h2 {
     margin: 1.1rem 0 0.6rem;
-    font-size: ${({ theme }) => theme.fontSizes.xl};
-    letter-spacing: -0.03em;
+    font-size: var(--fs-lead);
+    letter-spacing: var(--ls-lead);
     color: ${({ theme }) => theme.colors.ink};
   }
 
   > p {
     margin: 0;
     max-width: 52ch;
-    font-size: 1rem;
+    font-size: var(--fs-body);
     line-height: 1.6;
     color: ${({ theme }) => theme.colors.inkMuted};
   }
@@ -447,7 +447,7 @@ const Bekreftet = styled.p`
   padding: 0.8rem 1rem;
   border-radius: ${({ theme }) => theme.borderRadius.medium};
   background: ${({ theme }) => theme.colors.sunken};
-  font-size: 0.9rem !important;
+  font-size: var(--fs-small) !important;
   color: ${({ theme }) => theme.colors.inkMuted};
 
   strong {
@@ -466,7 +466,7 @@ const Videre = styled.div`
   border-top: 1px solid ${({ theme }) => theme.colors.border};
 
   > a:last-child {
-    font-size: 0.9375rem;
+    font-size: var(--fs-body);
     font-weight: 600;
     color: ${({ theme }) => theme.colors.accent};
   }
@@ -479,9 +479,9 @@ const Sidespalte = styled.aside`
 
   h2 {
     font-family: ${({ theme }) => theme.fonts.mono};
-    font-size: ${({ theme }) => theme.fontSizes.xs};
+    font-size: var(--fs-micro);
     font-weight: 500;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
     color: ${({ theme }) => theme.colors.inkSubtle};
     margin-bottom: 1rem;
@@ -506,7 +506,7 @@ const Forventning = styled.div`
     counter-increment: steg;
     display: flex;
     gap: 0.7rem;
-    font-size: 0.9rem;
+    font-size: var(--fs-small);
     line-height: 1.55;
     color: ${({ theme }) => theme.colors.inkMuted};
   }
@@ -515,7 +515,7 @@ const Forventning = styled.div`
     content: counter(steg, decimal-leading-zero);
     flex-shrink: 0;
     font-family: ${({ theme }) => theme.fonts.mono};
-    font-size: 0.75rem;
+    font-size: var(--fs-micro);
     color: ${({ theme }) => theme.colors.inkSubtle};
     padding-top: 0.2em;
   }
@@ -528,7 +528,7 @@ const Dekning = styled.div`
   background: ${({ theme }) => theme.colors.surface};
 
   p {
-    font-size: 0.9rem;
+    font-size: var(--fs-small);
     line-height: 1.6;
     color: ${({ theme }) => theme.colors.inkMuted};
   }

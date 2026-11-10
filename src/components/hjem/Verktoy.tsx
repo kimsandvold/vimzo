@@ -20,7 +20,7 @@ export default function Verktoy() {
               <Stikkord>Regneverktøy · bygget for det du selger</Stikkord>
               <Tittel $niva="medium">La kunden regne ut prisen selv.</Tittel>
             </div>
-            <Pil til="/logo">Prøv logoverktøyet gratis</Pil>
+            <Pil til="/logo">Lag din egen logo</Pil>
           </Hode>
         </Innsig>
 
@@ -63,8 +63,8 @@ const Rad = styled.div`
 `
 
 const Bransje = styled.span`
-  font-size: 0.85rem;
-  font-weight: 550;
+  font-size: var(--fs-small);
+  font-weight: 500;
   color: ${({ theme }) => theme.colors.inkSubtle};
 `
 
@@ -72,8 +72,8 @@ const Navn = styled.span`
   /* Grotesk, ikke serif. Radnavn i displayserif leste som
      overskrifter stablet oppå hverandre – da betyr ikke serifen noe lenger. */
   font-family: ${({ theme }) => theme.fonts.body};
-  font-size: clamp(1.15rem, 1.8vw, 1.5rem);
-  font-weight: 600;
-  letter-spacing: -0.02em;
-  line-height: 1.15;
+  font-size: var(--fs-lead);
+  font-weight: 500;
+  letter-spacing: var(--ls-lead);
+  line-height: 1.25;
 `

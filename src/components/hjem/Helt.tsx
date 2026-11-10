@@ -20,19 +20,15 @@ import Kalkulator from './kalkulator/Kalkulator'
 export default function Helt() {
   return (
     <Flate>
-      <Glod aria-hidden="true" />
-      <Bakglod aria-hidden="true" />
       <Innhold>
         <Topp>
-          <Stikkord>Webutvikling og design</Stikkord>
           <h1>
             Nettsider for små bedrifter.
             <Uthevet>Med åpne priser.</Uthevet>
           </h1>
           <Sidelinje>
-            Vi lager hele nettsiden – tekst, bilder, design og det tekniske – for håndverkere, frisører,
-            rådgivere og andre som heller vil drive bedriften sin. Svar på fire spørsmål under, så ser du
-            omtrent hva din vil koste.
+            Vi lager hele nettsiden for deg – tekst, bilder, design og drift. Noen raske valg, så ser
+            du hva din koster.
           </Sidelinje>
         </Topp>
 
@@ -52,69 +48,26 @@ export default function Helt() {
 }
 
 const Flate = styled.section`
+  /* Ingen overflow: hidden. Den holdt glødene inne før, men den gjorde også
+     helten til en egen rulleflate – og da sluttet kalkulatorens knapperad å
+     lime seg til bunnen av skjermen. */
   position: relative;
-  overflow: hidden;
   margin-top: calc(-1 * var(--nav-hoyde));
-  padding: calc(2.5rem + var(--nav-hoyde)) 0 clamp(3rem, 6vh, 5rem);
+  padding: calc(clamp(2.5rem, 6vh, 4.5rem) + var(--nav-hoyde)) 0 clamp(3rem, 6vh, 5rem);
   /*
    * Her lå et rutenett en kort stund. Det ble fjernet: et flatt rutenett er
    * standardbakteppet på enhver SaaS-side, og et med perspektiv ville vært
-   * verre – det daterer seg raskere enn noe annet på siden. Dybden kommer
-   * fra lys i stedet, som ikke er et motiv man må forsvare.
+   * verre – det daterer seg raskere enn noe annet på siden.
+   *
+   * Gløden som erstattet det, er også borte. Flaten er ren hvit: tallet i
+   * estimatkortet er det eneste som skal ha farge, og alt rundt det som
+   * prøver å se pent ut, trekker øyet bort fra det.
    */
-  background:
-    radial-gradient(120% 90% at 85% 0%, rgba(91, 74, 232, 0.07) 0%, rgba(91, 74, 232, 0) 55%),
-    linear-gradient(to bottom, #FFFFFF 0%, ${({ theme }) => theme.colors.paper} 60%);
+  background: ${({ theme }) => theme.colors.surface};
   color: ${({ theme }) => theme.colors.ink};
 
   @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
-    padding: calc(1.5rem + var(--nav-hoyde)) 0 3rem;
-  }
-`
-
-/**
- * Én kald indigo glød oppe til høyre.
- *
- * Den erstatter fotografiet og filmkornet som lå her før. Begge deler ga
- * flaten en nostalgisk tone som sto i veien for det siden faktisk er – et
- * verktøy. En enkelt, svak gradient gir dybde uten å datere noe, og den
- * koster null nettverkskall mot fotografiets 213 kB.
- */
-const Glod = styled.div`
-  position: absolute;
-  top: -34vw;
-  right: -14vw;
-  width: 72vw;
-  height: 72vw;
-  max-width: 1000px;
-  max-height: 1000px;
-  border-radius: ${({ theme }) => theme.borderRadius.round};
-  background: radial-gradient(circle, rgba(108, 92, 255, 0.15) 0%, rgba(108, 92, 255, 0.05) 45%, rgba(108, 92, 255, 0) 68%);
-  pointer-events: none;
-`
-
-/**
- * Glød nummer to, bak estimatkortet.
- *
- * Kortet lå før som en svart firkant rett på hvitt papir. Denne legger en
- * svak indigo-pøl under det, så det ser ut til å ligge PÅ siden i stedet for
- * å være klippet ut av den. Den er større og svakere enn gløden over – den
- * skal kjennes, ikke ses.
- */
-const Bakglod = styled.div`
-  position: absolute;
-  top: 18%;
-  right: -6%;
-  width: 58vw;
-  height: 58vw;
-  max-width: 900px;
-  max-height: 900px;
-  border-radius: ${({ theme }) => theme.borderRadius.round};
-  background: radial-gradient(circle, rgba(91, 74, 232, 0.16) 0%, rgba(91, 74, 232, 0.05) 42%, rgba(91, 74, 232, 0) 66%);
-  pointer-events: none;
-
-  @media (max-width: 1040px) {
-    display: none;
+    padding: calc(2rem + var(--nav-hoyde)) 0 2.5rem;
   }
 `
 
@@ -145,10 +98,10 @@ const Topp = styled.div`
     margin: 0;
     /* Egen grad, ikke 4xl: tittelen deler plass med kalkulatoren og må holde
        seg på to linjer, ellers havner estimatet under folden. */
-    font-size: clamp(2.7rem, 4.5vw + 0.85rem, 5.2rem);
-    font-weight: 700;
-    line-height: 0.98;
-    letter-spacing: -0.042em;
+    font-size: var(--fs-display);
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: var(--ls-display);
     /* Bredt nok til at «Nettsider for små bedrifter.» står på én linje på
        en vanlig skjerm – to linjer totalt, så kalkulatoren holder seg oppe. */
     max-width: 20ch;
@@ -157,77 +110,61 @@ const Topp = styled.div`
 `
 
 /**
- * Andre linje i tittelen.
+ * Andre linje i tittelen, i grått.
  *
- * Den dype indigoen, ikke flatefargen. Flatefargen er laget for å ha hvit
- * tekst oppå seg, ikke for å være tekst selv – som overskrift på lerretet
- * ville den ligget for nær grensen til å være et trygt valg.
+ * Den sto i mettet indigo før, og to linjer i full styrke ved siden av
+ * hverandre var det hardeste på hele siden. To toner av samme grafitt gir
+ * samme rytme – påstand og løfte – uten at noe roper.
  */
 const Uthevet = styled.span`
   display: block;
-  color: ${({ theme }) => theme.colors.accent};
-`
-
-/**
- * Hva Vimzo er, før noe annet. Uten den sa forsiden hva kalkulatoren gjør,
- * men ikke at dette er en som lager nettsider.
- */
-const Stikkord = styled.p`
-  margin: 0;
-  font-size: ${({ theme }) => theme.fontSizes.xs};
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: ${({ theme }) => theme.colors.inkSubtle};
+  /* #86868B er 3.6:1 mot hvitt – over kravet på 3:1 for så stor tekst,
+     og lyst nok til at linja trer tilbake. */
+  color: #86868b;
 `
 
 const Sidelinje = styled.p`
   max-width: 46ch;
   margin: 0;
-  font-size: ${({ theme }) => theme.fontSizes.lg};
+  font-size: var(--fs-lead);
   line-height: 1.5;
   color: ${({ theme }) => theme.colors.inkMuted};
 `
 
 /**
- * De fire løftene, som et bånd under kalkulatoren.
+ * De fire løftene, som en stille rad under kalkulatoren.
  *
- * De gjør to jobber: tvilen møtes i samme øyekast som prisen, og båndet gir
- * helten en tydelig underkant i stedet for å tone ut i tomrom.
+ * De lå i en hvit pille med kant før – én boks til på en side som allerede
+ * hadde mange. Nå er det bare tekst over en hårstrek. Tvilen møtes i samme
+ * øyekast som prisen, uten at raden konkurrerer med den.
  */
 const Loftene = styled.ul`
   display: flex;
   flex-wrap: wrap;
-  gap: 0.6rem 2rem;
-  margin: clamp(1.5rem, 3vh, 2.25rem) 0 0;
-  padding: 0.95rem 1.4rem;
-  border-radius: ${({ theme }) => theme.borderRadius.pill};
-  background: ${({ theme }) => theme.colors.surface};
-  border: 1px solid ${({ theme }) => theme.colors.border};
+  gap: 0.75rem 2.25rem;
+  margin: clamp(2rem, 4vh, 3rem) 0 0;
+  padding: 1.5rem 0 0;
+  border-top: 1px solid ${({ theme }) => theme.colors.border};
   list-style: none;
 
   li {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    font-size: 0.875rem;
-    font-weight: 550;
-    letter-spacing: -0.01em;
+    font-size: var(--fs-small);
+    font-weight: 500;
+    letter-spacing: var(--ls-small);
     color: ${({ theme }) => theme.colors.inkMuted};
   }
 
   svg {
     flex-shrink: 0;
-    color: ${({ theme }) => theme.colors.accent};
+    color: ${({ theme }) => theme.colors.ink};
   }
 
   @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
-    gap: 0.55rem 1.25rem;
-    padding: 0.9rem 1.15rem;
-    border-radius: ${({ theme }) => theme.borderRadius.large};
-
-    li {
-      font-size: 0.8125rem;
-    }
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.7rem;
   }
 `

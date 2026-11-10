@@ -5,12 +5,24 @@ import { Wrap, Knapp } from '../../ui'
 import Logo from '../shared/Logo'
 import Icon from '../shared/Icon'
 
+/**
+ * Tre lenker, i den rekkefølgen en besøkende spør: hva lager dere, har
+ * dere gjort det før, hva koster det. Deretter én handling – «Ta en prat».
+ *
+ * «Om oss» er fjernet: det er en side nettsteder hadde fordi alle andre
+ * hadde den. Tryggheten den skulle gi – fast pris, ingen binding – står der
+ * beslutningen tas. «Guider» står i foten; den er for søkemotorer og
+ * AI-assistenter, ikke et steg på veien til å bestemme seg.
+ *
+ * «Lag logo» står sist. Det er et eget produkt – du kan kjøpe en logo
+ * uten å bestille en nettside – og da skal det kunne finnes uten å lete,
+ * men etter de tre spørsmålene om nettsiden, som er hovedsaken.
+ */
 const LENKER = [
   { til: '/tjenester', navn: 'Tjenester' },
-  { til: '/priser', navn: 'Priser' },
   { til: '/arbeid', navn: 'Arbeid' },
-  { til: '/guider', navn: 'Guider' },
-  { til: '/om', navn: 'Om oss' },
+  { til: '/priser', navn: 'Priser' },
+  { til: '/logo', navn: 'Lag logo' },
 ] as const
 
 /**
@@ -47,15 +59,10 @@ export default function Navbar() {
     }
   }, [apen])
 
-  // Undersidene åpner på sidehodets mørke flate, og der må navbaren tegnes i
-  // lyse farger til man har rullet forbi den. Forsiden er unntaket: helten ble
-  // lys da kalkulatoren kom, og lys tekst på den flaten er usynlig.
-  //
-  // Dette er bevisst en sjekk på rute og ikke en måling av flaten under. Det
-  // finnes nøyaktig to åpninger på hele nettstedet, og en IntersectionObserver
-  // for å oppdage det vi allerede vet, er mer maskineri enn svaret er verdt.
-  const lysApning = pathname === '/'
-  const overMork = !rullet && !apen && !lysApning
+  // Alle åpninger er lyse nå – også undersidenes sidehode – så navbaren står
+  // alltid i mørk tekst. Variabelen er beholdt så en mørk åpning kan komme
+  // tilbake uten å skrive om komponenten.
+  const overMork = false
 
   return (
     <>
@@ -77,9 +84,8 @@ export default function Navbar() {
             <Handlinger>
               {/* For kunder som allerede har et prosjekt. Diskret – den skal
                   finnes av dem som leter, ikke konkurrere med «Ta en prat». */}
-              <Navlenke to="/min-side" $mork={overMork} className="min-side">
-                <Icon navn="person" storrelse={17} tykkelse={1.8} />
-                Min side
+              <Navlenke to="/min-side" $mork={overMork} className="min-side" aria-label="Min side – for kunder" title="Min side">
+                <Icon navn="person" storrelse={18} tykkelse={1.8} />
               </Navlenke>
               <Knapp til="/kontakt" variant={overMork ? 'hvit' : 'aksent'}>
                 Ta en prat
@@ -149,14 +155,14 @@ const Topp = styled.header<{ $rullet: boolean; $mork: boolean }>`
   ${({ $rullet }) =>
     $rullet &&
     css`
-      background: rgba(250, 250, 252, 0.7);
+      background: rgba(255, 255, 255, 0.72);
       -webkit-backdrop-filter: saturate(180%) blur(20px);
       backdrop-filter: saturate(180%) blur(20px);
       border-bottom-color: rgba(12, 13, 12, 0.07);
 
       /* Uten blur ville gjennomsiktigheten gjort teksten vanskelig å lese. */
       @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-        background: rgba(250, 250, 252, 0.94);
+        background: rgba(255, 255, 255, 0.96);
       }
     `}
 `
@@ -183,7 +189,7 @@ const Navlenke = styled(NavLink)<{ $mork: boolean }>`
   position: relative;
   padding: 0.5rem 0.85rem;
   border-radius: ${({ theme }) => theme.borderRadius.small};
-  font-size: 0.9375rem;
+  font-size: var(--fs-body);
   font-weight: 500;
   color: ${({ theme, $mork }) => ($mork ? theme.colors.inkInvertedMuted : theme.colors.inkMuted)};
   text-decoration: none;
@@ -201,7 +207,7 @@ const Navlenke = styled(NavLink)<{ $mork: boolean }>`
 
   &.active {
     color: ${({ theme, $mork }) => ($mork ? theme.colors.inkInverted : theme.colors.ink)};
-    font-weight: 550;
+    font-weight: 500;
   }
 
   /* Den aktive siden markeres med en kort strek under, ikke en farget flate. */
@@ -232,12 +238,13 @@ const Menyknapp = styled.button<{ $mork: boolean }>`
   display: none;
   align-items: center;
   justify-content: center;
-  width: 42px;
-  height: 42px;
-  margin-left: auto;
-  border: 1px solid ${({ theme, $mork }) => ($mork ? theme.colors.borderInverted : theme.colors.border)};
-  border-radius: ${({ theme }) => theme.borderRadius.medium};
-  background: ${({ theme, $mork }) => ($mork ? 'rgba(247, 248, 250, 0.08)' : theme.colors.surface)};
+  width: 44px;
+  height: 44px;
+  margin: 0 -0.6rem 0 auto;
+  border: 0;
+  border-radius: ${({ theme }) => theme.borderRadius.pill};
+  background: none;
+  -webkit-tap-highlight-color: transparent;
   color: ${({ theme, $mork }) => ($mork ? theme.colors.inkInverted : theme.colors.ink)};
   cursor: pointer;
 
@@ -255,9 +262,10 @@ const Mobilmeny = styled.div<{ $apen: boolean }>`
   justify-content: center;
   gap: 2rem;
   padding: 6rem 2rem 3rem;
-  /* Frostet, ikke heldekkende: man skal se at helten ligger bak menyen,
-     ellers føles det som en ny side i stedet for et lag over denne. */
-  background: rgba(251, 247, 240, 0.82);
+  /* Nesten heldekkende. Den var mer gjennomsiktig, men da skinte skjemaet
+     bak gjennom som grå flekker – uro rett bak de tre ordene man skal velge
+     mellom. Et snev av blur er nok til at det kjennes som et lag. */
+  background: rgba(255, 255, 255, 0.97);
   backdrop-filter: saturate(180%) blur(28px);
   -webkit-backdrop-filter: saturate(180%) blur(28px);
   opacity: ${({ $apen }) => ($apen ? 1 : 0)};
@@ -302,9 +310,9 @@ const Mobillenke = styled(NavLink)`
   border-bottom: 1px solid ${({ theme }) => theme.colors.border};
   /* Navigasjon er grensesnitt, ikke overskrift – den blir i grotesken. */
   font-family: ${({ theme }) => theme.fonts.body};
-  font-size: 1.5rem;
+  font-size: var(--fs-title);
   font-weight: 600;
-  letter-spacing: -0.03em;
+  letter-spacing: var(--ls-title);
   color: ${({ theme }) => theme.colors.ink};
   text-decoration: none;
 
@@ -326,7 +334,7 @@ const MinSideMobil = styled(NavLink)`
   justify-content: center;
   gap: 0.5rem;
   margin-top: 1.25rem;
-  font-size: 1rem;
+  font-size: var(--fs-body);
   font-weight: 600;
   color: ${({ theme }) => theme.colors.inkMuted};
   text-decoration: none;

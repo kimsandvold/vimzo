@@ -94,7 +94,7 @@ const Kolonner = styled.div`
 const Spalte = styled.div<{ $din?: boolean }>`
   padding: clamp(1.4rem, 2.4vw, 2rem);
   border-radius: ${({ theme }) => theme.borderRadius.xl};
-  border: 1px solid ${({ theme, $din }) => ($din ? 'rgba(91, 74, 232, 0.16)' : theme.colors.border)};
+  border: 1px solid ${({ theme, $din }) => ($din ? 'rgba(0, 92, 200, 0.16)' : theme.colors.border)};
   background: ${({ theme, $din }) => ($din ? theme.colors.accentSoft : theme.colors.sunken)};
 `
 
@@ -103,9 +103,9 @@ const Overskrift = styled.h3`
   align-items: center;
   gap: 0.6rem;
   margin: 0 0 1.1rem;
-  font-size: ${({ theme }) => theme.fontSizes.lg};
-  font-weight: 650;
-  letter-spacing: -0.025em;
+  font-size: var(--fs-lead);
+  font-weight: 600;
+  letter-spacing: var(--ls-lead);
 `
 
 
@@ -120,7 +120,7 @@ const Liste = styled.ul`
     display: flex;
     align-items: flex-start;
     gap: 0.6rem;
-    font-size: ${({ theme }) => theme.fontSizes.md};
+    font-size: var(--fs-body);
     line-height: 1.5;
     color: ${({ theme }) => theme.colors.ink};
   }
@@ -139,14 +139,14 @@ const Sum = styled.p`
   gap: 0.5rem;
   margin: 1.3rem 0 0;
   padding-top: 1.1rem;
-  border-top: 1px solid rgba(91, 74, 232, 0.16);
-  font-size: ${({ theme }) => theme.fontSizes.base};
+  border-top: 1px solid rgba(0, 92, 200, 0.16);
+  font-size: var(--fs-body);
   color: ${({ theme }) => theme.colors.ink};
 
   strong {
     font-family: ${({ theme }) => theme.fonts.mono};
     font-size: 1.15em;
     font-weight: 600;
-    letter-spacing: -0.03em;
+    letter-spacing: var(--ls-heading);
   }
 `

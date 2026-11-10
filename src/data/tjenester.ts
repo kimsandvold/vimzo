@@ -49,7 +49,6 @@ export const tjenester: readonly Tjeneste[] = [
       'Like god på mobil som på stor skjerm',
       'Kontaktskjema som lander i innboksen din',
       'Lesbar for alle, også med skjermleser',
-      'En testadresse du kan følge med på fra første dag',
     ],
   },
   {
@@ -156,7 +155,7 @@ export const tjenester: readonly Tjeneste[] = [
     priser: ['Logo', 'Visuell profil'],
     tekst:
       'Har du ikke en logo – eller en som ble laget i Word i 2011 – tegner vi en ny, med farger ' +
-      'og skrifttyper som hører sammen. Vil du prøve selv først, er logoverktøyet vårt gratis.',
+      'og skrifttyper som hører sammen. Vil du heller lage den selv, kan du bruke logoverktøyet vårt.',
     punkter: [
       'Tre logoforslag, du velger ett',
       'Alle filformater: nett, trykk, skilt og bil',

@@ -100,12 +100,12 @@ const Kort = styled(Link)`
     transform ${({ theme }) => theme.transitions.soft};
 
   h2 {
-    font-size: ${({ theme }) => theme.fontSizes.xl};
+    font-size: var(--fs-lead);
     margin-bottom: 0.75rem;
   }
 
   p {
-    font-size: 0.9375rem;
+    font-size: var(--fs-body);
     line-height: 1.65;
     color: ${({ theme }) => theme.colors.inkMuted};
     margin-bottom: 1.5rem;
@@ -125,8 +125,8 @@ const Meta = styled.div`
   gap: 0.5rem;
   margin-bottom: 1rem;
   font-family: ${({ theme }) => theme.fonts.mono};
-  font-size: 0.75rem;
-  letter-spacing: 0.05em;
+  font-size: var(--fs-micro);
+  letter-spacing: 0.08em;
   color: ${({ theme }) => theme.colors.inkSubtle};
 `
 
@@ -144,7 +144,7 @@ const Les = styled.div`
   align-items: center;
   gap: 0.5rem;
   margin-top: auto;
-  font-size: 0.9375rem;
-  font-weight: 550;
+  font-size: var(--fs-body);
+  font-weight: 500;
   color: ${({ theme }) => theme.colors.accent};
 `

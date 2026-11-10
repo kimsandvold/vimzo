@@ -13,8 +13,8 @@ const Lenke = styled.a`
   color: #ffffff;
   padding: 0.75rem 1.25rem;
   border-radius: ${({ theme }) => theme.borderRadius.medium};
-  font-size: 0.9375rem;
-  font-weight: 550;
+  font-size: var(--fs-body);
+  font-weight: 500;
   text-decoration: none;
   transition: top ${({ theme }) => theme.transitions.default};
 

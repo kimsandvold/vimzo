@@ -99,7 +99,7 @@ const Oppsett = styled.div`
   align-items: start;
 
   h2 {
-    font-size: ${({ theme }) => theme.fontSizes.xl};
+    font-size: var(--fs-title);
     margin-bottom: 1.25rem;
   }
 
@@ -120,7 +120,7 @@ const Punkter = styled.ul`
   li {
     display: flex;
     gap: 0.75rem;
-    font-size: ${({ theme }) => theme.fontSizes.md};
+    font-size: var(--fs-body);
     line-height: 1.6;
   }
 
@@ -148,23 +148,23 @@ const Tallkort = styled.div`
   strong {
     display: block;
     font-family: ${({ theme }) => theme.fonts.mono};
-    font-size: 2rem;
+    font-size: var(--fs-title);
     font-weight: 500;
-    letter-spacing: -0.045em;
+    letter-spacing: var(--ls-title);
     line-height: 1.1;
   }
 
   span {
     display: block;
     margin-top: 0.35rem;
-    font-size: 0.8125rem;
+    font-size: var(--fs-small);
     color: ${({ theme }) => theme.colors.inkInvertedMuted};
   }
 `
 
 const Fotnote = styled.p`
   margin-top: 1.25rem;
-  font-size: 0.8125rem;
+  font-size: var(--fs-small);
   line-height: 1.6;
   color: ${({ theme }) => theme.colors.inkSubtle};
 `

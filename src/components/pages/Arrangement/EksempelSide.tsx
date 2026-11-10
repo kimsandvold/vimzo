@@ -256,7 +256,7 @@ const Banner = styled.div`
   padding: 0.7rem clamp(1rem, 4vw, 2rem);
   background: #13111f;
   color: #fff;
-  font-size: 0.875rem;
+  font-size: var(--fs-small);
   line-height: 1.45;
 
   a {
@@ -283,26 +283,26 @@ const Helt = styled.header`
 
   h1 {
     margin: 0.8rem 0 0;
-    font-size: clamp(2.8rem, 8vw, 5.6rem);
-    font-weight: 750;
+    font-size: var(--fs-display);
+    font-weight: 600;
     line-height: 0.95;
-    letter-spacing: -0.045em;
+    letter-spacing: var(--ls-display);
     color: ${C.papir};
   }
 `
 
 const Dato = styled.p`
   margin: 0;
-  font-size: 0.9375rem;
-  font-weight: 650;
-  letter-spacing: 0.04em;
+  font-size: var(--fs-body);
+  font-weight: 600;
+  letter-spacing: 0.08em;
   color: #f0a46e;
 `
 
 const Ingress = styled.p`
   max-width: 34ch;
   margin: 1.4rem 0 0;
-  font-size: clamp(1.1rem, 1.6vw, 1.3rem);
+  font-size: var(--fs-lead);
   line-height: 1.5;
   color: ${C.blek};
 `
@@ -319,7 +319,7 @@ const Primar = styled.a`
   border-radius: 999px;
   background: ${C.oransje};
   color: ${C.skog};
-  font-weight: 700;
+  font-weight: 600;
   text-decoration: none;
 
   &:hover {
@@ -355,14 +355,14 @@ const Fakta = styled.ul`
   }
 
   strong {
-    font-size: 2rem;
-    font-weight: 750;
-    letter-spacing: -0.04em;
+    font-size: var(--fs-title);
+    font-weight: 600;
+    letter-spacing: var(--ls-title);
     color: ${C.papir};
   }
 
   span {
-    font-size: 0.875rem;
+    font-size: var(--fs-small);
     color: ${C.blek};
   }
 `
@@ -374,9 +374,9 @@ const Bolk = styled.section<{ $lys?: boolean }>`
 
   h2 {
     margin: 0 0 1.5rem;
-    font-size: clamp(1.8rem, 3.5vw, 2.6rem);
-    font-weight: 750;
-    letter-spacing: -0.035em;
+    font-size: var(--fs-heading);
+    font-weight: 600;
+    letter-spacing: var(--ls-heading);
     color: ${C.skog};
   }
 
@@ -406,14 +406,14 @@ const Program = styled.ol`
 
   strong {
     display: block;
-    font-size: 1.0625rem;
-    font-weight: 650;
+    font-size: var(--fs-body);
+    font-weight: 600;
   }
 
   span {
     display: block;
     margin-top: 0.2rem;
-    font-size: 0.9rem;
+    font-size: var(--fs-small);
     color: ${C.blekMork};
   }
 `
@@ -436,18 +436,18 @@ const Talere = styled.ul`
 
   strong {
     margin-top: 1rem;
-    font-size: 1.0625rem;
+    font-size: var(--fs-body);
   }
 
   span {
-    font-size: 0.875rem;
+    font-size: var(--fs-small);
     color: ${C.blekMork};
   }
 
   em {
     margin-top: 0.6rem;
     font-style: normal;
-    font-size: 0.9375rem;
+    font-size: var(--fs-body);
     color: ${C.skog};
   }
 
@@ -465,8 +465,8 @@ const Initialer = styled.span`
   border-radius: 50%;
   background: ${C.skog};
   color: #f0a46e !important;
-  font-size: 1rem !important;
-  font-weight: 700;
+  font-size: var(--fs-body) !important;
+  font-weight: 600;
 `
 
 const Utstillere = styled.ul`
@@ -481,8 +481,8 @@ const Utstillere = styled.ul`
     padding: 0.55rem 1rem;
     border: 1px solid rgba(31, 42, 36, 0.18);
     border-radius: 999px;
-    font-size: 0.9375rem;
-    font-weight: 550;
+    font-size: var(--fs-body);
+    font-weight: 500;
   }
 `
 
@@ -505,16 +505,16 @@ const Praktisk = styled.dl`
   }
 
   dt {
-    font-size: 0.8125rem;
-    font-weight: 700;
-    letter-spacing: 0.06em;
+    font-size: var(--fs-small);
+    font-weight: 600;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
     color: ${C.oransjeTekst};
   }
 
   dd {
     margin: 0.3rem 0 0;
-    font-size: 1rem;
+    font-size: var(--fs-body);
     line-height: 1.5;
   }
 `
@@ -538,7 +538,7 @@ const Skjema = styled.form`
     display: flex;
     flex-direction: column;
     gap: 0.35rem;
-    font-size: 0.875rem;
+    font-size: var(--fs-small);
     font-weight: 600;
   }
 
@@ -549,7 +549,7 @@ const Skjema = styled.form`
     background: ${C.skogLys};
     color: ${C.papir};
     font-family: inherit;
-    font-size: 1rem;
+    font-size: var(--fs-body);
 
     &:focus {
       outline: 2px solid ${C.oransje};
@@ -565,20 +565,20 @@ const Skjema = styled.form`
     background: ${C.oransje};
     color: ${C.skog};
     font-family: inherit;
-    font-size: 1rem;
-    font-weight: 700;
+    font-size: var(--fs-body);
+    font-weight: 600;
     cursor: pointer;
   }
 
   small {
-    font-size: 0.8125rem;
+    font-size: var(--fs-small);
     color: ${C.blek};
   }
 `
 
 const Takk = styled.p`
   margin: 0;
-  font-size: 0.9375rem;
+  font-size: var(--fs-body);
   line-height: 1.6;
   color: ${C.blek};
 
@@ -591,7 +591,7 @@ const Fot = styled.footer`
   padding: 2rem 0;
   background: ${C.skog};
   color: ${C.blek};
-  font-size: 0.875rem;
+  font-size: var(--fs-small);
 
   > div {
     display: flex;

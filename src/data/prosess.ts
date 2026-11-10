@@ -38,8 +38,8 @@ export const prosess: readonly Steg[] = [
     tittel: 'Vi bygger den ferdig',
     varighet: '1–3 uker',
     tekst:
-      'Siden ligger på en testadresse du kan se på når du vil, og vi tar bildene hvis det inngår. ' +
-      'Du trenger ikke gjøre noe i denne perioden – men du kan følge med om du vil.',
+      'Vi skriver, designer og koder siden, og tar bildene hvis det inngår. ' +
+      'Du trenger ikke gjøre noe i denne perioden.',
   },
   {
     nummer: '04',

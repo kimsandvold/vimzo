@@ -114,12 +114,14 @@ const Kort = styled(Link)<{ $aksent: string }>`
 
 const Topp = styled.div`
   h2 {
-    font-size: ${({ theme }) => theme.fontSizes['2xl']};
+    font-size: var(--fs-title);
+    letter-spacing: var(--ls-title);
     margin-bottom: 0.75rem;
   }
 
-  p {
-    font-size: 0.9375rem;
+  /* Bare beskrivelsen – ikke meta-linja over tittelen, som også er en <p>. */
+  h2 + p {
+    font-size: var(--fs-body);
     line-height: 1.65;
     color: ${({ theme }) => theme.colors.inkMuted};
   }
@@ -131,7 +133,7 @@ const Meta = styled.p`
   gap: 0.5rem;
   margin-bottom: 0.75rem;
   font-family: ${({ theme }) => theme.fonts.mono};
-  font-size: 0.75rem;
+  font-size: var(--fs-micro);
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: ${({ theme }) => theme.colors.inkSubtle} !important;
@@ -149,15 +151,15 @@ const Tall = styled.div`
   strong {
     display: block;
     font-family: ${({ theme }) => theme.fonts.mono};
-    font-size: 1.5rem;
+    font-size: var(--fs-title);
     font-weight: 500;
-    letter-spacing: -0.04em;
+    letter-spacing: var(--ls-title);
   }
 
   span {
     display: block;
     margin-top: 0.15rem;
-    font-size: 0.75rem;
+    font-size: var(--fs-micro);
     color: ${({ theme }) => theme.colors.inkSubtle};
     max-width: 18ch;
   }
@@ -168,13 +170,13 @@ const Bunn = styled.div`
   align-items: center;
   gap: 0.5rem;
   margin-top: auto;
-  font-size: 0.9375rem;
-  font-weight: 550;
+  font-size: var(--fs-body);
+  font-weight: 500;
   color: ${({ theme }) => theme.colors.accent};
 `
 
 const Notat = styled.p`
   margin-top: 2rem;
-  font-size: 0.875rem;
+  font-size: var(--fs-small);
   color: ${({ theme }) => theme.colors.inkSubtle};
 `
