@@ -202,6 +202,31 @@ export function artikkelLd(guide: Guide): Record<string, unknown> {
  * `valueAddedTaxIncluded: false` – ellers ville en assistent sitert dem som
  * sluttpriser.
  */
+/** Navnesjekken: et gratis verktøy, med et tilbud til 0 kr – det er slik «gratis» sies i strukturerte data. */
+export function navnesjekkLd(): Record<string, unknown> {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'WebApplication',
+    '@id': `${URL_BASE}/navnesjekk#verktoy`,
+    name: 'Navnesjekk for firmanavn',
+    url: `${URL_BASE}/navnesjekk`,
+    applicationCategory: 'BusinessApplication',
+    operatingSystem: 'Nettleser',
+    inLanguage: 'nb-NO',
+    isAccessibleForFree: true,
+    provider: { '@id': ORG_ID },
+    description:
+      'Sjekk om et firmanavn er ledig: søk i Enhetsregisteret etter samme og lignende navn, og se om ' +
+      '.no-domenet er ledig – gratis og uten innlogging.',
+    featureList: [
+      'Samme og lignende navn i Enhetsregisteret (Brønnøysundregistrene)',
+      'Ledige .no-domener for navnet (Norid)',
+      'Rett videre til logo for navnet',
+    ],
+    offers: { '@type': 'Offer', price: 0, priceCurrency: 'NOK' },
+  }
+}
+
 export function logoverktoyLd(): Record<string, unknown> {
   const tilbud = (navn: string, pris: number, beskrivelse: string) => ({
     '@type': 'Offer',

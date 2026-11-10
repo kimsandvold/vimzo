@@ -107,7 +107,14 @@ innholdet er riktig også uten JavaScript.
 
 ## Publisering
 
-`dist/` er rene statiske filer og kan legges hvor som helst. `vercel.json`
+vimzo.no ligger på et Apache-webhotell: `npm run build`, og last opp
+innholdet i `dist/` (med `.htaccess`). En `git push` publiserer ingenting.
+
+Ett unntak fra «bare statiske filer»: logobildet i kundenes e-postsignatur
+serveres av `public/api/signatur.php` (Apache, krever PHP) – eller
+`api/signatur/[id].ts` på Vercel. Begge henter bildet fra Firestore.
+
+`dist/` er ellers rene statiske filer og kan legges hvor som helst. `vercel.json`
 ligger klar med `cleanUrls`, cache-hoder for `assets/` og `fonts/`, og
 sikkerhetshoder. På en annen vert trengs bare at `/priser` serverer
 `/priser/index.html`.

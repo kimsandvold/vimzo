@@ -76,6 +76,9 @@ export default function Footer() {
                   <Link to="/logo">Lag logo</Link>
                 </li>
                 <li>
+                  <Link to="/navnesjekk">Navnesjekk</Link>
+                </li>
+                <li>
                   <Link to="/kontakt">Kontakt</Link>
                 </li>
                 <li>

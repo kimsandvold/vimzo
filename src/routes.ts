@@ -22,6 +22,7 @@ export const LAZY_RUTER: Array<{ path: string; Side: LazyPage }> = [
   // Profilboka som ren side – ingen meny eller fot (se Ramme i App.tsx).
   { path: '/logo/profil', Side: lazyPage(() => import('./components/pages/Logo/ProfilSide')) },
   { path: '/logo/profil/:id', Side: lazyPage(() => import('./components/pages/Logo/ProfilSide')) },
+  { path: '/navnesjekk', Side: lazyPage(() => import('./components/pages/Navnesjekk/NavnesjekkSide')) },
   { path: '/kontakt', Side: lazyPage(() => import('./components/pages/Kontakt/KontaktSide')) },
   // Kundenes Min side og admin: ikke i sitemap, ikke forhåndsrendret, noindex.
   { path: '/min-side/studio/:id', Side: lazyPage(() => import('./components/pages/Logo/StudioSide')) },

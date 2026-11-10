@@ -240,13 +240,26 @@ function Verktoy({
   const lagret = useMemo(() => {
     // «Lag en ny» fra kalkulatoren: start blankt, ikke på forrige logo.
     if (INNEBYGD && sok.has('ny')) return null
+    // Fra navnesjekken (`?navn=…`): en ny logo for akkurat det navnet.
+    if (sok.has('navn')) return null
     const lokalt = lesLokalt(uid)
     const d = sok.get('d')
     const fraLenke = d ? dekod(d) : null
     return fraLenke ? { bransje: 'annet', stiler: [], ...lokalt, ...fraLenke } : lokalt
   }, [uid, sok])
   const [steg, setSteg] = useState(lagret ? (sok.get('steg') === 'bestill' ? 5 : 3) : 0)
-  const [innhold, setInnhold] = useState<Innhold>(lagret?.innhold ?? { navn: '', slagord: '' })
+  const [innhold, setInnhold] = useState<Innhold>(
+    lagret?.innhold ?? { navn: (sok.get('navn') ?? '').trim().slice(0, 32), slagord: '' },
+  )
+  // Navnet fra navnesjekken er brukt nå. Ta det ut av adressen, så en ny
+  // innlasting fortsetter på logoen i stedet for å starte på nytt.
+  useEffect(() => {
+    if (!sok.has('navn')) return
+    const url = new URL(window.location.href)
+    url.searchParams.delete('navn')
+    window.history.replaceState(window.history.state, '', url)
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- én gang, ved oppstart
+  }, [])
   const [bransje, setBransje] = useState(lagret?.bransje ?? '')
   const [stiler, setStiler] = useState<string[]>(lagret?.stiler ?? [])
   const [familier, setFamilier] = useState<Familie[]>([])
@@ -528,6 +541,13 @@ function Verktoy({
                   <Feilmelding id="navn-feil" role="alert">
                     Skriv navnet på bedriften for å gå videre.
                   </Feilmelding>
+                )}
+                {!INNEBYGD && (
+                  <Navnelenke
+                    to={innhold.navn.trim() ? `/navnesjekk?navn=${encodeURIComponent(innhold.navn.trim())}` : '/navnesjekk'}
+                  >
+                    Usikker på navnet? Sjekk om det er ledig <span aria-hidden="true">→</span>
+                  </Navnelenke>
                 )}
               </div>
               <Felt>
@@ -2409,6 +2429,23 @@ const Handlinger = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
+`
+
+/** Til navnesjekken – under navnefeltet, for den som ikke har bestemt seg. */
+const Navnelenke = styled(Link)`
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  min-height: 44px;
+  margin-top: 0.25rem;
+  font-size: var(--fs-small);
+  font-weight: 500;
+  color: ${({ theme }) => theme.colors.accent};
+  text-decoration: none;
+
+  &:hover {
+    color: ${({ theme }) => theme.colors.accentHover};
+  }
 `
 
 const Oppgrader = styled.p`

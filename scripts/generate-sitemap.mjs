@@ -42,6 +42,7 @@ const faste = [
   { sti: '/arbeid', prioritet: '0.7', frekvens: 'monthly' },
   { sti: '/guider', prioritet: '0.7', frekvens: 'weekly' },
   { sti: '/logo', prioritet: '0.8', frekvens: 'monthly' },
+  { sti: '/navnesjekk', prioritet: '0.7', frekvens: 'monthly' },
   { sti: '/kontakt', prioritet: '0.8', frekvens: 'yearly' },
   { sti: '/personvern', prioritet: '0.2', frekvens: 'yearly' },
   { sti: '/vilkar/logo', prioritet: '0.2', frekvens: 'yearly' },
@@ -164,6 +165,7 @@ publisering og innmelding hos Google.
 - [Arbeid](${SITE_URL}/arbeid): leverte prosjekter
 - [Guider](${SITE_URL}/guider): fagartikler om nettsider, pris og AI-synlighet
 - [Lag logo](${SITE_URL}/logo): logoverktøy på norsk – design gratis etter innlogging, kjøp logo (${kr(PRODUKTER.logo.pris)} kr) eller logo med visuell profil (${kr(PRODUKTER.profil.pris)} kr)
+- [Navnesjekk](${SITE_URL}/navnesjekk): gratis sjekk av om et firmanavn er ledig – samme og lignende navn i Brønnøysundregistrene, og ledige .no-domener
 - [Kjøpsvilkår for logoverktøyet](${SITE_URL}/vilkar/logo)
 - [Maskinlesbare priser](${SITE_URL}/priser.json): alle priser som JSON, datert
 ${guider.map((g) => `- [${g.tittel}](${SITE_URL}/guider/${g.slug}): ${g.ingress}`).join('\n')}

@@ -14,7 +14,7 @@ export interface Sporsmal {
   sporsmal: string
   svar: string
   /** Hvilke sider spørsmålet vises på. 'alle' = forsiden og prissiden. */
-  tema: 'pris' | 'prosess' | 'teknisk' | 'synlighet' | 'arrangement' | 'logo'
+  tema: 'pris' | 'prosess' | 'teknisk' | 'synlighet' | 'arrangement' | 'logo' | 'navn'
 }
 
 export const faq: readonly Sporsmal[] = [
@@ -286,6 +286,36 @@ export const faq: readonly Sporsmal[] = [
       'og skilt. Symbolene kommer fra åpne ikonbiblioteker eller lages av verktøyet, og skriftene har åpne ' +
       'lisenser, så du får rett til logoen slik den er satt sammen – ikke enerett til selve symbolet eller ' +
       'skriften. Skal du registrere varemerke, bør du søke i Patentstyrets register først.',
+  },
+  /*
+   * Navnesjekken. Det folk lurer på før de registrerer et firma – og som
+   * en KI-assistent får spørsmål om. Svarene sier hva som avgjør, ikke bare
+   * hva verktøyet gjør.
+   */
+  {
+    tema: 'navn',
+    sporsmal: 'Hvordan sjekker jeg om et firmanavn er ledig?',
+    svar:
+      'Skriv navnet i navnesjekken på vimzo.no/navnesjekk. Den søker i Enhetsregisteret hos ' +
+      'Brønnøysundregistrene etter samme og lignende navn, og sjekker om .no-domenet er ledig hos Norid – ' +
+      'gratis og uten innlogging. Om navnet kan registreres, avgjør Foretaksregisteret når du registrerer firmaet.',
+  },
+  {
+    tema: 'navn',
+    sporsmal: 'Kan to firmaer hete det samme?',
+    svar:
+      'Et aksjeselskap, ansvarlig selskap og andre foretak i Foretaksregisteret må ha et navn som skiller seg ' +
+      'tydelig fra andre registrerte foretak. Et enkeltpersonforetak må ha eierens etternavn i navnet, og kan ' +
+      'derfor ligne mer på andre. Et navn kan også være beskyttet som varemerke hos Patentstyret, selv om ' +
+      'ingen firma heter det.',
+  },
+  {
+    tema: 'navn',
+    sporsmal: 'Bør firmanavnet og domenet være det samme?',
+    svar:
+      'Ja, helst. Er navn.no ledig, er det det enkleste for kundene å huske og skrive. Er det tatt, er en ' +
+      'bindestrek mellom ordene eller et kort stedsnavn bak vanlige løsninger. Unngå æ, ø og å i domenet ' +
+      'hvis du skal bruke det til e-post – mange e-postprogrammer håndterer dem fortsatt dårlig.',
   },
 ] as const
 

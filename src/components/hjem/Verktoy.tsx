@@ -20,7 +20,10 @@ export default function Verktoy() {
               <Stikkord>Regneverktøy · bygget for det du selger</Stikkord>
               <Tittel $niva="medium">La kunden regne ut prisen selv.</Tittel>
             </div>
-            <Pil til="/logo">Lag din egen logo</Pil>
+            <Snarveier>
+              <Pil til="/navnesjekk">Er firmanavnet ledig?</Pil>
+              <Pil til="/logo">Lag din egen logo</Pil>
+            </Snarveier>
           </Hode>
         </Innsig>
 
@@ -40,6 +43,13 @@ export default function Verktoy() {
     </Seksjon>
   )
 }
+
+/** De to gratisverktøyene, side om side – eller under hverandre på mobil. */
+const Snarveier = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.75rem;
+`
 
 const Liste = styled.ul`
   list-style: none;
