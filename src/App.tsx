@@ -10,6 +10,7 @@ import Footer from './components/layout/Footer'
 import Laster from './components/shared/Laster'
 import Kontaktknapp from './components/shared/Kontaktknapp'
 import Samtykke from './components/shared/Samtykke'
+import { INNEBYGD } from './lib/innebygd'
 import ForsideSide from './components/pages/Forside/ForsideSide'
 import IkkeFunnetSide from './components/pages/IkkeFunnet/IkkeFunnetSide'
 import { LAZY_RUTER } from './routes'
@@ -41,7 +42,8 @@ export default function App() {
 
 /**
  * Navbar, fot og kontaktknapp rundt innholdet – unntatt på eksempelsider, i
- * /admin og på /min-side, som har sin egen enkle topplinje.
+ * /admin, på /min-side og på profilboka i /logo/profil, som har sin egen
+ * enkle topplinje.
  *
  * Eksempelet på en arrangementsside skal se ut som kundens side, ikke som
  * vår. Med Vimzos meny over og fot under ville det sett ut som en seksjon på
@@ -49,7 +51,14 @@ export default function App() {
  */
 function Ramme({ children }: { children: ReactNode }) {
   const { pathname } = useLocation()
-  if (pathname.endsWith('/eksempel') || pathname.startsWith('/admin') || pathname.startsWith('/min-side'))
+  // Logoverktøyet i kalkulatorens modal: bare verktøyet, uten noe rundt.
+  if (INNEBYGD) return <>{children}</>
+  if (
+    pathname.endsWith('/eksempel') ||
+    pathname.startsWith('/admin') ||
+    pathname.startsWith('/min-side') ||
+    pathname.startsWith('/logo/profil')
+  )
     return <>{children}</>
   return (
     <>

@@ -163,7 +163,7 @@ const Banner = styled.div`
   border-radius: ${({ theme }) => theme.borderRadius.medium};
   background: ${({ theme }) => theme.colors.successSoft};
   color: ${({ theme }) => theme.colors.success};
-  font-size: 0.9375rem;
+  font-size: var(--fs-body);
 `
 
 const Rad = styled.div`

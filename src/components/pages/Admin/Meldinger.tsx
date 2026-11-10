@@ -117,7 +117,7 @@ const Trad = styled.div`
 
 const Tom = styled.p`
   margin: 0;
-  font-size: 0.875rem;
+  font-size: var(--fs-small);
   color: ${({ theme }) => theme.colors.inkSubtle};
 `
 
@@ -132,7 +132,7 @@ const Boble = styled.div<{ $min: boolean }>`
 
   p {
     margin: 0;
-    font-size: 0.9375rem;
+    font-size: var(--fs-body);
     line-height: 1.5;
     white-space: pre-wrap;
     overflow-wrap: anywhere;
@@ -141,7 +141,7 @@ const Boble = styled.div<{ $min: boolean }>`
   span {
     display: block;
     margin-top: 0.3rem;
-    font-size: 0.75rem;
+    font-size: var(--fs-micro);
     opacity: 0.7;
   }
 `

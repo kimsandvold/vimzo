@@ -6,7 +6,7 @@ rules_version = '2';
 // nettleseren er offentlig; uten disse reglene kunne hvem som helst lese
 // databasen.
 //
-// Tre samlinger, tre nivåer:
+// Fem samlinger:
 //
 //  henvendelser/{id}  Den interne saken, med notater og alt. Bare admin.
 //                     Offentlige skjemaer kan OPPRETTE – aldri lese.
@@ -19,6 +19,13 @@ rules_version = '2';
 //
 //  …/meldinger/{id}   Tråden mellom kunden og Vimzo. Begge kan skrive, ingen
 //                     kan endre noe som er skrevet.
+//
+//  logodesign/{id}    Kundens lagrede logoer (utkast og kjøpte) på Min side.
+//
+//  logobestillinger/{id}  Kjøp fra logoverktøyet. Kunden oppretter sin egen
+//                     (innlogget, riktig pris) og leser sine egne. Admin
+//                     flytter status: levert → fakturert → betalt. Filene
+//                     lastes ned med en gang, så ordren starter som levert.
 //
 // Legges inn med `firebase deploy --only firestore:rules`, eller i
 // Firebase-konsollen under Firestore → Regler.
@@ -50,7 +57,7 @@ service cloud.firestore {
     // En henvendelse fra et offentlig skjema.
     function gyldigNy() {
       let d = request.resource.data;
-      return d.keys().hasOnly(['kilde', 'navn', 'bedrift', 'epost', 'telefon', 'melding', 'brief', 'pakke', 'anslag', 'status', 'opprettet'])
+      return d.keys().hasOnly(['kilde', 'navn', 'bedrift', 'epost', 'telefon', 'melding', 'brief', 'pakke', 'anslag', 'logodesign', 'status', 'opprettet'])
         && d.kilde in ['kalkulator', 'kontakt']
         && d.status == 'ny'
         && d.opprettet == request.time
@@ -61,6 +68,7 @@ service cloud.firestore {
         && tekst('melding', 5000)
         && tekst('brief', 5000)
         && tekst('pakke', 200)
+        && (!('logodesign' in d) || tekst('logodesign', 100))
         && gyldigAnslag();
     }
 
@@ -111,6 +119,92 @@ service cloud.firestore {
         allow create: if (erAdmin() && gyldigMelding('vimzo')) || (erKunde() && gyldigMelding('kunde'));
         allow delete: if erAdmin();
       }
+    }
+
+    // Bestillinger fra logoverktøyet. Kunden oppretter sin egen – med sin
+    // egen uid og e-post, og prisen som hører til produktet, så ingen kan
+    // bestille en logo til 1 krone. Kunden kan lese sine egne; resten er admin.
+    match /logobestillinger/{id} {
+      function riktigPris(d) {
+        return (d.produkt == 'logo' && d.pris == 490) || (d.produkt == 'profil' && d.pris == 990);
+      }
+
+      function gyldigBestilling() {
+        let d = request.resource.data;
+        return innlogget()
+          && d.keys().hasOnly(['uid', 'epost', 'produkt', 'pris', 'bedrift', 'orgnr', 'adresse', 'postnr', 'poststed', 'navn', 'telefon', 'merknad', 'design', 'vilkar', 'status', 'opprettet'])
+          && d.uid == request.auth.uid
+          && d.epost == minEpost()
+          && riktigPris(d)
+          && d.status == 'levert'
+          && d.opprettet == request.time
+          && tekst('bedrift', 200) && d.bedrift.size() > 0
+          && d.orgnr is string && (d.orgnr == '' || d.orgnr.matches('^[0-9]{9}$'))
+          && tekst('adresse', 200) && d.adresse.size() > 0
+          && d.postnr is string && d.postnr.matches('^[0-9]{4}$')
+          && tekst('poststed', 200) && d.poststed.size() > 0
+          && tekst('vilkar', 500) && d.vilkar.size() > 0
+          && tekst('navn', 200)
+          && tekst('telefon', 40)
+          && tekst('merknad', 2000)
+          && tekst('design', 20000);
+      }
+
+      allow create: if gyldigBestilling();
+      allow read: if erAdmin() || (innlogget() && resource.data.uid == request.auth.uid);
+      allow update, delete: if erAdmin();
+    }
+
+    // Lagrede logoer på Min side. Kunden eier sine egne fullt ut – med ett
+    // unntak: et design kan bare merkes som kjøpt hvis det finnes en ekte
+    // bestilling på samme konto, med samme produkt. Ellers kunne hvem som helst
+    // låse opp vannmerkefrie filer ved å skrive et felt selv.
+    match /logodesign/{id} {
+      function eier() {
+        return innlogget() && resource.data.uid == request.auth.uid;
+      }
+
+      function gyldigInnhold(d) {
+        return d.navn is string && d.navn.size() <= 200
+          && d.design is string && d.design.size() <= 20000
+          && d.forhandsvisning is string && d.forhandsvisning.size() <= 30000
+          && d.oppdatert == request.time;
+      }
+
+      function ekteKjop(d) {
+        let b = get(/databases/$(database)/documents/logobestillinger/$(d.bestillingId)).data;
+        return b.uid == request.auth.uid && b.produkt == d.produkt;
+      }
+
+      allow create: if innlogget()
+        && request.resource.data.keys().hasOnly(['uid', 'navn', 'design', 'forhandsvisning', 'bestillingId', 'produkt', 'opprettet', 'oppdatert'])
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.bestillingId == null
+        && request.resource.data.produkt == null
+        && request.resource.data.opprettet == request.time
+        && gyldigInnhold(request.resource.data);
+
+      allow update: if eier()
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['navn', 'design', 'forhandsvisning', 'bestillingId', 'produkt', 'oppdatert'])
+        // Kunden kan ikke frigi selv – det feltet er admin sitt (se under).
+        && request.resource.data.uid == resource.data.uid
+        && gyldigInnhold(request.resource.data)
+        && (
+          // Uendret kjøpsstatus …
+          (request.resource.data.bestillingId == resource.data.bestillingId
+            && request.resource.data.produkt == resource.data.produkt)
+          // … eller merket som kjøpt mot en ekte bestilling.
+          || (request.resource.data.bestillingId is string && ekteKjop(request.resource.data))
+        );
+
+      allow read: if erAdmin() || eier();
+      // Bare Vimzo kan frigi en logo til kunden – den faktureres da med
+      // nettsiden. Admin rører ikke noe annet i designet.
+      allow update: if erAdmin()
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['frigitt', 'oppdatert'])
+        && request.resource.data.frigitt is bool;
+      // Kjøpte design blir stående – de er kvitteringen for hva som ble levert.
+      allow delete: if erAdmin() || (eier() && resource.data.bestillingId == null && resource.data.get('frigitt', false) != true);
     }
 
     // Alt annet er stengt.

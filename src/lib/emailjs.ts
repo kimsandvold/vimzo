@@ -79,6 +79,20 @@ export async function sendHenvendelse(henvendelse: Henvendelse): Promise<void> {
 }
 
 /**
+ * Send en bekreftelse til kunden alene – brukt som ordrebekreftelse fra
+ * logoverktøyet. Bruker bekreftelsesmalen; er den ikke satt opp, skjer
+ * ingenting (bestillingen står uansett på kundens konto og i /admin).
+ */
+export async function bekreftTilKunde(henvendelse: Henvendelse): Promise<void> {
+  if (!emailjsKlar || !BEKREFTELSE) return
+  try {
+    await send(BEKREFTELSE, henvendelse)
+  } catch (feil) {
+    console.error('Bekreftelsen til kunden ble ikke sendt:', feil)
+  }
+}
+
+/**
  * Leser et skjema til rene strenger: trimmet, og tomme felt som ''. Et navn
  * som bare består av mellomrom regnes som tomt – `required` alene slipper det
  * gjennom.

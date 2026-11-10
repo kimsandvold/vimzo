@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import styled, { css } from 'styled-components'
 import type { User } from 'firebase/auth'
 import { Kontekst, useAdmin } from './kontekst'
+import Logo from '../../shared/Logo'
 import { useSEO } from '../../../hooks/useSEO'
 import { firebaseKlar, hentAuth } from '../../../lib/firebase'
 import { status as statusinfo, type Status, type Statusinfo } from '../../../data/saker'
@@ -23,7 +24,7 @@ export function AdminRamme({ tittel, children }: { tittel: string; children: Rea
       seoTittel={`${tittel} – Vimzo admin`}
       merke="Vimzo admin"
       ingress="Henvendelser, tilbud og kunder. Bare for administrator."
-      hjem={{ til: '/admin', tekst: 'admin' }}
+      hjem={{ til: '/admin', tekst: 'Admin' }}
     >
       {children}
     </KontoRamme>
@@ -45,6 +46,7 @@ export function KontoRamme({
   merke,
   ingress,
   hjem,
+  lenker = [],
   tillatRegistrering = false,
   children,
 }: {
@@ -52,6 +54,8 @@ export function KontoRamme({
   merke: string
   ingress: string
   hjem: { til: string; tekst: string }
+  /** Ekstra lenker i toppstripa, f.eks. «Lag logo» på Min side. */
+  lenker?: { til: string; tekst: string }[]
   tillatRegistrering?: boolean
   children: ReactNode
 }) {
@@ -192,10 +196,13 @@ export function KontoRamme({
     return (
       <Midtstilt>
         <Boks>
+          <Logolenke to="/" aria-label="Vimzo – til forsiden">
+            <Logo />
+          </Logolenke>
           <Merke>{merke}</Merke>
           <h1>{modus === 'ny' ? 'Lag konto' : 'Logg inn'}</h1>
           <p>{ingress}</p>
-          <Knapp $hoved onClick={loggInn} style={{ width: '100%' }}>
+          <Knapp onClick={loggInn} style={{ width: '100%' }}>
             <GoogleLogo /> Logg inn med Google
           </Knapp>
 
@@ -223,7 +230,7 @@ export function KontoRamme({
                 required
               />
             </Felt>
-            <Knapp type="submit" style={{ width: '100%' }}>
+            <Knapp type="submit" $hoved style={{ width: '100%' }}>
               {modus === 'ny' ? 'Lag konto' : 'Logg inn'}
             </Knapp>
             {modus === 'inn' && (
@@ -265,13 +272,24 @@ export function KontoRamme({
     <Kontekst.Provider value={{ bruker, loggUt }}>
       <Side>
         <Topp>
-          <Link to={hjem.til}>
-            <strong>Vimzo</strong> {hjem.tekst}
-          </Link>
-          <span>
-            <Dempet>{bruker.email}</Dempet>
+          <Venstre>
+            <Link to="/" aria-label="Vimzo – til forsiden">
+              <Logo />
+            </Link>
+            <Skillelinje aria-hidden="true" />
+            <Link to={hjem.til} className="hjem">
+              {hjem.tekst}
+            </Link>
+          </Venstre>
+          <Hoyre>
+            {lenker.map((l) => (
+              <Link key={l.til} to={l.til} className="lenke">
+                {l.tekst}
+              </Link>
+            ))}
+            <Konto title={bruker.email ?? ''}>{bruker.email}</Konto>
             <Lenkeknapp onClick={loggUt}>Logg ut</Lenkeknapp>
-          </span>
+          </Hoyre>
         </Topp>
         <Innhold>{children}</Innhold>
       </Side>
@@ -372,8 +390,8 @@ const Pille = styled.span<{ $tone: Statusinfo['tone'] }>`
   display: inline-block;
   padding: 0.2rem 0.6rem;
   border-radius: ${({ theme }) => theme.borderRadius.pill};
-  font-size: 0.75rem;
-  font-weight: 650;
+  font-size: var(--fs-micro);
+  font-weight: 600;
   white-space: nowrap;
   ${({ $tone }) => TONER[$tone]}
 `
@@ -406,27 +424,79 @@ const Topp = styled.header`
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  padding: 0.85rem clamp(1rem, 3vw, 2rem);
+  height: 64px;
+  padding: 0 clamp(1rem, 3vw, 2rem);
   border-bottom: 1px solid ${({ theme }) => theme.colors.border};
-  background: ${({ theme }) => theme.colors.surface};
+  background: rgba(255, 255, 255, 0.86);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  backdrop-filter: saturate(180%) blur(20px);
 
   a {
     color: inherit;
     text-decoration: none;
   }
+`
 
-  > span {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    font-size: 0.875rem;
+const Venstre = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  min-width: 0;
+
+  .hjem {
+    font-size: var(--fs-body);
+    font-weight: 500;
+    white-space: nowrap;
+  }
+`
+
+const Skillelinje = styled.span`
+  width: 1px;
+  height: 22px;
+  background: ${({ theme }) => theme.colors.border};
+`
+
+const Hoyre = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  font-size: var(--fs-small);
+
+  .lenke {
+    font-weight: 500;
+    color: ${({ theme }) => theme.colors.inkMuted};
+
+    &:hover {
+      color: ${({ theme }) => theme.colors.ink};
+    }
   }
 
   @media (max-width: ${({ theme }) => theme.breakpoints.smallMobile}) {
-    > span > span {
+    gap: 0.9rem;
+
+    .lenke {
       display: none;
     }
   }
+`
+
+/** E-postadressen – kuttes heller enn å skyve «Logg ut» ut av skjermen. */
+const Konto = styled.span`
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: ${({ theme }) => theme.colors.inkSubtle};
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    display: none;
+  }
+`
+
+const Logolenke = styled(Link)`
+  display: inline-flex;
+  margin-bottom: 1.75rem;
+  text-decoration: none;
 `
 
 export const Innhold = styled.main`
@@ -453,12 +523,12 @@ export const Boks = styled.div`
 
   h1 {
     margin: 0 0 0.5rem;
-    font-size: 1.5rem;
+    font-size: var(--fs-title);
   }
 
   p {
     margin: 0 0 1.5rem;
-    font-size: 0.9375rem;
+    font-size: var(--fs-body);
     line-height: 1.55;
     color: ${({ theme }) => theme.colors.inkMuted};
   }
@@ -466,8 +536,8 @@ export const Boks = styled.div`
 
 const Merke = styled.p`
   margin: 0 0 0.5rem !important;
-  font-size: 0.75rem !important;
-  font-weight: 650;
+  font-size: var(--fs-micro) !important;
+  font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: ${({ theme }) => theme.colors.inkSubtle} !important;
@@ -483,7 +553,7 @@ export const Feil = styled.p`
   border-radius: ${({ theme }) => theme.borderRadius.small};
   background: ${({ theme }) => theme.colors.errorSoft};
   color: ${({ theme }) => theme.colors.error} !important;
-  font-size: 0.875rem;
+  font-size: var(--fs-small);
 `
 
 export const Knapp = styled.button<{ $hoved?: boolean; $fare?: boolean }>`
@@ -491,20 +561,21 @@ export const Knapp = styled.button<{ $hoved?: boolean; $fare?: boolean }>`
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  min-height: 40px;
-  padding: 0 1rem;
-  border: 1px solid ${({ theme }) => theme.colors.borderStrong};
-  border-radius: ${({ theme }) => theme.borderRadius.small};
-  background: ${({ theme }) => theme.colors.surface};
+  min-height: 44px;
+  padding: 0 1.25rem;
+  border: 0;
+  border-radius: ${({ theme }) => theme.borderRadius.pill};
+  background: ${({ theme }) => theme.colors.sunken};
   color: ${({ theme }) => theme.colors.ink};
   font-family: inherit;
-  font-size: 0.875rem;
-  font-weight: 600;
+  font-size: var(--fs-small);
+  font-weight: 500;
   text-decoration: none;
   cursor: pointer;
+  transition: background ${({ theme }) => theme.transitions.default};
 
   &:hover:not(:disabled) {
-    border-color: ${({ theme }) => theme.colors.ink};
+    background: ${({ theme }) => theme.colors.border};
   }
 
   &:disabled {
@@ -515,23 +586,23 @@ export const Knapp = styled.button<{ $hoved?: boolean; $fare?: boolean }>`
   ${({ $hoved, theme }) =>
     $hoved &&
     css`
-      border-color: ${theme.colors.ink};
-      background: ${theme.colors.ink};
-      color: ${theme.colors.inkInverted};
+      background: ${theme.colors.accentVivid};
+      color: ${theme.colors.accentOn};
 
       &:hover:not(:disabled) {
-        background: ${theme.colors.neutral[800]};
+        background: ${theme.colors.accentVividHover};
       }
     `}
 
   ${({ $fare, theme }) =>
     $fare &&
     css`
-      border-color: ${theme.colors.errorSoft};
+      background: ${theme.colors.errorSoft};
       color: ${theme.colors.error};
 
       &:hover:not(:disabled) {
-        border-color: ${theme.colors.error};
+        background: ${theme.colors.errorSoft};
+        box-shadow: inset 0 0 0 1px ${theme.colors.error};
       }
     `}
 `
@@ -557,8 +628,8 @@ export const Panel = styled.section`
 
   > h2 {
     margin: 0 0 1rem;
-    font-size: 0.75rem;
-    font-weight: 650;
+    font-size: var(--fs-micro);
+    font-weight: 600;
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: ${({ theme }) => theme.colors.inkSubtle};
@@ -568,27 +639,33 @@ export const Panel = styled.section`
 export const Felt = styled.label`
   display: flex;
   flex-direction: column;
-  gap: 0.3rem;
-  font-size: 0.8125rem;
-  font-weight: 600;
+  gap: 0.4rem;
+  font-size: var(--fs-small);
+  font-weight: 500;
   color: ${({ theme }) => theme.colors.inkMuted};
 
+  /* Samme felt som kalkulatoren på forsiden: fylt grått, kant først når
+     det har fokus. */
   input,
   select,
   textarea {
     width: 100%;
-    padding: 0.55rem 0.7rem;
-    border: 1px solid ${({ theme }) => theme.colors.borderStrong};
+    min-height: 48px;
+    padding: 0.65rem 0.9rem;
+    border: 1.5px solid transparent;
     border-radius: ${({ theme }) => theme.borderRadius.small};
-    background: ${({ theme }) => theme.colors.surface};
+    background: ${({ theme }) => theme.colors.sunken};
     font-family: inherit;
-    font-size: 0.9375rem;
+    font-size: var(--fs-body);
     font-weight: 400;
     color: ${({ theme }) => theme.colors.ink};
+    transition: all ${({ theme }) => theme.transitions.default};
 
     &:focus {
-      outline: 2px solid ${({ theme }) => theme.colors.focus};
-      outline-offset: 1px;
+      outline: none;
+      border-color: ${({ theme }) => theme.colors.accentVivid};
+      background: ${({ theme }) => theme.colors.surface};
+      box-shadow: 0 0 0 4px ${({ theme }) => theme.colors.accentSoft};
     }
   }
 
@@ -603,7 +680,7 @@ const Eller = styled.p`
   align-items: center;
   gap: 0.75rem;
   margin: 1.25rem 0 !important;
-  font-size: 0.8125rem !important;
+  font-size: var(--fs-small) !important;
   color: ${({ theme }) => theme.colors.inkSubtle} !important;
 
   &::before,
@@ -617,7 +694,7 @@ const Eller = styled.p`
 
 const Bytt = styled.p`
   margin: 1.25rem 0 0 !important;
-  font-size: 0.875rem !important;
+  font-size: var(--fs-small) !important;
 `
 
 const Passordskjema = styled.form`
@@ -628,7 +705,7 @@ const Passordskjema = styled.form`
 
   > button:last-child {
     align-self: flex-start;
-    font-size: 0.8125rem;
+    font-size: var(--fs-small);
   }
 `
 
@@ -638,5 +715,5 @@ export const Info = styled.p`
   border-radius: ${({ theme }) => theme.borderRadius.small};
   background: ${({ theme }) => theme.colors.successSoft};
   color: ${({ theme }) => theme.colors.success} !important;
-  font-size: 0.875rem;
+  font-size: var(--fs-small);
 `

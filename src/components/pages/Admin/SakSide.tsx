@@ -18,6 +18,7 @@ import {
 import { KILDER, STATUSER, driftAktiv, status as statusinfo, type Sak, type Status } from '../../../data/saker'
 import { drift as standardDrift, formaterRamme } from '../../../data/pakker'
 import { GodtattBanner, KundetilgangPanel, MeldingerPanel } from './Kundetilgang'
+import LogoISak from './LogoISak'
 import { useMarkerLest, useProsjekt, useSynk } from './kundehooks'
 
 export default function SakSide() {
@@ -86,6 +87,7 @@ function Sakvisning({ sak }: { sak: Sak }) {
           <Kontakt sak={sak} />
           <KundetilgangPanel sak={sak} prosjekt={prosjekt} />
           <Henvendelsen sak={sak} />
+          <LogoISak sak={sak} />
           <Okonomi sak={sak} />
           <DriftPanel sak={sak} />
           <Slett sak={sak} />
@@ -534,7 +536,7 @@ function Slett({ sak }: { sak: Sak }) {
 const Tilbake = styled(Link)`
   display: inline-block;
   margin-bottom: 1rem;
-  font-size: 0.875rem;
+  font-size: var(--fs-small);
   font-weight: 600;
   color: ${({ theme }) => theme.colors.accent};
 `
@@ -548,7 +550,7 @@ const Hode = styled.div`
 
   h1 {
     margin: 0 0 0.25rem;
-    font-size: 1.75rem;
+    font-size: var(--fs-title);
   }
 `
 
@@ -616,7 +618,7 @@ const Historikk = styled.ol`
     align-items: center;
     gap: 0.6rem;
     padding: 0.35rem 0;
-    font-size: 0.875rem;
+    font-size: var(--fs-small);
   }
 
   li span:nth-child(2) {
@@ -625,7 +627,7 @@ const Historikk = styled.ol`
   }
 
   button {
-    font-size: 0.75rem;
+    font-size: var(--fs-micro);
   }
 `
 
@@ -641,13 +643,13 @@ const NotatListe = styled.ul`
 
   p {
     margin: 0;
-    font-size: 0.9375rem;
+    font-size: var(--fs-body);
     line-height: 1.5;
     white-space: pre-wrap;
   }
 
   span {
-    font-size: 0.75rem;
+    font-size: var(--fs-micro);
     color: ${({ theme }) => theme.colors.inkSubtle};
   }
 `
@@ -657,7 +659,7 @@ const Fakta = styled.dl`
   grid-template-columns: auto minmax(0, 1fr);
   gap: 0.4rem 1rem;
   margin: 0;
-  font-size: 0.9375rem;
+  font-size: var(--fs-body);
 
   dt {
     color: ${({ theme }) => theme.colors.inkSubtle};
@@ -678,7 +680,7 @@ const Sitat = styled.p`
   padding: 0.8rem 1rem;
   border-left: 3px solid ${({ theme }) => theme.colors.borderStrong};
   background: ${({ theme }) => theme.colors.paper};
-  font-size: 0.9375rem;
+  font-size: var(--fs-body);
   line-height: 1.55;
   white-space: pre-wrap;
 `
@@ -689,7 +691,7 @@ const Brief = styled.pre`
   border-radius: ${({ theme }) => theme.borderRadius.small};
   background: ${({ theme }) => theme.colors.paper};
   font-family: inherit;
-  font-size: 0.8125rem;
+  font-size: var(--fs-small);
   line-height: 1.55;
   white-space: pre-wrap;
 `

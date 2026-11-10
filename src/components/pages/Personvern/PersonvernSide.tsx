@@ -123,6 +123,19 @@ export default function PersonvernSide() {
               </p>
             )}
 
+            <h2>Konto og logoverktøyet</h2>
+            <p>
+              Logger du inn – på Min side eller i <Link to="/logo">logoverktøyet</Link> – lagres
+              e-postadressen din hos Google Firebase, sammen med logoene du lager, slik at du finner dem
+              igjen. Bestiller du en logo, lagrer vi også firmanavn, organisasjonsnummer, fakturaadresse og
+              hvilke <Link to="/vilkar/logo">kjøpsvilkår</Link> du godtok, fordi vi trenger det for å
+              fakturere og må oppbevare det etter regnskapsloven. Du kan slette utkast selv på Min side.
+            </p>
+            <p>
+              Søker du etter symboler i logoverktøyet, sendes søkeordet til Iconify (api.iconify.design),
+              en åpen tjeneste for ikoner. Ingenting annet om deg følger med.
+            </p>
+
             <h2>Lagringstid</h2>
             <p>
               Henvendelser som ikke fører til et oppdrag, slettes innen tolv måneder. Blir det et
@@ -169,7 +182,7 @@ const Tekst = styled.div`
   max-width: ${({ theme }) => theme.spacing.proseMax};
 
   h2 {
-    font-size: ${({ theme }) => theme.fontSizes.xl};
+    font-size: var(--fs-title);
     margin-bottom: 0.9rem;
   }
 
@@ -178,7 +191,7 @@ const Tekst = styled.div`
   }
 
   p {
-    font-size: ${({ theme }) => theme.fontSizes.md};
+    font-size: var(--fs-body);
     line-height: 1.75;
     margin-bottom: 1.1rem;
   }
@@ -188,7 +201,7 @@ const Tekst = styled.div`
   }
 
   li {
-    font-size: ${({ theme }) => theme.fontSizes.md};
+    font-size: var(--fs-body);
     line-height: 1.7;
     margin-bottom: 0.5rem;
     padding-left: 0.35rem;
@@ -208,7 +221,7 @@ const Oppdatert = styled.p`
   padding-top: 1.5rem;
   border-top: 1px solid ${({ theme }) => theme.colors.border};
   font-family: ${({ theme }) => theme.fonts.mono};
-  font-size: 0.8125rem !important;
+  font-size: var(--fs-small) !important;
   color: ${({ theme }) => theme.colors.inkSubtle};
 `
 

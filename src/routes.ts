@@ -19,12 +19,16 @@ export const LAZY_RUTER: Array<{ path: string; Side: LazyPage }> = [
   { path: '/arrangement', Side: lazyPage(() => import('./components/pages/Arrangement/ArrangementSide')) },
   { path: '/arrangement/eksempel', Side: lazyPage(() => import('./components/pages/Arrangement/EksempelSide')) },
   { path: '/logo', Side: lazyPage(() => import('./components/pages/Logo/LogoSide')) },
-  { path: '/om', Side: lazyPage(() => import('./components/pages/Om/OmSide')) },
+  // Profilboka som ren side – ingen meny eller fot (se Ramme i App.tsx).
+  { path: '/logo/profil', Side: lazyPage(() => import('./components/pages/Logo/ProfilSide')) },
+  { path: '/logo/profil/:id', Side: lazyPage(() => import('./components/pages/Logo/ProfilSide')) },
   { path: '/kontakt', Side: lazyPage(() => import('./components/pages/Kontakt/KontaktSide')) },
   // Kundenes Min side og admin: ikke i sitemap, ikke forhåndsrendret, noindex.
   { path: '/min-side', Side: lazyPage(() => import('./components/pages/MinSide/MinSide')) },
   { path: '/admin', Side: lazyPage(() => import('./components/pages/Admin/AdminSide')) },
   { path: '/admin/ny', Side: lazyPage(() => import('./components/pages/Admin/NySak')) },
+  { path: '/admin/logo', Side: lazyPage(() => import('./components/pages/Admin/Logobestillinger')) },
   { path: '/admin/sak/:id', Side: lazyPage(() => import('./components/pages/Admin/SakSide')) },
   { path: '/personvern', Side: lazyPage(() => import('./components/pages/Personvern/PersonvernSide')) },
+  { path: '/vilkar/logo', Side: lazyPage(() => import('./components/pages/Vilkar/LogoVilkarSide')) },
 ]

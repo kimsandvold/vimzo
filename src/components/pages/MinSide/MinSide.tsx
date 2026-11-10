@@ -8,6 +8,8 @@ import { godtaTilbud, lyttMineProsjekter } from '../../../lib/prosjekter'
 import { varsleVimzo } from '../../../lib/emailjs'
 import { KUNDESTATUS, STEG, type Prosjekt } from '../../../data/prosjekt'
 import { driftAktiv } from '../../../data/saker'
+import MineLogoer from './MineLogoer'
+import { Link } from 'react-router-dom'
 
 /**
  * Min side – kundens eget område.
@@ -22,12 +24,36 @@ export default function MinSide() {
     <KontoRamme
       seoTittel="Min side – Vimzo"
       merke="Min side"
-      ingress="Følg prosjektet ditt hos Vimzo: status, tilbud og meldinger. Bruk e-postadressen du oppga da du tok kontakt."
-      hjem={{ til: '/min-side', tekst: 'min side' }}
+      ingress="Logoene dine og nettsideprosjektet ditt hos Vimzo, samlet på ett sted."
+      hjem={{ til: '/min-side', tekst: 'Min side' }}
+      lenker={[{ til: '/logo', tekst: 'Lag logo' }]}
       tillatRegistrering
     >
-      <MineProsjekter />
+      <Oversikt />
     </KontoRamme>
+  )
+}
+
+/**
+ * Oversikten: en hilsen, så logoene, så nettsiden. Logoene står først fordi
+ * de fleste som har konto her, har den for logoverktøyets skyld – et
+ * nettsideprosjekt får man først etter en prat.
+ */
+function Oversikt() {
+  const { bruker } = useKonto()
+  const fornavn = (bruker.displayName || '').trim().split(/\s+/)[0]
+  return (
+    <>
+      <Velkommen>
+        <h1>{fornavn ? `Hei, ${fornavn}` : 'Min side'}</h1>
+        <p>Logoene dine og prosjektet ditt hos Vimzo, samlet på ett sted.</p>
+      </Velkommen>
+      <MineLogoer />
+      <section aria-labelledby="nettsiden">
+        <Seksjonstittel id="nettsiden">Nettsiden din</Seksjonstittel>
+        <MineProsjekter />
+      </section>
+    </>
   )
 }
 
@@ -53,15 +79,21 @@ function MineProsjekter() {
   if (prosjekter.length === 0)
     return (
       <Tomt>
-        <h1>Ingen prosjekter her ennå</h1>
-        <p>
-          Vi finner ingen prosjekter på <strong>{bruker.email}</strong>. Du får tilgang når vi har
-          snakket sammen, og da på den e-postadressen du oppga.
-        </p>
-        <p>
-          Brukte du en annen adresse? <Lenkeknapp onClick={loggUt}>Logg ut</Lenkeknapp> og logg inn med
-          den.
-        </p>
+        <div>
+          <h3>Trenger bedriften en nettside?</h3>
+          <p>
+            Svar på noen raske spørsmål, så ser du hva den koster – før du snakker med noen. Når vi har
+            tatt en prat, følger du prosjektet her.
+          </p>
+          <Tomknapper>
+            <Hovedlenke to="/">Se hva den koster</Hovedlenke>
+            <Sekundarlenke to="/kontakt">Ta en prat</Sekundarlenke>
+          </Tomknapper>
+        </div>
+        <small>
+          Har du alt et prosjekt hos oss? Det vises på e-postadressen du oppga – du er logget inn som{' '}
+          <strong>{bruker.email}</strong>. <Lenkeknapp onClick={loggUt}>Bytt konto</Lenkeknapp>
+        </small>
       </Tomt>
     )
 
@@ -249,19 +281,93 @@ function Faktura({ prosjekt: p }: { prosjekt: Prosjekt }) {
 
 /* -------------------------------------------------------------------- stil */
 
-const Tomt = styled.div`
-  max-width: 560px;
+const Velkommen = styled.div`
+  margin: clamp(1rem, 3vw, 2rem) 0 clamp(2rem, 4vw, 3rem);
 
   h1 {
-    margin: 0 0 0.75rem;
-    font-size: 1.6rem;
+    margin: 0;
+    font-size: var(--fs-heading);
+    letter-spacing: var(--ls-heading);
+    line-height: 1.05;
   }
 
   p {
-    margin: 0 0 0.75rem;
+    margin: 0.6rem 0 0;
+    font-size: var(--fs-lead);
+    color: ${({ theme }) => theme.colors.inkMuted};
+  }
+`
+
+const Seksjonstittel = styled.h2`
+  margin: 0 0 1rem;
+  font-size: var(--fs-title);
+  letter-spacing: var(--ls-title);
+`
+
+/** Tom tilstand for nettsiden: en invitasjon, ikke en feilmelding. */
+const Tomt = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: clamp(1.5rem, 4vw, 2.5rem);
+  border-radius: 20px;
+  background: ${({ theme }) => theme.colors.sunken};
+
+  h3 {
+    margin: 0 0 0.5rem;
+    font-size: var(--fs-lead);
+    letter-spacing: var(--ls-lead);
+  }
+
+  p {
+    max-width: 52ch;
+    margin: 0;
     line-height: 1.6;
     color: ${({ theme }) => theme.colors.inkMuted};
   }
+
+  small {
+    padding-top: 1.25rem;
+    border-top: 1px solid ${({ theme }) => theme.colors.border};
+    font-size: var(--fs-small);
+    line-height: 1.6;
+    color: ${({ theme }) => theme.colors.inkSubtle};
+  }
+`
+
+const Tomknapper = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1.25rem;
+`
+
+const Hovedlenke = styled(Link)`
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 1.25rem;
+  border-radius: 999px;
+  background: ${({ theme }) => theme.colors.accentVivid};
+  color: ${({ theme }) => theme.colors.accentOn};
+  font-weight: 500;
+  text-decoration: none;
+
+  &:hover {
+    background: ${({ theme }) => theme.colors.accentVividHover};
+  }
+`
+
+const Sekundarlenke = styled(Link)`
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 1.25rem;
+  border-radius: 999px;
+  background: ${({ theme }) => theme.colors.surface};
+  color: ${({ theme }) => theme.colors.ink};
+  font-weight: 500;
+  text-decoration: none;
 `
 
 const Velger = styled.div`
@@ -278,7 +384,7 @@ const Valg = styled.button<{ $valgt: boolean }>`
   background: ${({ theme, $valgt }) => ($valgt ? theme.colors.ink : theme.colors.surface)};
   color: ${({ theme, $valgt }) => ($valgt ? theme.colors.inkInverted : theme.colors.ink)};
   font-family: inherit;
-  font-size: 0.875rem;
+  font-size: var(--fs-small);
   font-weight: 600;
   cursor: pointer;
 `
@@ -292,7 +398,7 @@ const Hode = styled.div`
 
   h1 {
     margin: 0;
-    font-size: 1.75rem;
+    font-size: var(--fs-title);
   }
 `
 
@@ -301,8 +407,8 @@ const Status = styled.span<{ $avsluttet: boolean }>`
   border-radius: ${({ theme }) => theme.borderRadius.pill};
   background: ${({ theme, $avsluttet }) => ($avsluttet ? theme.colors.sunken : theme.colors.successSoft)};
   color: ${({ theme, $avsluttet }) => ($avsluttet ? theme.colors.inkSubtle : theme.colors.success)};
-  font-size: 0.8125rem;
-  font-weight: 650;
+  font-size: var(--fs-small);
+  font-weight: 600;
 `
 
 const Steg = styled.ol`
@@ -319,7 +425,7 @@ const Steg = styled.ol`
     gap: 0.4rem;
     padding-top: 0.6rem;
     border-top: 3px solid ${({ theme }) => theme.colors.border};
-    font-size: 0.8125rem;
+    font-size: var(--fs-small);
     font-weight: 600;
     color: ${({ theme }) => theme.colors.inkSubtle};
   }
@@ -332,7 +438,7 @@ const Steg = styled.ol`
     height: 22px;
     border-radius: 50%;
     background: ${({ theme }) => theme.colors.sunken};
-    font-size: 0.75rem;
+    font-size: var(--fs-micro);
   }
 
   li[data-tilstand='ferdig'] {
@@ -357,7 +463,7 @@ const Steg = styled.ol`
 
   @media (max-width: 560px) {
     li {
-      font-size: 0.6875rem;
+      font-size: var(--fs-micro);
     }
   }
 `
@@ -381,12 +487,12 @@ const Spalte = styled.div`
 
 const Belop = styled.p`
   margin: 0;
-  font-size: 1.6rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
+  font-size: var(--fs-title);
+  font-weight: 600;
+  letter-spacing: var(--ls-title);
 
   small {
-    font-size: 0.875rem;
+    font-size: var(--fs-small);
     font-weight: 500;
     color: ${({ theme }) => theme.colors.inkSubtle};
   }
@@ -394,7 +500,7 @@ const Belop = styled.p`
 
 const Beskrivelse = styled.p`
   margin: 1rem 0 0;
-  font-size: 0.9375rem;
+  font-size: var(--fs-body);
   line-height: 1.6;
   white-space: pre-wrap;
   color: ${({ theme }) => theme.colors.inkMuted};
@@ -406,7 +512,7 @@ const Godtatt = styled.p`
   border-radius: ${({ theme }) => theme.borderRadius.small};
   background: ${({ theme }) => theme.colors.successSoft};
   color: ${({ theme }) => theme.colors.success};
-  font-size: 0.9375rem;
+  font-size: var(--fs-body);
   font-weight: 600;
 `
 
@@ -415,7 +521,7 @@ const Fakta = styled.dl`
   grid-template-columns: auto minmax(0, 1fr);
   gap: 0.45rem 1rem;
   margin: 0;
-  font-size: 0.9375rem;
+  font-size: var(--fs-body);
 
   dt {
     color: ${({ theme }) => theme.colors.inkSubtle};
@@ -437,7 +543,7 @@ const Tidslinje = styled.ol`
     gap: 1rem;
     padding: 0.5rem 0;
     border-bottom: 1px solid ${({ theme }) => theme.colors.border};
-    font-size: 0.9375rem;
+    font-size: var(--fs-body);
   }
 
   li:last-child {

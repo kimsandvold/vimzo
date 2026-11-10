@@ -5,6 +5,7 @@ import { AdminRamme, Dempet, IngenTilgang, Knapp, StatusMerke } from './felles'
 import { dato, idag, kr } from './format'
 import { lyttSaker } from '../../../lib/henvendelser'
 import { lyttAlleProsjekter } from '../../../lib/prosjekter'
+import { lyttLogobestillinger } from '../../../lib/logobestillinger'
 import type { Prosjekt } from '../../../data/prosjekt'
 import { KILDER, STATUSER, driftAktiv, status as statusinfo, type Sak, type Status } from '../../../data/saker'
 import { formaterRamme } from '../../../data/pakker'
@@ -31,6 +32,8 @@ function Oversikt() {
   const [prosjekter, setProsjekter] = useState<Map<string, Prosjekt>>(new Map())
   const [filter, setFilter] = useState<Filter>('aktive')
   const [sok, setSok] = useState('')
+  /** Logobestillinger som venter på faktura – vises på knappen i hodet. */
+  const [nyeLogo, setNyeLogo] = useState(0)
 
   useEffect(() => {
     let stopp = () => {}
@@ -48,6 +51,19 @@ function Oversikt() {
     let aktiv = true
     lyttAlleProsjekter(
       (liste) => setProsjekter(new Map(liste.map((p) => [p.id, p]))),
+      () => {},
+    ).then((s) => (aktiv ? (stopp = s) : s()))
+    return () => {
+      aktiv = false
+      stopp()
+    }
+  }, [])
+
+  useEffect(() => {
+    let stopp = () => {}
+    let aktiv = true
+    lyttLogobestillinger(
+      (liste) => setNyeLogo(liste.filter((b) => b.status === 'ny' || b.status === 'levert').length),
       () => {},
     ).then((s) => (aktiv ? (stopp = s) : s()))
     return () => {
@@ -123,9 +139,14 @@ function Oversikt() {
     <>
       <Hode>
         <h1>Saker</h1>
-        <Knapp as={Link} to="/admin/ny" $hoved>
-          + Ny sak
-        </Knapp>
+        <HodeKnapper>
+          <Knapp as={Link} to="/admin/logo">
+            Logobestillinger{nyeLogo > 0 && <Teller>{nyeLogo}</Teller>}
+          </Knapp>
+          <Knapp as={Link} to="/admin/ny" $hoved>
+            + Ny sak
+          </Knapp>
+        </HodeKnapper>
       </Hode>
 
       <Tall>
@@ -227,8 +248,30 @@ const Hode = styled.div`
 
   h1 {
     margin: 0;
-    font-size: 1.75rem;
+    font-size: var(--fs-title);
   }
+`
+
+const HodeKnapper = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+`
+
+/** Antall nye logobestillinger, som et lite merke på knappen. */
+const Teller = styled.span`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.4rem;
+  height: 1.4rem;
+  margin-left: 0.5rem;
+  padding: 0 0.35rem;
+  border-radius: 999px;
+  background: ${({ theme }) => theme.colors.accentVivid};
+  color: ${({ theme }) => theme.colors.accentOn};
+  font-size: var(--fs-micro);
+  font-weight: 600;
 `
 
 const Tall = styled.div`
@@ -259,20 +302,20 @@ const Tallkort = styled.button<{ $fremhev?: boolean }>`
   cursor: pointer;
 
   span {
-    font-size: 0.75rem;
+    font-size: var(--fs-micro);
     font-weight: 600;
     color: ${({ theme }) => theme.colors.inkSubtle};
   }
 
   strong {
-    font-size: 1.5rem;
-    font-weight: 700;
-    letter-spacing: -0.02em;
+    font-size: var(--fs-title);
+    font-weight: 600;
+    letter-spacing: var(--ls-title);
     color: ${({ theme }) => theme.colors.ink};
   }
 
   small {
-    font-size: 0.8125rem;
+    font-size: var(--fs-small);
     color: ${({ theme }) => theme.colors.inkMuted};
   }
 
@@ -302,7 +345,7 @@ const Filterknapp = styled.button<{ $valgt: boolean }>`
   background: ${({ theme, $valgt }) => ($valgt ? theme.colors.ink : theme.colors.surface)};
   color: ${({ theme, $valgt }) => ($valgt ? theme.colors.inkInverted : theme.colors.inkMuted)};
   font-family: inherit;
-  font-size: 0.8125rem;
+  font-size: var(--fs-small);
   font-weight: 600;
   cursor: pointer;
 
@@ -328,7 +371,7 @@ const Sok = styled.input`
   border-radius: ${({ theme }) => theme.borderRadius.small};
   background: ${({ theme }) => theme.colors.surface};
   font-family: inherit;
-  font-size: 0.9375rem;
+  font-size: var(--fs-body);
 `
 
 const Liste = styled.ul`
@@ -377,7 +420,7 @@ const Hvem = styled.div`
   }
 
   span {
-    font-size: 0.8125rem;
+    font-size: var(--fs-small);
     color: ${({ theme }) => theme.colors.inkSubtle};
   }
 `
@@ -385,7 +428,7 @@ const Hvem = styled.div`
 const Hva = styled.div`
   display: flex;
   flex-direction: column;
-  font-size: 0.875rem;
+  font-size: var(--fs-small);
 
   small {
     color: ${({ theme }) => theme.colors.inkSubtle};
@@ -395,12 +438,12 @@ const Hva = styled.div`
 const Naar = styled.div<{ $forfalt: boolean }>`
   display: flex;
   flex-direction: column;
-  font-size: 0.875rem;
-  font-weight: ${({ $forfalt }) => ($forfalt ? 700 : 400)};
+  font-size: var(--fs-small);
+  font-weight: ${({ $forfalt }) => ($forfalt ? 600 : 400)};
   color: ${({ theme, $forfalt }) => ($forfalt ? theme.colors.error : theme.colors.ink)};
 
   small {
-    font-size: 0.75rem;
+    font-size: var(--fs-micro);
     font-weight: 500;
     color: ${({ theme }) => theme.colors.inkSubtle};
   }
@@ -426,7 +469,7 @@ const Varsel = styled.span`
   border-radius: ${({ theme }) => theme.borderRadius.pill};
   background: ${({ theme }) => theme.colors.ink};
   color: ${({ theme }) => theme.colors.inkInverted};
-  font-size: 0.75rem;
-  font-weight: 650;
+  font-size: var(--fs-micro);
+  font-weight: 600;
   white-space: nowrap;
 `

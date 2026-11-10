@@ -92,14 +92,14 @@ const Smal = styled.div`
 
   h1 {
     margin: 0 0 1rem;
-    font-size: 1.75rem;
+    font-size: var(--fs-title);
   }
 `
 
 const Tilbake = styled(Link)`
   display: inline-block;
   margin-bottom: 1rem;
-  font-size: 0.875rem;
+  font-size: var(--fs-small);
   font-weight: 600;
   color: ${({ theme }) => theme.colors.accent};
 `
