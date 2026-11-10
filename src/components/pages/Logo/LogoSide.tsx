@@ -24,6 +24,7 @@ import { ApneProfil, ProfilMiniatyrer, Vannmerke } from './Profil'
 import Bestilling from './Bestilling'
 import { Bekreft, Innlogging } from './Innlogging'
 import { PRODUKTER, formaterKr, innloggingMulig, loggUt, serialiser, useBruker } from './kjop'
+import { OPPGRADERING } from '../../../data/logoprodukter'
 import {
   NETTSIDE,
   dekod,
@@ -334,7 +335,7 @@ function Verktoy({
         // Kjøpt i verktøyet, eller frigitt med nettsiden – begge gir rene filer.
         const kjop = kjopFraSky(d, data)
         if (kjop) setBestilling(kjop)
-        setSteg(sok.get('lastned') ? 5 : 3)
+        setSteg(sok.get('lastned') || sok.get('steg') === 'bestill' ? 5 : 3)
       })
       .catch((e) => console.error(e))
     return () => {
@@ -692,10 +693,16 @@ function Verktoy({
               </Hode>
               {kjopt && bestilling?.produkt === 'logo' && (
                 <Oppgrader>
-                  Logoen er din. Vil du ha hele profilen også – farger, skrift og maler?{' '}
-                  <button type="button" onClick={() => ga(5)}>
-                    Bestill {PRODUKTER.profil.navn.toLowerCase()}
-                  </button>
+                  Logoen er din. Vil du ha hele profilen også – profilbok, signatur og bilder til sosiale medier?{' '}
+                  {designId ? (
+                    <Link to={`/min-side/studio/${designId}?oppgrader=1`}>
+                      Oppgrader for {formaterKr(OPPGRADERING.pris)}
+                    </Link>
+                  ) : (
+                    <button type="button" onClick={() => ga(5)}>
+                      Bestill {PRODUKTER.profil.navn.toLowerCase()}
+                    </button>
+                  )}
                 </Oppgrader>
               )}
               <div data-vannmerke={kjopt && bestilling?.produkt === 'profil' ? 'av' : undefined}>
@@ -713,6 +720,7 @@ function Verktoy({
                   bruker={bruker}
                   bestilt={kjopt ? bestilling : null}
                   autoLastNed={sok.get('lastned') === '1'}
+                  designId={designId}
                   onBestilt={vedBestilt}
                 />
               )
@@ -2411,7 +2419,8 @@ const Oppgrader = styled.p`
   font-size: var(--fs-small);
   color: ${({ theme }) => theme.colors.accentInk};
 
-  button {
+  button,
+  a {
     padding: 0;
     border: 0;
     background: none;

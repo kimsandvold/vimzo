@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react'
+import { Link } from 'react-router-dom'
 import styled, { css } from 'styled-components'
 import Icon from '../../shared/Icon'
 import type { User } from 'firebase/auth'
@@ -25,6 +26,7 @@ export default function Bestilling({
   bestilt,
   onBestilt,
   autoLastNed = false,
+  designId = null,
 }: {
   design: Design
   innhold: Innhold
@@ -35,6 +37,8 @@ export default function Bestilling({
   onBestilt: (b: { id: string; produkt: ProduktId }) => void
   /** Fra Min side («Last ned igjen»): start nedlastingen med en gang. */
   autoLastNed?: boolean
+  /** Designet på Min side – gir lenken til signatur og SoMe etter kjøp av profilen. */
+  designId?: string | null
 }) {
   const [valgt, setValgt] = useState<ProduktId>(start)
   const [status, setStatus] = useState<'klar' | 'sender' | 'lager' | 'feil'>('klar')
@@ -106,6 +110,14 @@ export default function Bestilling({
     // eslint-disable-next-line react-hooks/exhaustive-deps -- én gang, når kjøpet er lastet
   }, [autoLastNed, bestilt])
 
+  // Profilen er kjøpt: neste steg er å ta den i bruk – signatur og SoMe.
+  const studio =
+    bestilt?.produkt === 'profil' && designId ? (
+      <Studiolenke to={`/min-side/studio/${designId}`}>
+        Lag e-postsignatur og bilder til sosiale medier <span aria-hidden="true">→</span>
+      </Studiolenke>
+    ) : null
+
   // Frigitt med nettsiden: ingen produktkort, ikke noe skjema, ingen vilkår –
   // bare filene. Fakturaen kommer med nettsiden.
   if (bestilt?.id === NETTSIDE) {
@@ -119,6 +131,7 @@ export default function Bestilling({
         <Send type="button" disabled={status === 'lager'} onClick={() => lagFiler(bestilt.id, bestilt.produkt)}>
           {status === 'lager' ? 'Lager filene …' : 'Last ned filene'}
         </Send>
+        {studio}
         {feil && <Feil role="alert">{feil}</Feil>}
       </Kvittering>
     )
@@ -135,6 +148,7 @@ export default function Bestilling({
         <Send type="button" disabled={status === 'lager'} onClick={() => lagFiler(bestilt.id, bestilt.produkt)}>
           {status === 'lager' ? 'Lager filene …' : 'Last ned igjen'}
         </Send>
+        {studio}
         <Info>
           Faktura sendes til {bruker.email} innen én virkedag. Bestilling {bestilt.id}.
         </Info>
@@ -560,6 +574,21 @@ const Kvittering = styled.div`
     margin: 0;
     font-size: var(--fs-body);
     color: ${({ theme }) => theme.colors.inkMuted};
+  }
+`
+
+const Studiolenke = styled(Link)`
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-height: 44px;
+  font-size: var(--fs-body);
+  font-weight: 600;
+  color: ${({ theme }) => theme.colors.accent};
+  text-decoration: none;
+
+  &:hover {
+    color: ${({ theme }) => theme.colors.accentHover};
   }
 `
 

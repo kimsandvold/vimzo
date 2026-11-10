@@ -6,7 +6,7 @@ rules_version = '2';
 // nettleseren er offentlig; uten disse reglene kunne hvem som helst lese
 // databasen.
 //
-// Fem samlinger:
+// Seks samlinger:
 //
 //  henvendelser/{id}  Den interne saken, med notater og alt. Bare admin.
 //                     Offentlige skjemaer kan OPPRETTE – aldri lese.
@@ -26,6 +26,9 @@ rules_version = '2';
 //                     (innlogget, riktig pris) og leser sine egne. Admin
 //                     flytter status: levert → fakturert → betalt. Filene
 //                     lastes ned med en gang, så ordren starter som levert.
+//
+//  signaturbilder/{id}  Logobildet i kundens e-postsignatur. Offentlig å
+//                     hente ett av, bare profileieren kan skrive.
 //
 // Legges inn med `firebase deploy --only firestore:rules`, eller i
 // Firebase-konsollen under Firestore → Regler.
@@ -126,16 +129,29 @@ service cloud.firestore {
     // bestille en logo til 1 krone. Kunden kan lese sine egne; resten er admin.
     match /logobestillinger/{id} {
       function riktigPris(d) {
-        return (d.produkt == 'logo' && d.pris == 490) || (d.produkt == 'profil' && d.pris == 990);
+        return (d.produkt == 'logo' && d.pris == 490)
+          || (d.produkt == 'profil' && d.pris == 990)
+          || (d.produkt == 'oppgradering' && d.pris == 500);
+      }
+
+      // En oppgradering må peke på en logo kjøpt alene, på samme konto. Andre
+      // bestillinger har ikke feltet.
+      function gyldigOppgradering(d) {
+        return d.produkt == 'oppgradering'
+          ? (d.oppgraderer is string
+            && get(/databases/$(database)/documents/logobestillinger/$(d.oppgraderer)).data.uid == request.auth.uid
+            && get(/databases/$(database)/documents/logobestillinger/$(d.oppgraderer)).data.produkt == 'logo')
+          : !('oppgraderer' in d);
       }
 
       function gyldigBestilling() {
         let d = request.resource.data;
         return innlogget()
-          && d.keys().hasOnly(['uid', 'epost', 'produkt', 'pris', 'bedrift', 'orgnr', 'adresse', 'postnr', 'poststed', 'navn', 'telefon', 'merknad', 'design', 'vilkar', 'status', 'opprettet'])
+          && d.keys().hasOnly(['uid', 'epost', 'produkt', 'pris', 'bedrift', 'orgnr', 'adresse', 'postnr', 'poststed', 'navn', 'telefon', 'merknad', 'design', 'vilkar', 'status', 'opprettet', 'oppgraderer'])
           && d.uid == request.auth.uid
           && d.epost == minEpost()
           && riktigPris(d)
+          && gyldigOppgradering(d)
           && d.status == 'levert'
           && d.opprettet == request.time
           && tekst('bedrift', 200) && d.bedrift.size() > 0
@@ -171,9 +187,11 @@ service cloud.firestore {
           && d.oppdatert == request.time;
       }
 
+      // Samme produkt – eller en oppgradering, som gjør logoen til en profil.
       function ekteKjop(d) {
         let b = get(/databases/$(database)/documents/logobestillinger/$(d.bestillingId)).data;
-        return b.uid == request.auth.uid && b.produkt == d.produkt;
+        return b.uid == request.auth.uid
+          && (b.produkt == d.produkt || (b.produkt == 'oppgradering' && d.produkt == 'profil'));
       }
 
       allow create: if innlogget()
@@ -205,6 +223,31 @@ service cloud.firestore {
         && request.resource.data.frigitt is bool;
       // Kjøpte design blir stående – de er kvitteringen for hva som ble levert.
       allow delete: if erAdmin() || (eier() && resource.data.bestillingId == null && resource.data.get('frigitt', false) != true);
+    }
+
+    // Logobildene i e-postsignaturen, under samme id som logoen. De står i
+    // hver e-post kunden sender, så hvem som helst kan hente ETT (api/signatur
+    // på vimzo.no gjør det) – men ingen kan liste dem. Bare eieren av en
+    // kjøpt profil, eller en logo frigitt med nettsiden, kan skrive.
+    match /signaturbilder/{id} {
+      function profilEier() {
+        let d = get(/databases/$(database)/documents/logodesign/$(id)).data;
+        return innlogget() && d.uid == request.auth.uid
+          && ((d.bestillingId != null && d.produkt == 'profil') || d.get('frigitt', false) == true);
+      }
+
+      function gyldigBilde() {
+        let d = request.resource.data;
+        return d.keys().hasOnly(['uid', 'logo', 'merke', 'oppdatert'])
+          && d.uid == request.auth.uid
+          && d.logo is bytes && d.logo.size() <= 150000
+          && d.merke is bytes && d.merke.size() <= 150000
+          && d.oppdatert == request.time;
+      }
+
+      allow get: if true;
+      allow create, update: if profilEier() && gyldigBilde();
+      allow delete: if erAdmin();
     }
 
     // Alt annet er stengt.

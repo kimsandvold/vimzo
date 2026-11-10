@@ -24,6 +24,7 @@ export const LAZY_RUTER: Array<{ path: string; Side: LazyPage }> = [
   { path: '/logo/profil/:id', Side: lazyPage(() => import('./components/pages/Logo/ProfilSide')) },
   { path: '/kontakt', Side: lazyPage(() => import('./components/pages/Kontakt/KontaktSide')) },
   // Kundenes Min side og admin: ikke i sitemap, ikke forhåndsrendret, noindex.
+  { path: '/min-side/studio/:id', Side: lazyPage(() => import('./components/pages/Logo/StudioSide')) },
   { path: '/min-side', Side: lazyPage(() => import('./components/pages/MinSide/MinSide')) },
   { path: '/admin', Side: lazyPage(() => import('./components/pages/Admin/AdminSide')) },
   { path: '/admin/ny', Side: lazyPage(() => import('./components/pages/Admin/NySak')) },

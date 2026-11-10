@@ -12,3 +12,15 @@ export const PRODUKTER = {
 } as const
 
 export type Produkt = keyof typeof PRODUKTER
+
+/**
+ * Oppgraderingen fra «Logo» til «Logo + visuell profil», for den som alt har
+ * kjøpt logoen. Prisen er forskjellen mellom de to, så ingen betaler mer for
+ * å ta det i to steg. Står for seg selv – ikke i PRODUKTER – fordi den ikke
+ * kan velges i verktøyet, bare på en logo som er kjøpt. Håndheves også i
+ * firestore.rules (riktigPris).
+ */
+export const OPPGRADERING = {
+  navn: 'Oppgradering til visuell profil',
+  pris: PRODUKTER.profil.pris - PRODUKTER.logo.pris,
+} as const

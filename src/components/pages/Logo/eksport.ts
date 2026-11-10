@@ -1212,7 +1212,7 @@ async function digitalt(legg: Legg, design: Design, innhold: Innhold, m: Metadat
   legg(
     'digitalt/epostsignatur.html',
     `<!doctype html><html lang="nb"><head><meta charset="utf-8"><title>E-postsignatur – ${esc(m.bedrift)}</title><meta name="generator" content="${PROGRAM} – vimzo.no"></head><body>
-<!-- Åpne filen i en nettleser, merk tabellen og lim den inn i signaturfeltet i e-postprogrammet. Laget med Vimzo – vimzo.no · ${esc(referanse(m))} -->
+<!-- En mal. Den ferdige signaturen, med navnet ditt og logoen som virker i Gmail og Outlook, lager du på vimzo.no/min-side → Signatur og SoMe. Laget med Vimzo – vimzo.no · ${esc(referanse(m))} -->
 <table cellpadding="0" cellspacing="0" style="font-family:Arial,sans-serif;font-size:13px;color:#333">
 <tr><td style="padding-right:16px;border-right:2px solid ${p.primaer}"><img src="${data}" width="160" alt="${esc(m.bedrift)}"></td>
 <td style="padding-left:16px;line-height:1.5"><strong style="color:${p.mork}">Ditt navn</strong><br>Tittel · ${esc(navn)}<br>Telefon · <a href="https://example.no" style="color:${p.primaer}">nettside</a></td></tr>
@@ -1284,3 +1284,9 @@ function lesMeg(design: Design, innhold: Innhold, m: Metadata, produkt: ProduktI
     .filter((l, i, a) => l !== '' || a[i - 1] !== '')
     .join('\n')
 }
+
+/* ------------------------------------------------- til studioet på Min side */
+
+// Signatur- og SoMe-studioet (some.ts, signatur.ts) tegner med de samme
+// verktøyene som pakken, så bildene der er nøyaktig like filene i ZIP-en.
+export { innmat, medPngMetadata, paFlate, raster, tekstbane }

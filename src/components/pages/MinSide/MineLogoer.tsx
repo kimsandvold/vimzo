@@ -35,6 +35,15 @@ export default function MineLogoer() {
 
   const antallKjopt = useMemo(() => (liste ?? []).filter(erKundens).length, [liste])
 
+  // Studioet for signatur og SoMe åpnes med logoen som har profilen –
+  // ellers den sist kjøpte, ellers den sist endrede (da vises det låst).
+  const studiologo = useMemo(() => {
+    const l = liste ?? []
+    return (
+      l.find((d) => d.frigitt || (d.bestillingId && d.produkt === 'profil')) ?? l.find(erKundens) ?? l[0] ?? null
+    )
+  }, [liste])
+
   async function slett(d: LagretDesign) {
     if (!window.confirm(`Slette utkastet «${d.navn || 'Uten navn'}»? Det kan ikke angres.`)) return
     await slettDesign(d.id)
@@ -49,6 +58,11 @@ export default function MineLogoer() {
             {liste.length} {liste.length === 1 ? 'logo' : 'logoer'}
             {antallKjopt > 0 && ` · ${antallKjopt} kjøpt`}
           </span>
+        )}
+        {studiologo && (
+          <Studiolenke to={`/min-side/studio/${studiologo.id}`}>
+            Signatur og sosiale medier <span aria-hidden="true">→</span>
+          </Studiolenke>
         )}
       </Hode>
 
@@ -93,14 +107,15 @@ export default function MineLogoer() {
                     <Hoved to={`/logo?design=${d.id}&lastned=1`}>
                       <Icon navn="pilNed" storrelse={15} tykkelse={2} /> Last ned
                     </Hoved>
+                    <Sekundar to={`/min-side/studio/${d.id}`}>Signatur og SoMe</Sekundar>
                     {d.produkt === 'profil' && d.bestillingId && (
                       <Sekundar to={`/logo/profil/${d.bestillingId}`}>Se profilen</Sekundar>
                     )}
-                    <Sekundar to={`/logo?design=${d.id}`}>Åpne</Sekundar>
                   </>
                 ) : (
                   <>
                     <Hoved to={`/logo?design=${d.id}`}>Fortsett</Hoved>
+                    <Sekundar to={`/min-side/studio/${d.id}`}>Signatur og SoMe</Sekundar>
                     <Slett type="button" onClick={() => slett(d)}>
                       Slett
                     </Slett>
@@ -123,9 +138,9 @@ const Seksjon = styled.section`
 
 const Hode = styled.div`
   display: flex;
+  flex-wrap: wrap;
   align-items: baseline;
-  justify-content: space-between;
-  gap: 1rem;
+  gap: 0.5rem 1rem;
   margin-bottom: 1rem;
 
   h2 {
@@ -134,9 +149,22 @@ const Hode = styled.div`
     letter-spacing: var(--ls-title);
   }
 
-  span {
+  > span {
     font-size: var(--fs-small);
     color: ${({ theme }) => theme.colors.inkSubtle};
+  }
+`
+
+/** Snarveien til studioet, helt til høyre i overskriften. */
+const Studiolenke = styled(Link)`
+  margin-left: auto;
+  font-size: var(--fs-small);
+  font-weight: 600;
+  color: ${({ theme }) => theme.colors.accent};
+  text-decoration: none;
+
+  &:hover {
+    color: ${({ theme }) => theme.colors.accentHover};
   }
 `
 

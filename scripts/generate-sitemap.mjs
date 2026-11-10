@@ -27,7 +27,7 @@ const { cases } = await lastTs('src/data/cases.ts')
 const { pakker, driftsnivaer, tilleggstjenester, timepris, ANTALL_AVDRAG } = await lastTs('src/data/pakker.ts')
 const { tjenester } = await lastTs('src/data/tjenester.ts')
 const { faq } = await lastTs('src/data/faq.ts')
-const { PRODUKTER } = await lastTs('src/data/logoprodukter.ts')
+const { PRODUKTER, OPPGRADERING } = await lastTs('src/data/logoprodukter.ts')
 
 const idag = new Date().toISOString().slice(0, 10)
 
@@ -129,6 +129,7 @@ lisens, og viser logoen fotorealistisk på skilt, visittkort, vindu og klær.
   Graveringsfil i én farge, fargekoder (HEX, RGB, CMYK, Adobe-palett), skriftfilene, favikon og webikoner.
 - ${PRODUKTER.profil.navn}: ${kr(PRODUKTER.profil.pris)} kr eks. mva. Alt over, pluss visuell profil som PDF,
   filer til sosiale medier, e-postsignatur og bilder av logoen i bruk.
+- ${OPPGRADERING.navn}: ${kr(OPPGRADERING.pris)} kr eks. mva, for den som alt har kjøpt logoen.
 - Filene lastes ned med en gang; betaling med faktura etterpå (14 dagers forfall).
 - Logoen kan velges i nettsidekalkulatoren på forsiden. Da faktureres den sammen med nettsiden, ikke før siden er ferdig.
 - Kunden får tidsubegrenset bruksrett. Symboler og skrifter har åpne lisenser, så det gis ikke enerett til selve symbolet.
@@ -208,6 +209,7 @@ const priser = {
     url: `${SITE_URL}/logo`,
     vilkar: `${SITE_URL}/vilkar/logo`,
     produkter: Object.entries(PRODUKTER).map(([id, p]) => ({ id, navn: p.navn, pris: p.pris })),
+    oppgradering: { id: 'oppgradering', navn: OPPGRADERING.navn, pris: OPPGRADERING.pris, gjelder: 'Kunder som har kjøpt logo' },
     betaling: 'Faktura etter nedlasting, 14 dagers forfall',
   },
 }

@@ -5,7 +5,7 @@ import { useSEO } from '../../../hooks/useSEO'
 import { brodsmuler } from '../../../lib/jsonLd'
 import Sidehode from '../../layout/Sidehode'
 import { firma } from '../../../data/firma'
-import { PRODUKTER, VILKAR_VERSJON } from '../../../lib/logobestillinger'
+import { OPPGRADERING, PRODUKTER, VILKAR_VERSJON } from '../../../lib/logobestillinger'
 
 const MVA = 0.25
 const kr = (n: number) => `${n.toLocaleString('nb-NO', { minimumFractionDigits: n % 1 ? 2 : 0 })} kr`
@@ -57,7 +57,7 @@ export default function LogoVilkarSide() {
                 </li>
                 <li>
                   {logo.navn} koster {kr(logo.pris)}, {profil.navn.toLowerCase()} koster {kr(profil.pris)}{' '}
-                  – eks. mva.
+                  – eks. mva. Har du kjøpt logoen, kan du oppgradere til profilen for {kr(OPPGRADERING.pris)}.
                 </li>
                 <li>Fordi filene leveres med en gang, har du ikke angrerett når nedlastingen har startet.</li>
                 <li>Du får bruke logoen fritt i bedriften din, uten tidsbegrensning.</li>
@@ -79,7 +79,12 @@ export default function LogoVilkarSide() {
               </li>
               <li>
                 <strong>{profil.navn}</strong> – alt i «{logo.navn}», pluss en visuell profil som PDF:
-                farger med koder, skrifttyper, bruk av logoen og eksempler på bruk.
+                farger med koder, skrifttyper, bruk av logoen og eksempler på bruk, e-postsignatur og bilder
+                til sosiale medier.
+              </li>
+              <li>
+                <strong>{OPPGRADERING.navn}</strong> – for deg som har kjøpt «{logo.navn}»: det profilen har i
+                tillegg, for mellomlegget. Fakturaen går til samme firma og adresse som logoen.
               </li>
             </ul>
             <p>
@@ -98,7 +103,7 @@ export default function LogoVilkarSide() {
                 </tr>
               </thead>
               <tbody>
-                {[logo, profil].map((p) => (
+                {[logo, profil, OPPGRADERING].map((p) => (
                   <tr key={p.navn}>
                     <th scope="row">{p.navn}</th>
                     <td>{kr(p.pris)}</td>

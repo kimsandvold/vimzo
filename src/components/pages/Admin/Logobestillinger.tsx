@@ -5,8 +5,8 @@ import { AdminRamme, Dempet, IngenTilgang, Knapp } from './felles'
 import { dato, kr } from './format'
 import {
   BESTILLINGSSTATUSER,
-  PRODUKTER,
   lyttLogobestillinger,
+  produktnavn,
   settBestillingsstatus,
   type Bestillingsstatus,
   type Logobestilling,
@@ -79,7 +79,7 @@ function Oversikt() {
       `Kontakt: ${b.navn || '–'} · ${b.epost}${b.telefon ? ` · ${b.telefon}` : ''}`,
       b.merknad ? `Merknad: ${b.merknad}` : null,
       '',
-      `${PRODUKTER[b.produkt].navn} (logoverktøyet, bestilling ${b.id}, lastet ned ${dato(b.opprettet, true)})`,
+      `${produktnavn(b.produkt)} (logoverktøyet, bestilling ${b.id}, lastet ned ${dato(b.opprettet, true)})`,
       `Beløp eks. mva: ${kr(b.pris)}`,
       `Mva 25 %: ${kr(mva)}`,
       `Totalt: ${kr(b.pris + mva)}`,
@@ -153,7 +153,7 @@ function Oversikt() {
                 {b.merknad && <em>{b.merknad}</em>}
               </Hvem>
               <Hva>
-                {PRODUKTER[b.produkt].navn}
+                {produktnavn(b.produkt)}
                 <strong>{kr(b.pris)}</strong>
                 <small>{kr(Math.round(b.pris * (1 + MVA)))} inkl. mva</small>
               </Hva>

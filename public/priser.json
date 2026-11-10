@@ -130,6 +130,12 @@
         "pris": 990
       }
     ],
+    "oppgradering": {
+      "id": "oppgradering",
+      "navn": "Oppgradering til visuell profil",
+      "pris": 500,
+      "gjelder": "Kunder som har kjøpt logo"
+    },
     "betaling": "Faktura etter nedlasting, 14 dagers forfall"
   }
 }

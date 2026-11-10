@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
 import styled from 'styled-components'
 import { useSEO } from '../../../hooks/useSEO'
-import { hentLogobestilling } from '../../../lib/logobestillinger'
+import { girProfil, hentLogobestilling, type Ordreprodukt } from '../../../lib/logobestillinger'
 import Profil from './Profil'
 import { Innlogging } from './Innlogging'
 import { serialiser, useBruker } from './kjop'
@@ -36,7 +36,7 @@ export default function ProfilSide() {
     const d = sok.get('d')
     return d ? dekod(d) : null
   }, [sok])
-  const [fraBestilling, setFraBestilling] = useState<(Pick<Lagret, 'design' | 'innhold'> & { produkt: string }) | null>(
+  const [fraBestilling, setFraBestilling] = useState<(Pick<Lagret, 'design' | 'innhold'> & { produkt: Ordreprodukt }) | null>(
     null,
   )
 
@@ -72,7 +72,7 @@ export default function ProfilSide() {
   // Uten vannmerke når profilen er kjøpt: en bestilling av «profil», eller det
   // lokale designet uendret siden det ble bestilt som profil.
   const kjopt =
-    fraBestilling?.produkt === 'profil' ||
+    (!!fraBestilling && girProfil(fraBestilling.produkt)) ||
     Boolean(
       data &&
       lokalt?.bestilling?.produkt === 'profil' &&

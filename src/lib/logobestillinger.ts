@@ -1,7 +1,7 @@
 import type { DocumentData, Unsubscribe } from 'firebase/firestore'
 import { firebaseKlar, hentDb } from './firebase'
 import { bekreftTilKunde, varsleVimzo } from './emailjs'
-import { PRODUKTER, type Produkt } from '../data/logoprodukter'
+import { OPPGRADERING, PRODUKTER, type Produkt } from '../data/logoprodukter'
 
 /**
  * Bestillinger fra logoverktøyet.
@@ -24,7 +24,15 @@ import { PRODUKTER, type Produkt } from '../data/logoprodukter'
 const SAMLING = 'logobestillinger'
 
 /** Prisene står i data/logoprodukter.ts – re-eksportert her for verktøyets skyld. */
-export { PRODUKTER, type Produkt }
+export { OPPGRADERING, PRODUKTER, type Produkt }
+
+/** Det en ordrelinje kan gjelde: et av produktene, eller oppgraderingen fra logo til profil. */
+export type Ordreprodukt = Produkt | 'oppgradering'
+
+export const produktnavn = (p: Ordreprodukt) => (p === 'oppgradering' ? OPPGRADERING.navn : PRODUKTER[p].navn)
+
+/** Gir ordrelinjen hele profilen? Kjøpt som profil, eller oppgradert til den. */
+export const girProfil = (p: Ordreprodukt) => p === 'profil' || p === 'oppgradering'
 
 /**
  * Ordrelinjens gang: levert → fakturert → betalt. Eller kansellert.
@@ -49,7 +57,7 @@ export const MAKS_BESTILLING = { kort: 200, epost: 254, telefon: 40, design: 200
  * denne – den lagres på hver bestilling, så det alltid er klart hva et kjøp
  * ble gjort på.
  */
-export const VILKAR_VERSJON = '2026-11-09'
+export const VILKAR_VERSJON = '2026-11-10'
 
 /**
  * Samtykket kunden krysser av for før «Bestill». Lagres ordrett på
@@ -80,8 +88,11 @@ export interface NyLogobestilling {
   design: string
 }
 
-export interface Logobestilling extends NyLogobestilling {
+export interface Logobestilling extends Omit<NyLogobestilling, 'produkt'> {
   id: string
+  produkt: Ordreprodukt
+  /** På en oppgradering: logobestillingen som ble oppgradert. */
+  oppgraderer: string | null
   uid: string
   epost: string
   pris: number
@@ -173,7 +184,94 @@ export async function bestillLogo(b: NyLogobestilling): Promise<string> {
       '',
       `${produkt.navn}: ${produkt.pris} kr eks. mva (${inklMva.toLocaleString('nb-NO')} kr inkl. mva).`,
       `Faktura sendes til ${bruker.email} innen én virkedag, med 14 dagers forfall.`,
+      b.produkt === 'profil' &&
+        'E-postsignatur og bilder til sosiale medier lager du på Min side: https://vimzo.no/min-side (trykk «Signatur og SoMe» på logoen).',
       `Fakturaadresse: ${b.bedrift}${orgnr ? ` (org.nr ${orgnr})` : ''}, ${b.adresse}, ${b.postnr} ${b.poststed}.`,
+      '',
+      `Kjøpsvilkår (versjon ${VILKAR_VERSJON}): https://vimzo.no/vilkar/logo`,
+    ]
+      .filter((l) => l !== false)
+      .join('\n'),
+    brief: `Bestilling ${ref.id}`,
+  })
+
+  return ref.id
+}
+
+/**
+ * Oppgrader en kjøpt logo til hele profilen.
+ *
+ * En egen ordrelinje på mellomlegget, fakturert til samme firma og adresse
+ * som logoen – kunden har gitt oss alt det fra før, og skal ikke fylle ut
+ * det samme skjemaet to ganger. Designet er det som ble kjøpt; profilen
+ * lages av nøyaktig den logoen.
+ *
+ * Reglene (firestore.rules → gyldigOppgradering) krever at `oppgraderer`
+ * er en logobestilling på samme konto.
+ */
+export async function oppgraderTilProfil(logo: Logobestilling): Promise<string> {
+  if (!firebaseKlar) throw new Error('Bestilling er ikke tilgjengelig akkurat nå')
+  if (logo.produkt !== 'logo') throw new Error('Bare en logo kjøpt alene kan oppgraderes')
+  const [{ addDoc, collection, serverTimestamp }, { getAuth }, db] = await Promise.all([
+    import('firebase/firestore'),
+    import('firebase/auth'),
+    hentDb(),
+  ])
+  const bruker = getAuth().currentUser
+  if (!bruker?.email || !bruker.emailVerified) throw new Error('Du må være innlogget for å bestille')
+
+  const ref = await addDoc(collection(db, SAMLING), {
+    uid: bruker.uid,
+    epost: bruker.email.toLowerCase(),
+    produkt: 'oppgradering',
+    pris: OPPGRADERING.pris,
+    oppgraderer: logo.id,
+    bedrift: logo.bedrift,
+    orgnr: logo.orgnr,
+    adresse: logo.adresse,
+    postnr: logo.postnr,
+    poststed: logo.poststed,
+    navn: logo.navn,
+    telefon: logo.telefon,
+    merknad: '',
+    design: logo.design,
+    vilkar: VILKAR,
+    status: 'levert',
+    opprettet: serverTimestamp(),
+  })
+
+  const adresse = `${logo.bedrift}${logo.orgnr ? ` (org.nr ${logo.orgnr})` : ''}, ${logo.adresse}, ${logo.postnr} ${logo.poststed}`
+  await varsleVimzo({
+    emne: `Fakturer: ${OPPGRADERING.navn} – ${logo.bedrift} (${OPPGRADERING.pris} kr eks. mva)`,
+    navn: logo.navn,
+    bedrift: logo.bedrift,
+    epost: bruker.email,
+    telefon: logo.telefon,
+    melding: [
+      `${OPPGRADERING.navn} – ${OPPGRADERING.pris} kr eks. mva. Profilen er låst opp; send faktura.`,
+      `Oppgraderer logobestilling ${logo.id}.`,
+      '',
+      adresse,
+      `${logo.navn} · ${bruker.email}${logo.telefon ? ` · ${logo.telefon}` : ''}`,
+      '',
+      `Ordrelinje: https://vimzo.no/admin/logo`,
+    ].join('\n'),
+    brief: `Bestilling ${ref.id}`,
+  })
+
+  const inklMva = Math.round(OPPGRADERING.pris * 125) / 100
+  await bekreftTilKunde({
+    emne: `Ordrebekreftelse: ${OPPGRADERING.navn} fra Vimzo`,
+    navn: logo.navn,
+    bedrift: logo.bedrift,
+    epost: bruker.email,
+    telefon: logo.telefon,
+    melding: [
+      'Takk! Profilen er låst opp. Profilbok, mockups, e-postsignatur og bilder til sosiale medier finner du på Min side: https://vimzo.no/min-side',
+      '',
+      `${OPPGRADERING.navn}: ${OPPGRADERING.pris} kr eks. mva (${inklMva.toLocaleString('nb-NO')} kr inkl. mva).`,
+      `Faktura sendes til ${bruker.email} innen én virkedag, med 14 dagers forfall.`,
+      `Fakturaadresse: ${adresse}.`,
       '',
       `Kjøpsvilkår (versjon ${VILKAR_VERSJON}): https://vimzo.no/vilkar/logo`,
     ].join('\n'),
@@ -195,7 +293,8 @@ function tilBestilling(id: string, d: DocumentData): Logobestilling {
     id,
     uid: d.uid ?? '',
     epost: d.epost ?? '',
-    produkt: d.produkt === 'profil' ? 'profil' : 'logo',
+    produkt: d.produkt === 'profil' || d.produkt === 'oppgradering' ? d.produkt : 'logo',
+    oppgraderer: typeof d.oppgraderer === 'string' ? d.oppgraderer : null,
     pris: d.pris ?? 0,
     bedrift: d.bedrift ?? '',
     orgnr: d.orgnr ?? '',
