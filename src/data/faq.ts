@@ -1,3 +1,4 @@
+import { PRODUKTER } from './logoprodukter'
 import { AVDRAGSPASLAG, arrangement, domenepris, drift, formaterPris, formaterRamme, minsteEndring, pakker, tillegg, timepris } from './pakker'
 
 /**
@@ -13,7 +14,7 @@ export interface Sporsmal {
   sporsmal: string
   svar: string
   /** Hvilke sider spørsmålet vises på. 'alle' = forsiden og prissiden. */
-  tema: 'pris' | 'prosess' | 'teknisk' | 'synlighet' | 'arrangement'
+  tema: 'pris' | 'prosess' | 'teknisk' | 'synlighet' | 'arrangement' | 'logo'
 }
 
 export const faq: readonly Sporsmal[] = [
@@ -94,8 +95,8 @@ export const faq: readonly Sporsmal[] = [
     tema: 'prosess',
     sporsmal: 'Er dere norske?',
     svar:
-      'Ja, helt igjennom. Vimzo drives av Kim Sandvold. Det er han som tar ' +
-      'praten, skriver tekstene og koder siden – ingenting settes ut til utlandet. All ' +
+      'Ja, helt igjennom. Den du tar praten med, er den som skriver tekstene og koder ' +
+      'siden – ingenting settes ut til utlandet. All ' +
       'kommunikasjon, alle tekster og all support er på norsk.',
   },
   {
@@ -194,8 +195,8 @@ export const faq: readonly Sporsmal[] = [
     tema: 'prosess',
     sporsmal: 'Må vi være i nærheten av dere?',
     svar:
-      'Nei. Hele prosessen skjer digitalt: samtalen tar vi på telefon eller video, og siden ' +
-      'følger du på en testadresse mens den lages. Vi leverer til bedrifter i hele Norge. ' +
+      'Nei. Hele prosessen skjer digitalt – samtalen tar vi på telefon eller video. ' +
+      'Vi leverer til bedrifter i hele Norge. ' +
       'Skal vi ta bilder hos deg, avtaler vi det.',
   },
   {
@@ -235,6 +236,56 @@ export const faq: readonly Sporsmal[] = [
     svar:
       'Nei. Har dere et domene fra før, legger vi siden på en egen adresse under det, som ' +
       'messe.firma.no. Vil dere ha et eget domene for arrangementet, ordner vi det.',
+  },
+
+  /*
+   * Logoverktøyet. Formulert etter hvordan folk faktisk spør – også en
+   * KI-assistent («hva koster en logo», «kan jeg lage logo selv») – og med
+   * tall i hvert svar, så svaret kan siteres uten spørsmålet.
+   */
+  {
+    tema: 'logo',
+    sporsmal: 'Hva koster det å lage en logo hos Vimzo?',
+    svar:
+      'I logoverktøyet på vimzo.no lager du logoen selv, og det koster ingenting å designe. ' +
+      `Filene koster ${PRODUKTER.logo.pris} kroner eks. mva. for logoen, eller ${PRODUKTER.profil.pris} kroner ` +
+      'for logo med en hel visuell profil. Du betaler med faktura etterpå. Vil du heller ha en logo ' +
+      `tegnet for hånd av oss, koster det ${formaterPris(tillegg('Logo').pris)} kroner.`,
+  },
+  {
+    tema: 'logo',
+    sporsmal: 'Hva får jeg når jeg kjøper logoen?',
+    svar:
+      'En ZIP-fil med logoen i alle versjoner – liggende, stående, bare symbol og bare navn – i farger, svart, ' +
+      'hvitt og på mørk bakgrunn. Hver versjon kommer som SVG og PDF for trykk, PNG opptil 4096 piksler og JPG ' +
+      'til Word. I tillegg: en graveringsfil i én farge, fargekoder (HEX, RGB, CMYK og en palett for Adobe), ' +
+      'skriftfilene, favikon og ikoner til nettsiden. Med visuell profil får du også profilboka som PDF, ' +
+      'filer til sosiale medier, e-postsignatur og bilder av logoen på skilt, kort og klær.',
+  },
+  {
+    tema: 'logo',
+    sporsmal: 'Kan logoen brukes på skilt, bil og til gravering?',
+    svar:
+      'Ja. Filene er laget for produksjon: all tekst er gjort om til konturer, det er ingen gjennomsiktighet ' +
+      'eller effekter som trykkerier ikke tåler, og målene står i millimeter. Graveringsfilen er én ' +
+      'sammenhengende form i sort, klar for laser, folieskjæring og stempel.',
+  },
+  {
+    tema: 'logo',
+    sporsmal: 'Kan jeg bruke logoen jeg lager i verktøyet på nettsiden dere lager?',
+    svar:
+      'Ja. Velg «Jeg lager den selv i logoverktøyet» i kalkulatoren på forsiden, og velg logoen du har laget. ' +
+      `Da følger den med forespørselen, og den faktureres sammen med nettsiden – ${PRODUKTER.logo.pris} kroner, ` +
+      'ikke før siden er ferdig. Når nettsiden er levert, ligger alle logofilene klare på Min side.',
+  },
+  {
+    tema: 'logo',
+    sporsmal: 'Eier jeg logoen jeg lager?',
+    svar:
+      'Du får en tidsubegrenset rett til å bruke og endre logoen i bedriften din, til alt fra nettside til bil ' +
+      'og skilt. Symbolene kommer fra åpne ikonbiblioteker eller lages av verktøyet, og skriftene har åpne ' +
+      'lisenser, så du får rett til logoen slik den er satt sammen – ikke enerett til selve symbolet eller ' +
+      'skriften. Skal du registrere varemerke, bør du søke i Patentstyrets register først.',
   },
 ] as const
 

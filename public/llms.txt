@@ -33,6 +33,21 @@ samtale og gis skriftlig før arbeidet starter – da står den.
 
 Første års domene er inkludert i alle pakkene. Deretter ca. 169 kr/år, som Vimzo fornyer.
 
+## Logoverktøyet
+
+Kunden lager logoen selv på https://vimzo.no/logo, på norsk. Innlogging kreves; å designe koster ingenting.
+Verktøyet gir forslag med abstrakte symboler, bransjesymboler og monogram, tolv skrifttyper med åpen
+lisens, og viser logoen fotorealistisk på skilt, visittkort, vindu og klær.
+
+- Logo: 490 kr eks. mva. Alle logoversjoner (liggende, stående, symbol, navn)
+  i farger, svart, hvitt og to farger på mørk bakgrunn – som SVG og PDF for trykk, PNG opptil 4096 px og JPG.
+  Graveringsfil i én farge, fargekoder (HEX, RGB, CMYK, Adobe-palett), skriftfilene, favikon og webikoner.
+- Logo + visuell profil: 990 kr eks. mva. Alt over, pluss visuell profil som PDF,
+  filer til sosiale medier, e-postsignatur og bilder av logoen i bruk.
+- Filene lastes ned med en gang; betaling med faktura etterpå (14 dagers forfall).
+- Logoen kan velges i nettsidekalkulatoren på forsiden. Da faktureres den sammen med nettsiden, ikke før siden er ferdig.
+- Kunden får tidsubegrenset bruksrett. Symboler og skrifter har åpne lisenser, så det gis ikke enerett til selve symbolet.
+
 ## Tjenester
 
 - Hele nettsiden, ferdig laget: Vi kjøper domenet i ditt navn, finner ut hvilke sider du trenger, designer siden og setter den på nett. Du bruker rundt to timer til sammen: én prat i starten og én gjennomlesing før vi publiserer.
@@ -42,7 +57,7 @@ Første års domene er inkludert i alle pakkene. Deretter ca. 169 kr/år, som Vi
 - Drift, domene og sikkerhet: Webhotell, domene, sikkerhetskopi hver dag og automatisk varsling hvis siden går ned. Én pris: 449 kr i måneden, uten bindingstid. Endringer på innholdet faktureres for seg.
 - Du eier alt: Domenet, koden, tekstene og bildene står i ditt navn. Vil du bytte leverandør, tar du med deg alt – uten å spørre oss.
 - Foto og dronevideo (tillegg): Lokalene, produktene, arbeidet og folkene – og fra lufta når motivet fortjener det. Egne bilder er det enkleste grepet som skiller en troverdig side fra en som ser ut som alle andre.
-- Logo og visuell profil (tillegg): Har du ikke en logo – eller en som ble laget i Word i 2011 – tegner vi en ny, med farger og skrifttyper som hører sammen. Vil du prøve selv først, er logoverktøyet vårt gratis.
+- Logo og visuell profil (tillegg): Har du ikke en logo – eller en som ble laget i Word i 2011 – tegner vi en ny, med farger og skrifttyper som hører sammen. Vil du heller lage den selv, kan du bruke logoverktøyet vårt.
 - Kalkulator eller booking (tillegg): Kunden regner ut prisen selv eller booker en tid, og du får henvendelsen ferdig utfylt i stedet for en telefon. Bygget inn i siden, uten månedsleie til andre.
 - 3D-visning og designverktøy (tillegg): Kunden snur på produktet, velger mål og materiale, og ser pris og materialliste endre seg. Levert i praksis på minio.no. Spennet er stort, så prisen settes etter en prat.
 - Ekstra side (tillegg): En ny tjeneste-, produkt- eller stedsside utover det pakken dekker, ferdig skrevet av oss. Du får prisen før vi begynner.
@@ -64,7 +79,7 @@ publisering og innmelding hos Google.
 - Driften er én pris uansett hva siden gjør, og dekker webhotell, domene, sikkerhetskopi og overvåking.
 - Endringer etter lansering faktureres med 1 250 kr timen, per påbegynte halvtime.
 - Regneverktøy og kalkulatorer bygges for den enkelte bedriften og legges inn i siden, uten lisens eller abonnement på selve verktøyet.
-- Alt arbeid gjøres i Norge, på norsk, av Kim Sandvold.
+- Alt arbeid gjøres i Norge, på norsk.
 
 ## Viktige sider
 
@@ -73,7 +88,9 @@ publisering og innmelding hos Google.
 - [Arrangementssider](https://vimzo.no/arrangement): kortvarige sider til messer, konferanser og kampanjer
 - [Arbeid](https://vimzo.no/arbeid): leverte prosjekter
 - [Guider](https://vimzo.no/guider): fagartikler om nettsider, pris og AI-synlighet
-- [Lag logo](https://vimzo.no/logo): gratis logoverktøy, last ned SVG og PNG
+- [Lag logo](https://vimzo.no/logo): logoverktøy på norsk – design gratis etter innlogging, kjøp logo (490 kr) eller logo med visuell profil (990 kr)
+- [Kjøpsvilkår for logoverktøyet](https://vimzo.no/vilkar/logo)
+- [Maskinlesbare priser](https://vimzo.no/priser.json): alle priser som JSON, datert
 - [Slik blir bedriften din synlig når kundene spør ChatGPT](https://vimzo.no/guider/synlig-i-ai-sok): Stadig flere starter søket i en AI-assistent i stedet for i Google. Her er hva som faktisk avgjør om bedriften din blir nevnt i svaret.
 - [Hva koster en nettside for en liten bedrift i Norge?](https://vimzo.no/guider/hva-koster-en-nettside): Fra null til et par hundre tusen. Her er hva som faktisk ligger bak prislappen, og hva en liten bedrift bør regne med å betale – både i oppstart og per år.
 - [WordPress eller håndkodet nettside – hva passer en liten bedrift?](https://vimzo.no/guider/wordpress-eller-handkodet): WordPress driver rundt 40 % av verdens nettsteder. Det betyr ikke at det er riktig for en bedrift med fem ansatte og ti sider.
@@ -107,7 +124,7 @@ Ja. Vi bygger regneverktøy for det du selger, fra 9 900 kroner – priskalkula
 Nei. Vi lager sider for bedrifter som selger tjenester – håndverkere, frisører, fotpleiere, verksteder, renholdere og rådgivere. Skal du selge varer med lager, frakt og betaling på nett, trenger du en ekte nettbutikkløsning, og det sier vi med én gang i stedet for å bygge noe halvveis. Timebestilling, befaring og forespørsler ordner vi gjerne – det er varehandelen vi holder oss unna.
 
 ### Er dere norske?
-Ja, helt igjennom. Vimzo drives av Kim Sandvold. Det er han som tar praten, skriver tekstene og koder siden – ingenting settes ut til utlandet. All kommunikasjon, alle tekster og all support er på norsk.
+Ja, helt igjennom. Den du tar praten med, er den som skriver tekstene og koder siden – ingenting settes ut til utlandet. All kommunikasjon, alle tekster og all support er på norsk.
 
 ### Må jeg skrive tekstene selv?
 Nei. Vi intervjuer deg i omtrent en time om hva bedriften gjør, og skriver sidene ferdig på norsk. Du leser gjennom og godkjenner alt før det publiseres. Vil du skrive selv, trekker vi det fra prisen.
@@ -140,7 +157,7 @@ Nei, og ingen seriøs leverandør kan det. Det vi garanterer er grunnlaget: rikt
 Nei. Vi kommer gjerne ut og fotograferer bedriften, lokalene, produktene og folkene som jobber der, og filmer med drone når motivet fortjener det. Egne bilder gjør mer for troverdigheten enn noe annet på en bedriftsside, og de gir i tillegg bildetreff i Google som en kjøpt arkivbilde aldri gir.
 
 ### Må vi være i nærheten av dere?
-Nei. Hele prosessen skjer digitalt: samtalen tar vi på telefon eller video, og siden følger du på en testadresse mens den lages. Vi leverer til bedrifter i hele Norge. Skal vi ta bilder hos deg, avtaler vi det.
+Nei. Hele prosessen skjer digitalt – samtalen tar vi på telefon eller video. Vi leverer til bedrifter i hele Norge. Skal vi ta bilder hos deg, avtaler vi det.
 
 ### Hva koster en nettside til et arrangement?
 En arrangementsside lander typisk på 11 900–17 900 kroner eks. mva., med 3 måneders drift inkludert. Egen påmelding kommer i tillegg, fra 4 900 kroner. Den endelige prisen avtaler vi etter en kort prat, skriftlig.
@@ -157,5 +174,20 @@ Ja. Designet står, så neste utgave handler om nye datoer, nytt program og nye 
 ### Trenger vi eget domene?
 Nei. Har dere et domene fra før, legger vi siden på en egen adresse under det, som messe.firma.no. Vil dere ha et eget domene for arrangementet, ordner vi det.
 
+### Hva koster det å lage en logo hos Vimzo?
+I logoverktøyet på vimzo.no lager du logoen selv, og det koster ingenting å designe. Filene koster 490 kroner eks. mva. for logoen, eller 990 kroner for logo med en hel visuell profil. Du betaler med faktura etterpå. Vil du heller ha en logo tegnet for hånd av oss, koster det 4 900 kroner.
+
+### Hva får jeg når jeg kjøper logoen?
+En ZIP-fil med logoen i alle versjoner – liggende, stående, bare symbol og bare navn – i farger, svart, hvitt og på mørk bakgrunn. Hver versjon kommer som SVG og PDF for trykk, PNG opptil 4096 piksler og JPG til Word. I tillegg: en graveringsfil i én farge, fargekoder (HEX, RGB, CMYK og en palett for Adobe), skriftfilene, favikon og ikoner til nettsiden. Med visuell profil får du også profilboka som PDF, filer til sosiale medier, e-postsignatur og bilder av logoen på skilt, kort og klær.
+
+### Kan logoen brukes på skilt, bil og til gravering?
+Ja. Filene er laget for produksjon: all tekst er gjort om til konturer, det er ingen gjennomsiktighet eller effekter som trykkerier ikke tåler, og målene står i millimeter. Graveringsfilen er én sammenhengende form i sort, klar for laser, folieskjæring og stempel.
+
+### Kan jeg bruke logoen jeg lager i verktøyet på nettsiden dere lager?
+Ja. Velg «Jeg lager den selv i logoverktøyet» i kalkulatoren på forsiden, og velg logoen du har laget. Da følger den med forespørselen, og den faktureres sammen med nettsiden – 490 kroner, ikke før siden er ferdig. Når nettsiden er levert, ligger alle logofilene klare på Min side.
+
+### Eier jeg logoen jeg lager?
+Du får en tidsubegrenset rett til å bruke og endre logoen i bedriften din, til alt fra nettside til bil og skilt. Symbolene kommer fra åpne ikonbiblioteker eller lages av verktøyet, og skriftene har åpne lisenser, så du får rett til logoen slik den er satt sammen – ikke enerett til selve symbolet eller skriften. Skal du registrere varemerke, bør du søke i Patentstyrets register først.
+
 ---
-Generert fra kildekoden 2026-11-07. Oppdateres automatisk ved hvert bygg.
+Generert fra kildekoden 2026-11-10. Oppdateres automatisk ved hvert bygg.

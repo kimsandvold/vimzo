@@ -3,6 +3,7 @@ import { prisFor, type Tjeneste } from '../data/tjenester'
 import type { Sporsmal } from '../data/faq'
 import type { Guide } from '../data/guider'
 import { pakker } from '../data/pakker'
+import { PRODUKTER } from '../data/logoprodukter'
 
 const URL_BASE = firma.url
 
@@ -22,31 +23,6 @@ const URL_BASE = firma.url
 /** Felles `@id` slik at alle sider peker på den samme virksomheten. */
 export const ORG_ID = `${URL_BASE}/#organisasjon`
 const NETTSTED_ID = `${URL_BASE}/#nettsted`
-/** Personen bak – én node som organisasjonen og hver guide peker på. */
-export const PERSON_ID = `${URL_BASE}/om#person`
-
-/**
- * Personen bak Vimzo.
- *
- * En navngitt fagperson veier tyngre enn et foretaksnavn – for Google
- * (erfaring og ekspertise) og for AI-assistenter, som helst siterer kilder
- * med en tydelig avsender. Publiseres på /om, og guidene peker hit som
- * forfatter.
- */
-export function person(): Record<string, unknown> {
-  return {
-    '@context': 'https://schema.org',
-    '@type': 'Person',
-    '@id': PERSON_ID,
-    name: firma.grunnlegger,
-    jobTitle: firma.grunnleggerTittel,
-    url: `${URL_BASE}/om`,
-    worksFor: { '@id': ORG_ID },
-    knowsAbout: [...firma.fagomrader],
-    knowsLanguage: ['nb', 'en'],
-  }
-}
-
 /** En side med dato for siste endring – priser siteres oftere når de er datert. */
 export function nettside(sti: string, navn: string, sistEndret: string): Record<string, unknown> {
   return {
@@ -84,7 +60,6 @@ export function organisasjon(): Record<string, unknown> {
     address: adresse,
     areaServed: firma.dekningsomrade.map((omrade) => ({ '@type': 'AdministrativeArea', name: omrade })),
     knowsAbout: [...firma.fagomrader],
-    founder: { '@id': PERSON_ID, '@type': 'Person', name: firma.grunnlegger },
     priceRange: `NOK ${pakker[0].pris.fra}–${pakker[1].pris.til ?? pakker[1].pris.fra}`,
     currenciesAccepted: 'NOK',
   }
@@ -200,7 +175,7 @@ export function artikkelLd(guide: Guide): Record<string, unknown> {
     datePublished: guide.publisert,
     dateModified: guide.oppdatert || guide.publisert,
     inLanguage: 'nb-NO',
-    author: { '@id': PERSON_ID, '@type': 'Person', name: firma.grunnlegger, url: `${URL_BASE}/om` },
+    author: { '@id': ORG_ID },
     publisher: { '@id': ORG_ID },
     mainEntityOfPage: { '@type': 'WebPage', '@id': `${URL_BASE}/guider/${guide.slug}` },
     articleSection: guide.kategori,
@@ -215,5 +190,65 @@ export function artikkelLd(guide: Guide): Record<string, unknown> {
         }, 0),
       0,
     ),
+  }
+}
+
+/**
+ * Logoverktøyet som en nettapplikasjon med to tilbud.
+ *
+ * `WebApplication` med `offers` er det søkemotorer og KI-assistenter forstår
+ * som «et verktøy du kan bruke, og hva det koster». Prisene kommer fra samme
+ * sted som verktøyet bruker, og er oppgitt eks. mva. med
+ * `valueAddedTaxIncluded: false` – ellers ville en assistent sitert dem som
+ * sluttpriser.
+ */
+export function logoverktoyLd(): Record<string, unknown> {
+  const tilbud = (navn: string, pris: number, beskrivelse: string) => ({
+    '@type': 'Offer',
+    name: navn,
+    description: beskrivelse,
+    price: pris,
+    priceCurrency: 'NOK',
+    priceSpecification: {
+      '@type': 'UnitPriceSpecification',
+      price: pris,
+      priceCurrency: 'NOK',
+      valueAddedTaxIncluded: false,
+    },
+    availability: 'https://schema.org/InStock',
+    seller: { '@id': ORG_ID },
+    url: `${URL_BASE}/logo`,
+  })
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'WebApplication',
+    '@id': `${URL_BASE}/logo#verktoy`,
+    name: 'Vimzo logoverktøy',
+    url: `${URL_BASE}/logo`,
+    applicationCategory: 'DesignApplication',
+    operatingSystem: 'Nettleser',
+    inLanguage: 'nb-NO',
+    provider: { '@id': ORG_ID },
+    description:
+      'Lag en profesjonell logo til bedriften din på norsk: skriv navnet, velg stil, plukk blant forslag og ' +
+      'tilpass. Se logoen på skilt, visittkort og klær, og bestill filene klare for trykk, gravering og nett.',
+    featureList: [
+      'Forslag med abstrakte symboler, bransjesymboler og monogram',
+      'Tolv skrifttyper med åpen lisens',
+      'Fotorealistiske eksempler på skilt, visittkort, vindu og klær',
+      'SVG og PDF for trykk, PNG opptil 4096 piksler, JPG',
+      'Graveringsfil i én farge',
+      'Fargekoder i HEX, RGB og CMYK, og palett for Adobe',
+      'Visuell profil som PDF',
+      'Filer til sosiale medier, favikon og e-postsignatur',
+    ],
+    offers: [
+      tilbud(PRODUKTER.logo.navn, PRODUKTER.logo.pris, 'Logofilene i alle versjoner og formater.'),
+      tilbud(
+        PRODUKTER.profil.navn,
+        PRODUKTER.profil.pris,
+        'Logofilene pluss visuell profil, filer til sosiale medier og eksempler i bruk.',
+      ),
+    ],
   }
 }

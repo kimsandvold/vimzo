@@ -1,0 +1,135 @@
+{
+  "kilde": "https://vimzo.no/priser",
+  "oppdatert": "2026-11-10",
+  "valuta": "NOK",
+  "mva": {
+    "inkludert": false,
+    "sats": 0.25,
+    "merknad": "Alle beløp er eks. mva."
+  },
+  "nettsider": [
+    {
+      "navn": "Start",
+      "omfang": "1–3 sider",
+      "for": "For deg som skal være lett å finne og lett å ringe – en håndverker, en frisør, en rådgiver.",
+      "fra": 19900,
+      "til": 28900,
+      "url": "https://vimzo.no/priser#start"
+    },
+    {
+      "navn": "Bedrift",
+      "omfang": "4–8 sider",
+      "for": "For bedriften som skal selge tjenestene sine, ikke bare vises fram.",
+      "fra": 34900,
+      "til": 48900,
+      "url": "https://vimzo.no/priser#bedrift"
+    },
+    {
+      "navn": "Vekst",
+      "omfang": "Etter behov",
+      "for": "For deg som vil at nettsiden skal gjøre en jobb – regne ut priser, ta imot bestillinger.",
+      "fra": 59900,
+      "til": null,
+      "url": "https://vimzo.no/priser#vekst"
+    },
+    {
+      "navn": "Arrangement",
+      "omfang": "Én side · 3 måneder drift inkludert",
+      "for": "For en messe, en konferanse, en lansering eller en kampanje – en side som skal se ordentlig ut den perioden den gjelder.",
+      "fra": 11900,
+      "til": 17900,
+      "url": "https://vimzo.no/priser#arrangement"
+    }
+  ],
+  "delbetaling": {
+    "antallManeder": 12
+  },
+  "drift": [
+    {
+      "navn": "Drift",
+      "pris": 449,
+      "periode": "per måned",
+      "bindingstid": "ingen"
+    }
+  ],
+  "timepris": 1250,
+  "tillegg": [
+    {
+      "navn": "Regneverktøy eller kalkulator",
+      "pris": 9900,
+      "fraPris": true,
+      "enhet": null
+    },
+    {
+      "navn": "Logo",
+      "pris": 4900,
+      "fraPris": false,
+      "enhet": null
+    },
+    {
+      "navn": "Visuell profil",
+      "pris": 9900,
+      "fraPris": false,
+      "enhet": null
+    },
+    {
+      "navn": "Foto og dronevideo",
+      "pris": 7900,
+      "fraPris": true,
+      "enhet": null
+    },
+    {
+      "navn": "3D-visning og designverktøy",
+      "pris": 24900,
+      "fraPris": true,
+      "enhet": null
+    },
+    {
+      "navn": "Ekstra side",
+      "pris": 3900,
+      "fraPris": true,
+      "enhet": null
+    },
+    {
+      "navn": "Fagartikkel",
+      "pris": 3400,
+      "fraPris": false,
+      "enhet": "per artikkel"
+    },
+    {
+      "navn": "Påmelding til arrangement",
+      "pris": 4900,
+      "fraPris": true,
+      "enhet": null
+    },
+    {
+      "navn": "Ny utgave av arrangementsside",
+      "pris": 6000,
+      "fraPris": true,
+      "enhet": null
+    },
+    {
+      "navn": "Endringer etter lansering",
+      "pris": 1250,
+      "fraPris": false,
+      "enhet": "per time"
+    }
+  ],
+  "logoverktoy": {
+    "url": "https://vimzo.no/logo",
+    "vilkar": "https://vimzo.no/vilkar/logo",
+    "produkter": [
+      {
+        "id": "logo",
+        "navn": "Logo",
+        "pris": 490
+      },
+      {
+        "id": "profil",
+        "navn": "Logo + visuell profil",
+        "pris": 990
+      }
+    ],
+    "betaling": "Faktura etter nedlasting, 14 dagers forfall"
+  }
+}

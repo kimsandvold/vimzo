@@ -27,6 +27,7 @@ const { cases } = await lastTs('src/data/cases.ts')
 const { pakker, driftsnivaer, tilleggstjenester, timepris, ANTALL_AVDRAG } = await lastTs('src/data/pakker.ts')
 const { tjenester } = await lastTs('src/data/tjenester.ts')
 const { faq } = await lastTs('src/data/faq.ts')
+const { PRODUKTER } = await lastTs('src/data/logoprodukter.ts')
 
 const idag = new Date().toISOString().slice(0, 10)
 
@@ -41,9 +42,9 @@ const faste = [
   { sti: '/arbeid', prioritet: '0.7', frekvens: 'monthly' },
   { sti: '/guider', prioritet: '0.7', frekvens: 'weekly' },
   { sti: '/logo', prioritet: '0.8', frekvens: 'monthly' },
-  { sti: '/om', prioritet: '0.6', frekvens: 'yearly' },
   { sti: '/kontakt', prioritet: '0.8', frekvens: 'yearly' },
   { sti: '/personvern', prioritet: '0.2', frekvens: 'yearly' },
+  { sti: '/vilkar/logo', prioritet: '0.2', frekvens: 'yearly' },
 ]
 
 const blokk = ({ sti, prioritet, frekvens, dato = idag }) =>
@@ -117,6 +118,21 @@ ${tilleggstjenester
 
 Første års domene er inkludert i alle pakkene. Deretter ca. 169 kr/år, som Vimzo fornyer.
 
+## Logoverktøyet
+
+Kunden lager logoen selv på ${SITE_URL}/logo, på norsk. Innlogging kreves; å designe koster ingenting.
+Verktøyet gir forslag med abstrakte symboler, bransjesymboler og monogram, tolv skrifttyper med åpen
+lisens, og viser logoen fotorealistisk på skilt, visittkort, vindu og klær.
+
+- ${PRODUKTER.logo.navn}: ${kr(PRODUKTER.logo.pris)} kr eks. mva. Alle logoversjoner (liggende, stående, symbol, navn)
+  i farger, svart, hvitt og to farger på mørk bakgrunn – som SVG og PDF for trykk, PNG opptil 4096 px og JPG.
+  Graveringsfil i én farge, fargekoder (HEX, RGB, CMYK, Adobe-palett), skriftfilene, favikon og webikoner.
+- ${PRODUKTER.profil.navn}: ${kr(PRODUKTER.profil.pris)} kr eks. mva. Alt over, pluss visuell profil som PDF,
+  filer til sosiale medier, e-postsignatur og bilder av logoen i bruk.
+- Filene lastes ned med en gang; betaling med faktura etterpå (14 dagers forfall).
+- Logoen kan velges i nettsidekalkulatoren på forsiden. Da faktureres den sammen med nettsiden, ikke før siden er ferdig.
+- Kunden får tidsubegrenset bruksrett. Symboler og skrifter har åpne lisenser, så det gis ikke enerett til selve symbolet.
+
 ## Tjenester
 
 ${tjenester.map((t) => `- ${t.navn}${t.gruppe === 'tillegg' ? ' (tillegg)' : ''}: ${t.tekst}`).join('\n')}
@@ -137,7 +153,7 @@ publisering og innmelding hos Google.
 - Driften er én pris uansett hva siden gjør, og dekker webhotell, domene, sikkerhetskopi og overvåking.
 - Endringer etter lansering faktureres med ${kr(timepris)} kr timen, per påbegynte halvtime.
 - Regneverktøy og kalkulatorer bygges for den enkelte bedriften og legges inn i siden, uten lisens eller abonnement på selve verktøyet.
-- Alt arbeid gjøres i Norge, på norsk, av Kim Sandvold.
+- Alt arbeid gjøres i Norge, på norsk.
 
 ## Viktige sider
 
@@ -146,7 +162,9 @@ publisering og innmelding hos Google.
 - [Arrangementssider](${SITE_URL}/arrangement): kortvarige sider til messer, konferanser og kampanjer
 - [Arbeid](${SITE_URL}/arbeid): leverte prosjekter
 - [Guider](${SITE_URL}/guider): fagartikler om nettsider, pris og AI-synlighet
-- [Lag logo](${SITE_URL}/logo): gratis logoverktøy, last ned SVG og PNG
+- [Lag logo](${SITE_URL}/logo): logoverktøy på norsk – design gratis etter innlogging, kjøp logo (${kr(PRODUKTER.logo.pris)} kr) eller logo med visuell profil (${kr(PRODUKTER.profil.pris)} kr)
+- [Kjøpsvilkår for logoverktøyet](${SITE_URL}/vilkar/logo)
+- [Maskinlesbare priser](${SITE_URL}/priser.json): alle priser som JSON, datert
 ${guider.map((g) => `- [${g.tittel}](${SITE_URL}/guider/${g.slug}): ${g.ingress}`).join('\n')}
 - [Kontakt](${SITE_URL}/kontakt): be om tilbud
 - [Fullt innhold](${SITE_URL}/llms-full.txt): alle guidene og svarene i ren tekst
@@ -160,6 +178,42 @@ Generert fra kildekoden ${idag}. Oppdateres automatisk ved hvert bygg.
 `
 
 await writeFile('public/llms.txt', llms, 'utf-8')
+
+// --- 2b. priser.json ---------------------------------------------------------
+//
+// Alle priser som maskinlesbar JSON, datert. Få nettsteder har dette, men det
+// er nøyaktig det en KI-assistent eller et sammenligningsverktøy trenger for å
+// sitere riktig pris i stedet for å gjette ut fra løpende tekst. Den lenkes fra
+// llms.txt og fra <head> (rel="alternate"), og genereres herfra så den aldri
+// kan avvike fra prisene på siden.
+
+const priser = {
+  kilde: `${SITE_URL}/priser`,
+  oppdatert: idag,
+  valuta: 'NOK',
+  mva: { inkludert: false, sats: 0.25, merknad: 'Alle beløp er eks. mva.' },
+  nettsider: pakker.map((p) => ({
+    navn: p.navn,
+    omfang: p.omfang,
+    for: p.for,
+    fra: p.pris.fra,
+    til: p.pris.til,
+    url: `${SITE_URL}/priser#${p.id}`,
+  })),
+  delbetaling: { antallManeder: ANTALL_AVDRAG },
+  drift: driftsnivaer.map((d) => ({ navn: d.navn, pris: d.pris, periode: d.periode, bindingstid: 'ingen' })),
+  timepris,
+  tillegg: tilleggstjenester.map((t) => ({ navn: t.navn, pris: t.pris, fraPris: !!t.fraPris, enhet: t.enhet ?? null })),
+  logoverktoy: {
+    url: `${SITE_URL}/logo`,
+    vilkar: `${SITE_URL}/vilkar/logo`,
+    produkter: Object.entries(PRODUKTER).map(([id, p]) => ({ id, navn: p.navn, pris: p.pris })),
+    betaling: 'Faktura etter nedlasting, 14 dagers forfall',
+  },
+}
+
+await writeFile('public/priser.json', JSON.stringify(priser, null, 2) + '\n', 'utf-8')
+console.log('[priser] public/priser.json oppdatert')
 
 // --- 3. llms-full.txt -------------------------------------------------------
 //
@@ -189,7 +243,7 @@ ${guider
     (g) => `## ${g.tittel}
 
 Kilde: ${SITE_URL}/guider/${g.slug}
-Forfatter: Kim Sandvold, Vimzo · Publisert ${g.publisert}${g.oppdatert ? ` · Oppdatert ${g.oppdatert}` : ''}
+Forfatter: Vimzo · Publisert ${g.publisert}${g.oppdatert ? ` · Oppdatert ${g.oppdatert}` : ''}
 
 **Kort svar:** ${g.kortsvar}
 

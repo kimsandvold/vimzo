@@ -9,7 +9,28 @@ Allow: /
 Disallow: /admin
 Disallow: /min-side
 
+# Robotene som henter innhold til KI-assistenter og KI-søk, ønsket velkommen
+# ved navn. «User-agent: *» over dekker dem allerede, men noen av dem leser
+# bare sin egen blokk – og en eksplisitt invitasjon koster ingenting.
+User-agent: GPTBot
+User-agent: OAI-SearchBot
+User-agent: ChatGPT-User
+User-agent: ClaudeBot
+User-agent: Claude-SearchBot
+User-agent: Claude-User
+User-agent: PerplexityBot
+User-agent: Perplexity-User
+User-agent: Google-Extended
+User-agent: Applebot-Extended
+User-agent: Bingbot
+User-agent: CCBot
+Allow: /
+Disallow: /admin
+Disallow: /min-side
+
 # Et kort sammendrag av hva nettstedet handler om, for språkmodeller:
 # https://vimzo.no/llms.txt
+# Hele innholdet som ren tekst: https://vimzo.no/llms-full.txt
+# Alle priser, maskinlesbart og datert: https://vimzo.no/priser.json
 
 Sitemap: https://vimzo.no/sitemap.xml

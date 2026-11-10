@@ -19,7 +19,7 @@
     <meta name="twitter:title" content="Vimzo – nettsider laget for din bedrift, med åpne priser" />
     <meta name="twitter:description" content="Se omtrent hva nettsiden din vil koste før du snakker med noen. Laget for din bedrift – domene, tekst, bilder og publisering – med fast pris etter en prat." />
     <meta name="twitter:image" content="https://vimzo.no/images/og/vimzo.png" />
-    <meta name="theme-color" content="#1C1813" />
+    <meta name="theme-color" content="#FFFFFF" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <!-- Geist er selvhostet (public/fonts/geist, OFL): sparer to tredjeparts-
@@ -32,6 +32,9 @@
       /* Grunnflate før JS tar over, så prerendret HTML ikke blinker hvitt. */
       html { background-color: #FBF7F0; color-scheme: light; }
     </style>
+    <!-- Maskinlesbare kilder for søkemotorer og KI-assistenter. -->
+    <link rel="alternate" type="text/plain" href="/llms.txt" title="Sammendrag for språkmodeller" />
+    <link rel="alternate" type="application/json" href="/priser.json" title="Priser (NOK, eks. mva.)" />
   </head>
   <body>
     <div id="root"></div>
