@@ -1,4 +1,5 @@
-import { Fragment, useId, useRef, useState } from 'react'
+import { Fragment, useEffect, useId, useRef, useState } from 'react'
+import { STARTSTEG, gaTil as stegGaTil, skalVidere, videreFra, type Stegtilstand } from '../../../lib/kalkulatorSteg'
 import styled, { css, keyframes } from 'styled-components'
 import Icon from '../../shared/Icon'
 import Estimat from './Estimat'
@@ -35,9 +36,9 @@ const STEG = ['Bransje', 'Omfang', 'Innhold', 'Verktøy', 'Bedrift'] as const
  * man trykker send.
  */
 export default function Kalkulator() {
-  const [steg, setSteg] = useState(0)
-  /** Hvilken vei forrige bytte gikk – steget glir inn fra den siden. */
-  const [retning, setRetning] = useState<1 | -1>(1)
+  /** Steg, lengste steg og retning – reglene står i src/lib/kalkulatorSteg.ts. */
+  const [tilstand, setTilstand] = useState<Stegtilstand>(STARTSTEG)
+  const { steg, retning } = tilstand
   const [svar, setSvar] = useState<Svar>(STARTSVAR)
   const navnId = useId()
   const stedId = useId()
@@ -66,9 +67,7 @@ export default function Kalkulator() {
    * igjen – det var det som gjorde flyten hakkete. Står toppen alt på
    * skjermen, rører vi ingenting; da ville et hopp bare vært uro.
    */
-  function gaTil(i: number) {
-    setRetning(i < steg ? -1 : 1)
-    setSteg(i)
+  function rullTilTopp() {
     const el = toppRef.current
     if (!el) return
     const navHoyde = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--nav-hoyde')) || 72
@@ -81,6 +80,13 @@ export default function Kalkulator() {
     }
   }
 
+  /** Kundens eget trykk – på et steg, «Neste» eller «Tilbake» – vinner alltid over en ventende «videre». */
+  function gaTil(i: number) {
+    window.clearTimeout(videre.current)
+    setTilstand((t) => stegGaTil(t, i, STEG.length))
+    rullTilTopp()
+  }
+
   /**
    * Videre av seg selv etter et valg som bare har ett svar.
    *
@@ -88,15 +94,27 @@ export default function Kalkulator() {
    * spørsmål man allerede har svart på, er det som gjør et skjema til et
    * skjema. Den korte pausen lar kunden se at valget ble tatt før steget
    * skifter – uten den føles det som om noe hoppet.
+   *
+   * Men bare første gang steget besvares. Har kunden gått tilbake for å bytte
+   * bransje, blir han stående – ellers ble han sendt til steg to fra steg fem.
+   * Og fyrer tidtakeren etter at kunden har flyttet seg selv, skjer ingenting.
    */
   const videre = useRef<number | undefined>(undefined)
-  function videreEtter(neste: number) {
+
+  function videreEtter(fra: number) {
     // Et lite dunk i hånda på telefoner som støtter det (Android). Ingen
     // lyd, ingen animasjon – bare bekreftelsen man kjenner fra en ekte knapp.
     navigator.vibrate?.(8)
     window.clearTimeout(videre.current)
-    videre.current = window.setTimeout(() => gaTil(neste), 320)
+    if (!skalVidere(tilstand, fra, STEG.length)) return
+    videre.current = window.setTimeout(() => {
+      setTilstand((t) => videreFra(t, fra, STEG.length))
+      rullTilTopp()
+    }, 320)
   }
+
+  // Ingen «videre» som fyrer etter at kalkulatoren er borte.
+  useEffect(() => () => window.clearTimeout(videre.current), [])
 
   /**
    * Vis oppsummeringen. Den sender ingenting før kunden selv trykker send.
@@ -146,7 +164,7 @@ export default function Kalkulator() {
                     aria-pressed={svar.bransje.id === b.id}
                     onClick={() => {
                       sett('bransje', b)
-                      videreEtter(1)
+                      videreEtter(0)
                     }}
                   >
                     {b.navn}
@@ -168,7 +186,7 @@ export default function Kalkulator() {
                     aria-pressed={svar.omfang === o.verdi}
                     onClick={() => {
                       sett('omfang', o.verdi)
-                      videreEtter(2)
+                      videreEtter(1)
                     }}
                   >
                     <Prikk aria-hidden="true" />
