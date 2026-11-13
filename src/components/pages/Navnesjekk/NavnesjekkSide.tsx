@@ -55,6 +55,7 @@ export default function NavnesjekkSide() {
   return (
     <>
       <Sidehode
+        motiv="sok"
         smuler={[{ navn: 'Navnesjekk' }]}
         stikkord="Gratis verktøy"
         tittel="Er firmanavnet ledig?"

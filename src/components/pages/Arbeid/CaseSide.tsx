@@ -42,6 +42,7 @@ function Sak({ sak }: { sak: (typeof cases)[number] }) {
   return (
     <>
       <Sidehode
+        motiv="galleri"
         smuler={[{ navn: 'Arbeid', sti: '/arbeid' }, { navn: sak.kunde }]}
         stikkord={`${sak.bransje} · ${sak.ar}`}
         tittel={sak.kunde}

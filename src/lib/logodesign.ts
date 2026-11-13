@@ -122,6 +122,15 @@ export async function merkSomKjopt(id: string, bestillingId: string, produkt: 'l
 /** Sant når filene er kundens – kjøpt i verktøyet eller frigitt med nettsiden. */
 export const erKundens = (d: Pick<LagretDesign, 'bestillingId' | 'frigitt'>) => !!d.bestillingId || d.frigitt
 
+/**
+ * Studioet for signatur og SoMe åpnes med logoen som har profilen – ellers
+ * den sist kjøpte, ellers den sist endrede (da vises det låst).
+ */
+export function velgStudiologo(liste: LagretDesign[] | null): LagretDesign | null {
+  const l = liste ?? []
+  return l.find((d) => d.frigitt || (d.bestillingId && d.produkt === 'profil')) ?? l.find(erKundens) ?? l[0] ?? null
+}
+
 /** Admin: frigi logoen til kunden, som del av nettsideprosjektet. */
 export async function frigiDesign(id: string, frigitt = true): Promise<void> {
   const [{ doc, serverTimestamp, updateDoc }, db] = await Promise.all([import('firebase/firestore'), hentDb()])

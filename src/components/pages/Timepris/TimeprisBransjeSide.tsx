@@ -72,6 +72,7 @@ export default function TimeprisBransjeSide() {
   return (
     <>
       <Sidehode
+        motiv="kalkulator"
         smuler={[{ navn: 'Timepriskalkulator', sti: '/timepris' }, { navn: profil.navn }]}
         stikkord="Gratis verktøy"
         tittel={profil.tittel}

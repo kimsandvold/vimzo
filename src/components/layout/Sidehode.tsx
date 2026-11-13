@@ -29,7 +29,10 @@ export default function Sidehode({
   ingress,
   handlinger,
   barn,
+  motiv = 'nettside',
 }: {
+  /** Hva arkene viser. Samme form overalt, men innholdet passer siden. */
+  motiv?: Motiv
   smuler?: Smule[]
   stikkord?: string
   tittel: ReactNode
@@ -80,7 +83,7 @@ export default function Sidehode({
             {ingress && <Ingress>{ingress}</Ingress>}
             {handlinger && <Handlinger>{handlinger}</Handlinger>}
           </Tekst>
-          <Stabel />
+          <Stabel motiv={motiv} />
         </Gitter>
 
         {barn && <Bunn>{barn}</Bunn>}
@@ -89,31 +92,200 @@ export default function Sidehode({
   )
 }
 
+export type Motiv =
+  | 'nettside'
+  | 'kalender'
+  | 'kalkulator'
+  | 'logo'
+  | 'sok'
+  | 'pris'
+  | 'galleri'
+  | 'guide'
+  | 'samtale'
+  | 'verktoy'
+
 /**
  * Tre ark i isometri: skisse, utkast, ferdig.
  *
  * De ligger i hvert sitt lag og puster forskjøvet, så stabelen kjennes
  * levende uten at noe beveger seg mer enn et par piksler. Det øverste arket
- * er det eneste med farge – en blå knapp, fordi det er der siden virker.
+ * er det eneste med farge – blått der siden «virker».
+ *
+ * Formen er den samme på alle undersider, så nettstedet henger sammen. Det
+ * som står PÅ arkene, følger siden: en kalender på fristkalenderen, en
+ * kalkyle på timeprisen, en logo i logoverktøyet. Man ser hva siden gjør
+ * før man har lest et ord.
  */
-function Stabel() {
+function Stabel({ motiv }: { motiv: Motiv }) {
   return (
     <Scene aria-hidden="true">
       <Plan>
         <Flis />
         {[0, 1, 2].map((i) => (
           <Ark key={i} $niva={i} style={{ '--i': i } as CSSProperties}>
-            <i className="linje" />
-            <i className="tittel" />
-            <i className="tekst" />
-            <i className="tekst kort" />
-            <i className="flate" />
-            <i className="knapp" />
+            <Arkinnhold motiv={motiv} />
           </Ark>
         ))}
       </Plan>
     </Scene>
   )
+}
+
+/** En strek eller flate på arket. `a` = aksent (blå), `m` = mørk – bare på det ferdige arket. */
+function L({ b, h = 8, a, m, r, flex }: { b: string; h?: number; a?: boolean; m?: boolean; r?: number; flex?: boolean }) {
+  return (
+    <i
+      className={[a && 'a', m && 'm'].filter(Boolean).join(' ') || undefined}
+      style={{ width: b, height: flex ? undefined : h, flex: flex ? 1 : undefined, borderRadius: r }}
+    />
+  )
+}
+
+function Arkinnhold({ motiv }: { motiv: Motiv }) {
+  switch (motiv) {
+    case 'kalender':
+      return (
+        <>
+          <L b="36%" />
+          <L b="64%" h={18} m />
+          <b className="rutenett kal">
+            {Array.from({ length: 15 }, (_, n) => (
+              <i key={n} className={n === 6 ? 'a' : undefined} />
+            ))}
+          </b>
+        </>
+      )
+    case 'kalkulator':
+      return (
+        <>
+          <L b="40%" />
+          <L b="70%" h={34} m />
+          {[0, 1, 2].map((n) => (
+            <b className="rad" key={n}>
+              <L b="44%" />
+              <L b="20%" />
+            </b>
+          ))}
+          <b className="rad auto">
+            <L b="34%" h={14} />
+            <L b="38%" h={26} r={999} a />
+          </b>
+        </>
+      )
+    case 'logo':
+      return (
+        <b className="midt">
+          <i className="a sirkel" />
+          <L b="64%" h={18} m />
+          <b className="rad">
+            <i className="a prikk" />
+            <i className="m prikk" />
+            <i className="prikk" />
+          </b>
+        </b>
+      )
+    case 'sok':
+      return (
+        <>
+          <L b="44%" />
+          <b className="felt">
+            <L b="54%" h={12} m />
+            <i className="a pille" />
+          </b>
+          {[0, 1, 2].map((n) => (
+            <b className="kortrad" key={n}>
+              <i className={n === 0 ? 'a prikk liten' : 'prikk liten'} />
+              <L b={`${68 - n * 10}%`} h={10} />
+            </b>
+          ))}
+        </>
+      )
+    case 'pris':
+      return (
+        <>
+          <L b="38%" />
+          <L b="56%" h={34} m />
+          {[0, 1, 2].map((n) => (
+            <b className="rad start" key={n}>
+              <i className="a prikk liten" />
+              <L b={`${70 - n * 12}%`} />
+            </b>
+          ))}
+          <b className="auto">
+            <L b="100%" h={26} r={999} a />
+          </b>
+        </>
+      )
+    case 'galleri':
+      return (
+        <>
+          <L b="56%" h={18} m />
+          <b className="rutenett fyll" style={{ gridTemplateColumns: 'repeat(2, 1fr)' }}>
+            <i className="a" />
+            <i />
+            <i />
+            <i />
+          </b>
+        </>
+      )
+    case 'guide':
+      return (
+        <>
+          <L b="36%" />
+          <L b="84%" h={18} m />
+          <L b="92%" />
+          <L b="70%" />
+          {[0, 1, 2].map((n) => (
+            <b className="rad start" key={n}>
+              <i className={n < 2 ? 'a boks' : 'boks'} />
+              <L b={`${74 - n * 12}%`} />
+            </b>
+          ))}
+        </>
+      )
+    case 'samtale':
+      return (
+        <>
+          <b className="boble">
+            <L b="64%" h={34} r={14} />
+          </b>
+          <b className="boble hoyre">
+            <L b="72%" h={44} r={14} a />
+          </b>
+          <b className="boble">
+            <L b="50%" h={28} r={14} />
+          </b>
+          <b className="felt auto">
+            <L b="56%" h={8} />
+            <i className="a pille" />
+          </b>
+        </>
+      )
+    case 'verktoy':
+      return (
+        <>
+          <L b="44%" />
+          <L b="72%" h={18} m />
+          <b className="rutenett fyll" style={{ gridTemplateColumns: 'repeat(2, 1fr)' }}>
+            <i className="a" />
+            <i />
+            <i />
+            <i />
+          </b>
+        </>
+      )
+    default:
+      return (
+        <>
+          <L b="40%" />
+          <L b="82%" h={18} m />
+          <L b="92%" />
+          <L b="64%" />
+          <L b="100%" flex r={10} />
+          <L b="46%" h={22} r={999} a />
+        </>
+      )
+  }
 }
 
 const Flate = styled.header`
@@ -250,21 +422,132 @@ const Ark = styled.div<{ $niva: number }>`
           0 2px 0 ${theme.colors.border};
       `}
 
+  /* Alt på arket er streker og flater. Skissen har stiplet omriss, utkastet
+     grå flater, og bare det ferdige arket får farge. */
   i {
     display: block;
+    flex: none;
     border-radius: 6px;
     background: ${({ $niva, theme }) => ($niva === 0 ? 'transparent' : theme.colors.border)};
     border: ${({ $niva, theme }) => ($niva === 0 ? `1.5px dashed ${theme.colors.borderStrong}` : '0')};
   }
 
-  .linje { height: 8px; width: 40%; border-radius: 4px; }
-  .tittel { height: 18px; width: 82%; margin-top: 8px;
-    ${({ $niva, theme }) => ($niva === 2 ? `background: ${theme.colors.ink};` : '')} }
-  .tekst { height: 8px; width: 92%; }
-  .kort { width: 64%; }
-  .flate { flex: 1; margin-top: 6px; border-radius: 10px; }
-  .knapp { height: 22px; width: 46%; border-radius: 999px;
-    ${({ $niva, theme }) => ($niva === 2 ? `background: ${theme.colors.accentVivid};` : '')} }
+  ${({ $niva, theme }) =>
+    $niva === 2
+      ? `
+        i.a { background: ${theme.colors.accentVivid}; }
+        i.m { background: ${theme.colors.ink}; }
+      `
+      : ''}
+
+  b {
+    display: flex;
+    gap: 8px;
+  }
+
+  .rad {
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .rad.start {
+    justify-content: flex-start;
+  }
+
+  .rutenett {
+    display: grid;
+    gap: 7px;
+    margin-top: 4px;
+
+    i {
+      width: auto;
+      min-height: 18px;
+      border-radius: 8px;
+    }
+  }
+
+  /* Kalenderen: tre uker, store ruter som fyller arket. */
+  .rutenett.kal {
+    flex: 1;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+  }
+
+  .rutenett.fyll {
+    flex: 1;
+    grid-auto-rows: 1fr;
+  }
+
+  .auto {
+    margin-top: auto;
+  }
+
+  .kortrad {
+    align-items: center;
+    gap: 10px;
+    padding: 9px 10px;
+    border-radius: 10px;
+    border: 1.5px ${({ $niva }) => ($niva === 0 ? 'dashed' : 'solid')} ${({ theme }) => theme.colors.border};
+  }
+
+  .skille {
+    height: 0;
+    margin: 2px 0;
+    border-top: 1.5px ${({ $niva }) => ($niva === 0 ? 'dashed' : 'solid')} ${({ theme }) => theme.colors.border};
+  }
+
+  .midt {
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .sirkel {
+    width: 92px;
+    height: 92px;
+    border-radius: 50%;
+  }
+
+  .prikk {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+  }
+
+  .prikk.liten {
+    width: 12px;
+    height: 12px;
+  }
+
+  .boks {
+    width: 14px;
+    height: 14px;
+    border-radius: 4px;
+  }
+
+  .felt {
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 10px 10px 14px;
+    border-radius: 999px;
+    border: 1.5px ${({ $niva }) => ($niva === 0 ? 'dashed' : 'solid')} ${({ theme }) => theme.colors.border};
+  }
+
+  .pille {
+    width: 46px;
+    height: 20px;
+    border-radius: 999px;
+  }
+
+  .boble {
+    display: flex;
+  }
+
+  .boble.hoyre {
+    justify-content: flex-end;
+  }
 `
 
 const Smuler = styled.nav`

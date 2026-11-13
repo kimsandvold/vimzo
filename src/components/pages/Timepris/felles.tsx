@@ -53,6 +53,15 @@ export const Prosa = styled.div`
     color: ${({ theme }) => theme.colors.inkMuted};
     line-height: 1.7;
   }
+
+  a {
+    color: ${({ theme }) => theme.colors.accent};
+    text-underline-offset: 3px;
+
+    &:hover {
+      color: ${({ theme }) => theme.colors.accentHover};
+    }
+  }
 `
 
 export const Bransjeliste = styled.nav`

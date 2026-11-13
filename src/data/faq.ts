@@ -65,6 +65,14 @@ export const faq: readonly Sporsmal[] = [
   },
   {
     tema: 'pris',
+    sporsmal: 'Hva om jeg ikke blir fornøyd?',
+    svar:
+      'Da betaler du ikke. Du ser den ferdige siden og godkjenner den før fakturaen kommer, og vi ' +
+      'retter til du er fornøyd. Deler du betalingen over tolv måneder, starter første avdrag først ' +
+      'når siden er godkjent.',
+  },
+  {
+    tema: 'pris',
     sporsmal: 'Kan jeg dele opp betalingen?',
     svar:
       'Ja. Beløpet kan deles over tolv måneder, med 0 kroner i oppstart. Det er ingen renter ' +

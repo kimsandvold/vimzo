@@ -51,6 +51,7 @@ function Artikkel({ guide }: { guide: Guide }) {
   return (
     <>
       <Sidehode
+        motiv="guide"
         smuler={[{ navn: 'Guider', sti: '/guider' }, { navn: guide.kategori }]}
         stikkord={guide.kategori}
         tittel={guide.tittel}

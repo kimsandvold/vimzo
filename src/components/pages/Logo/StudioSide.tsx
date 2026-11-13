@@ -1,7 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
 import styled, { css } from 'styled-components'
-import { KontoRamme, Dempet, Felt, Knapp } from '../Admin/felles'
+import { Dempet, Felt, Knapp } from '../Admin/felles'
+import MinSideRamme from '../MinSide/Ramme'
+import { useMinSide } from '../MinSide/kontekst'
+import type { Profil } from '../../../lib/profil'
 import { useAdmin as useKonto } from '../Admin/kontekst'
 import { OPPGRADERING, PRODUKTER } from '../../../data/logoprodukter'
 import Icon from '../../shared/Icon'
@@ -63,25 +66,49 @@ export default function StudioSide() {
   if (import.meta.env.DEV && erTest())
     return (
       <Testramme>
-        <Studio test bruker={{ epost: 'kari@fjordbakeriet.no', navn: 'Kari Nordmann' }} />
+        <Studio test visTittel bruker={{ epost: 'kari@fjordbakeriet.no', navn: 'Kari Nordmann' }} />
       </Testramme>
     )
   return (
-    <KontoRamme
-      seoTittel="Signatur og sosiale medier – Vimzo"
-      merke="Min side"
+    <MinSideRamme
+      seoTittel="Signatur og sosiale medier – Min side – Vimzo"
       ingress="Logg inn for å lage e-postsignatur og bilder til sosiale medier."
-      hjem={{ til: '/min-side', tekst: 'Min side' }}
-      tillatRegistrering
+      tittel="Signatur og sosiale medier"
+      undertittel="E-postsignatur og bilder til sosiale medier, laget av logoen din."
     >
       <InnloggetStudio />
-    </KontoRamme>
+    </MinSideRamme>
   )
 }
 
+/**
+ * Den innloggede: venter på profilen fra Min side, så signaturen kan fylles
+ * ut med navn, tittel og kontaktinfo derfra første gang den åpnes.
+ */
 function InnloggetStudio() {
   const { bruker } = useKonto()
-  return <Studio bruker={{ epost: bruker.email ?? '', navn: bruker.displayName ?? '' }} />
+  const { profil } = useMinSide()
+  if (profil === undefined) return <Dempet>Laster …</Dempet>
+  return (
+    <Studio
+      bruker={{ epost: bruker.email ?? '', navn: bruker.displayName ?? '' }}
+      profilforslag={profil ? signaturFraProfil(profil) : {}}
+    />
+  )
+}
+
+/** Profilen på Min side, som felt i signaturen. Tomme felt utelates. */
+function signaturFraProfil(p: Profil): Partial<Signaturdata> {
+  const b = p.bedrift
+  const felt: Partial<Signaturdata> = {
+    navn: p.person.navn,
+    tittel: p.person.tittel,
+    telefon: p.person.telefon || b?.telefon || '',
+    epost: p.person.epost || b?.epost || '',
+    nettside: b?.nettside ?? '',
+    adresse: b ? [b.adresse, [b.postnr, b.poststed].filter(Boolean).join(' ')].filter(Boolean).join(', ') : '',
+  }
+  return Object.fromEntries(Object.entries(felt).filter(([, v]) => v)) as Partial<Signaturdata>
 }
 
 /** Hva kunden har: profilen (alt er åpent), bare logoen, eller et utkast. */
@@ -140,7 +167,19 @@ function testgrunnlag(): Grunnlag {
   }
 }
 
-function Studio({ bruker, test = false }: { bruker: { epost: string; navn: string }; test?: boolean }) {
+function Studio({
+  bruker,
+  profilforslag = {},
+  test = false,
+  visTittel = false,
+}: {
+  bruker: { epost: string; navn: string }
+  /** Fra profilen på Min side – går foran det som står på bestillingen. */
+  profilforslag?: Partial<Signaturdata>
+  test?: boolean
+  /** Bare i testrammen – på Min side står tittelen i sidehodet. */
+  visTittel?: boolean
+}) {
   const { id = '' } = useParams()
   const [grunnlag, setGrunnlag] = useState<Grunnlag | null | 'feil'>(() => (import.meta.env.DEV && test ? testgrunnlag() : null))
   const [fane, setFane] = useState<'signatur' | 'some'>('signatur')
@@ -200,8 +239,7 @@ function Studio({ bruker, test = false }: { bruker: { epost: string; navn: strin
       <LogoFonter />
       <Topp>
         <div>
-          <Tilbake to="/min-side">← Mine logoer</Tilbake>
-          <h1>Signatur og sosiale medier</h1>
+          {visTittel && <h1>Signatur og sosiale medier</h1>}
           <p>{grunnlag.tilstand === 'apen' ? `Alt i profilen til ${bedrift}, klart til bruk.` : `Slik blir det med logoen til ${bedrift}.`}</p>
         </div>
         <Faner role="tablist" aria-label="Velg verktøy">
@@ -239,7 +277,13 @@ function Studio({ bruker, test = false }: { bruker: { epost: string; navn: strin
 
       <Lukket $lukket={grunnlag.tilstand !== 'apen'} inert={grunnlag.tilstand !== 'apen'} aria-hidden={grunnlag.tilstand !== 'apen'}>
         {fane === 'signatur' ? (
-          <Signatur id={id} g={grunnlag} epost={bruker.epost} visningsnavn={bruker.navn} test={test} />
+          <Signatur
+            id={id}
+            g={{ ...grunnlag, forslag: { ...grunnlag.forslag, ...profilforslag } }}
+            epost={bruker.epost}
+            visningsnavn={bruker.navn}
+            test={test}
+          />
         ) : (
           <Some g={grunnlag} />
         )}
@@ -806,8 +850,8 @@ const Topp = styled.header`
   flex-wrap: wrap;
   align-items: flex-end;
   justify-content: space-between;
-  gap: 1.25rem 2rem;
-  margin-bottom: clamp(1.5rem, 3vw, 2.5rem);
+  gap: 1rem 2rem;
+  margin-bottom: 1.25rem;
 
   h1 {
     margin: 0.5rem 0 0.35rem;
@@ -819,19 +863,8 @@ const Topp = styled.header`
 
   p {
     margin: 0;
-    font-size: var(--fs-lead);
+    font-size: var(--fs-body);
     color: ${({ theme }) => theme.colors.inkMuted};
-  }
-`
-
-const Tilbake = styled(Link)`
-  font-size: var(--fs-small);
-  font-weight: 500;
-  color: ${({ theme }) => theme.colors.inkMuted};
-  text-decoration: none;
-
-  &:hover {
-    color: ${({ theme }) => theme.colors.ink};
   }
 `
 
@@ -839,7 +872,7 @@ const Faner = styled.div`
   display: inline-flex;
   padding: 4px;
   border-radius: ${({ theme }) => theme.borderRadius.pill};
-  background: ${({ theme }) => theme.colors.sunken};
+  background: ${({ theme }) => theme.colors.neutral[200]};
 
   @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
     width: 100%;
@@ -884,9 +917,15 @@ const Arbeidsflate = styled.div<{ $some?: boolean }>`
   }
 `
 
+/* Hvitt kort: feltene er grå, og Min side står på grå bakgrunn. */
 const Skjema = styled.form`
   display: grid;
+  align-content: start;
   gap: 1rem;
+  padding: clamp(1.1rem, 2vw, 1.5rem);
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  border-radius: ${({ theme }) => theme.borderRadius.medium};
+  background: ${({ theme }) => theme.colors.surface};
 `
 
 const To = styled.div`
@@ -1098,17 +1137,18 @@ const Skjelett = styled.div`
 `
 
 const Profilsett = styled.section`
-  margin-top: clamp(3rem, 6vw, 5rem);
+  margin-top: 2.5rem;
 
   h2 {
-    margin: 0 0 0.35rem;
-    font-size: var(--fs-title);
+    margin: 0 0 0.25rem;
+    font-size: var(--fs-body);
     font-weight: 600;
   }
 
   > p {
-    margin: 0 0 1.5rem;
+    margin: 0 0 1rem;
     color: ${({ theme }) => theme.colors.inkMuted};
+    font-size: var(--fs-small);
   }
 `
 

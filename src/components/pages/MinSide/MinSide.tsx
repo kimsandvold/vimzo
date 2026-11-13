@@ -1,557 +1,530 @@
-import { useEffect, useState } from 'react'
-import styled from 'styled-components'
-import { KontoRamme, Dempet, IngenTilgang, Knapp, Lenkeknapp, Panel, Feil } from '../Admin/felles'
-import { useAdmin as useKonto } from '../Admin/kontekst'
-import { dato, kr } from '../Admin/format'
-import Meldinger from '../Admin/Meldinger'
-import { godtaTilbud, lyttMineProsjekter } from '../../../lib/prosjekter'
-import { varsleVimzo } from '../../../lib/emailjs'
-import { KUNDESTATUS, STEG, type Prosjekt } from '../../../data/prosjekt'
-import { driftAktiv } from '../../../data/saker'
-import MineLogoer from './MineLogoer'
+import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
+import styled from 'styled-components'
+import { useAdmin as useKonto } from '../Admin/kontekst'
+import { lyttMineProsjekter } from '../../../lib/prosjekter'
+import { KUNDESTATUS, type Prosjekt } from '../../../data/prosjekt'
+import { dagerTil, ettArFrem, fristerFor, iDag, type Frist } from '../../../lib/frister'
+import { lastNedIcs } from '../../../lib/ics'
+import { erKundens, velgStudiologo } from '../../../lib/logodesign'
+import { fristlenke, formaterOrgnr, selskapsform } from '../../../lib/profil'
+import { Knapp } from '../../../ui'
+import Icon, { type IkonNavn } from '../../shared/Icon'
+import MinSideRamme from './Ramme'
+import { useMinSide } from './kontekst'
+import { Etikett, Flate } from './stil'
 
 /**
- * Min side – kundens eget område.
+ * Min side – oversikten.
  *
- * Kunden logger inn med e-postadressen fra henvendelsen, og ser prosjektene
- * som står på den: hvor det står, tilbudet, fakturaen og en meldingstråd med
- * Vimzo. Tilgangen gis fra admin («Gi kundetilgang»); en konto uten prosjekter
- * ser bare at det ikke finnes noe her ennå.
+ * En arbeidsflate, ikke en forside: tre nøkkeltall øverst, så de kommende
+ * fristene ved siden av profilen og snarveiene. Alt som er mer enn et blikk,
+ * ligger én klikk unna i sidemenyen.
  */
 export default function MinSide() {
   return (
-    <KontoRamme
-      seoTittel="Min side – Vimzo"
-      merke="Min side"
-      ingress="Logoene dine og nettsideprosjektet ditt hos Vimzo, samlet på ett sted."
-      hjem={{ til: '/min-side', tekst: 'Min side' }}
-      lenker={[{ til: '/logo', tekst: 'Lag logo' }]}
-      tillatRegistrering
-    >
+    <MinSideRamme seoTittel="Min side – Vimzo" tittel={<Hilsen />} undertittel={<Dato />}>
       <Oversikt />
-    </KontoRamme>
+    </MinSideRamme>
   )
 }
 
-/**
- * Oversikten: en hilsen, så logoene, så nettsiden. Logoene står først fordi
- * de fleste som har konto her, har den for logoverktøyets skyld – et
- * nettsideprosjekt får man først etter en prat.
- */
+function Hilsen() {
+  const { bruker } = useKonto()
+  const { profil } = useMinSide()
+  const fornavn = (profil?.person.navn || bruker.displayName || '').trim().split(/\s+/)[0]
+  return <>{fornavn ? `Hei, ${fornavn}` : 'Oversikt'}</>
+}
+
+function Dato() {
+  const d = new Intl.DateTimeFormat('nb-NO', { weekday: 'long', day: 'numeric', month: 'long' }).format(new Date())
+  return <>{d.charAt(0).toUpperCase() + d.slice(1)}</>
+}
+
+const fmt = (t: string, o: Intl.DateTimeFormatOptions) => {
+  const [a, m, d] = t.split('-').map(Number)
+  return new Intl.DateTimeFormat('nb-NO', { timeZone: 'UTC', ...o }).format(new Date(Date.UTC(a, m - 1, d)))
+}
+
+function nar(dager: number): string {
+  if (dager === 0) return 'i dag'
+  if (dager === 1) return 'i morgen'
+  return `om ${dager} dager`
+}
+
 function Oversikt() {
   const { bruker } = useKonto()
-  const fornavn = (bruker.displayName || '').trim().split(/\s+/)[0]
-  return (
-    <>
-      <Velkommen>
-        <h1>{fornavn ? `Hei, ${fornavn}` : 'Min side'}</h1>
-        <p>Logoene dine og prosjektet ditt hos Vimzo, samlet på ett sted.</p>
-      </Velkommen>
-      <MineLogoer />
-      <section aria-labelledby="nettsiden">
-        <Seksjonstittel id="nettsiden">Nettsiden din</Seksjonstittel>
-        <MineProsjekter />
-      </section>
-    </>
-  )
-}
-
-function MineProsjekter() {
-  const { bruker, loggUt } = useKonto()
-  const [prosjekter, setProsjekter] = useState<Prosjekt[] | null>(null)
-  const [feil, setFeil] = useState<Error | null>(null)
-  const [valgt, setValgt] = useState<string | null>(null)
+  const { profil, logoer } = useMinSide()
+  const [prosjekter, settProsjekter] = useState<Prosjekt[] | null>(null)
 
   useEffect(() => {
     let stopp = () => {}
     let aktiv = true
-    lyttMineProsjekter(bruker.email ?? '', setProsjekter, setFeil).then((s) => (aktiv ? (stopp = s) : s()))
+    lyttMineProsjekter(bruker.email ?? '', settProsjekter, () => settProsjekter([])).then((s) =>
+      aktiv ? (stopp = s) : s(),
+    )
     return () => {
       aktiv = false
       stopp()
     }
   }, [bruker.email])
 
-  if (feil) return <IngenTilgang feil={feil} />
-  if (!prosjekter) return <Dempet>Henter prosjektene dine …</Dempet>
-
-  if (prosjekter.length === 0)
-    return (
-      <Tomt>
-        <div>
-          <h3>Trenger bedriften en nettside?</h3>
-          <p>
-            Svar på noen raske spørsmål, så ser du hva den koster – før du snakker med noen. Når vi har
-            tatt en prat, følger du prosjektet her.
-          </p>
-          <Tomknapper>
-            <Hovedlenke to="/">Se hva den koster</Hovedlenke>
-            <Sekundarlenke to="/kontakt">Ta en prat</Sekundarlenke>
-          </Tomknapper>
-        </div>
-        <small>
-          Har du alt et prosjekt hos oss? Det vises på e-postadressen du oppga – du er logget inn som{' '}
-          <strong>{bruker.email}</strong>. <Lenkeknapp onClick={loggUt}>Bytt konto</Lenkeknapp>
-        </small>
-      </Tomt>
-    )
-
-  const aktivt = prosjekter.find((p) => p.id === valgt) ?? prosjekter[0]
-
-  return (
-    <>
-      {prosjekter.length > 1 && (
-        <Velger>
-          {prosjekter.map((p) => (
-            <Valg key={p.id} $valgt={p.id === aktivt.id} onClick={() => setValgt(p.id)}>
-              {p.tittel}
-            </Valg>
-          ))}
-        </Velger>
-      )}
-      <Prosjektvisning prosjekt={aktivt} />
-    </>
+  const bedrift = profil?.bedrift ?? null
+  const valg = profil?.frister ?? null
+  const form = bedrift ? selskapsform(bedrift.formkode) : null
+  const idag = iDag()
+  const frister = useMemo<Frist[]>(
+    () => (form && valg ? fristerFor({ form, ...valg }, idag, ettArFrem(idag)) : []),
+    [form, valg, idag],
   )
-}
-
-function Prosjektvisning({ prosjekt: p }: { prosjekt: Prosjekt }) {
-  const { bruker } = useKonto()
-  const navn = bruker.displayName || bruker.email || 'Kunden'
-  const avsluttet = p.status === 'avvist' || p.status === 'lukket'
-
-  const varsle = (emne: string, melding: string) =>
-    varsleVimzo({
-      emne,
-      navn,
-      bedrift: p.tittel,
-      epost: bruker.email ?? '',
-      telefon: '',
-      melding,
-      brief: `Åpne saken i admin: https://vimzo.no/admin/sak/${p.id}`,
-    })
+  const neste = frister[0] ?? null
+  const studio = velgStudiologo(logoer)
+  const kjopt = (logoer ?? []).filter(erKundens).length
+  const prosjekt = prosjekter?.[0] ?? null
+  const fristside = bedrift && valg ? fristlenke(bedrift, valg, '/min-side/verktoy/frister') : '/min-side/verktoy/frister'
 
   return (
     <>
-      <Hode>
-        <h1>{p.tittel}</h1>
-        <Status $avsluttet={avsluttet}>{KUNDESTATUS[p.status]}</Status>
-      </Hode>
+      {profil !== undefined && !profil?.fullfort && (
+        <Oppstart>
+          <div>
+            <strong>Fyll inn profilen – så blir alt her ditt</strong>
+            <p>Orgnummeret henter resten fra Brønnøysund. Da får du fristene her, og signaturen fyller seg selv.</p>
+          </div>
+          <Knapp til="/min-side/profil" ikon="pilHoyre">
+            Fyll inn profilen
+          </Knapp>
+        </Oppstart>
+      )}
 
-      {!avsluttet && <Fremdrift prosjekt={p} />}
+      <Nokkeltall>
+        <Tall to={fristside}>
+          <Etikett>Neste frist</Etikett>
+          {neste ? (
+            <>
+              <strong data-snart={dagerTil(idag, neste.dato) <= 7 ? '' : undefined}>
+                {nar(dagerTil(idag, neste.dato)).replace(/^./, (c) => c.toUpperCase())}
+              </strong>
+              <span>
+                {neste.tittel} · {fmt(neste.dato, { weekday: 'short', day: 'numeric', month: 'short' })}
+              </span>
+            </>
+          ) : (
+            <>
+              <strong>–</strong>
+              <span>{bedrift ? 'Ingen frister funnet' : 'Legg inn bedriften for å se dem'}</span>
+            </>
+          )}
+        </Tall>
+        <Tall to="/min-side/logoer">
+          <Etikett>Logoer</Etikett>
+          <strong>{logoer === null ? '…' : logoer.length}</strong>
+          <span>
+            {logoer && logoer.length > 0
+              ? `${kjopt} kjøpt · ${logoer.length - kjopt} utkast`
+              : 'Lag din første på et par minutter'}
+          </span>
+        </Tall>
+        <Tall to="/min-side/nettside">
+          <Etikett>Nettsiden</Etikett>
+          <strong>{prosjekt ? KUNDESTATUS[prosjekt.status] : prosjekter === null ? '…' : 'Ingen ennå'}</strong>
+          <span>{prosjekt ? prosjekt.tittel : 'Se hva en nettside koster'}</span>
+        </Tall>
+      </Nokkeltall>
 
-      <Rutenett>
-        <Spalte>
-          {p.tilbud && <Tilbud prosjekt={p} varsle={varsle} />}
-          {p.faktura && <Faktura prosjekt={p} />}
-          <Panel>
-            <h2>Meldinger</h2>
-            <Meldinger
-              prosjektId={p.id}
-              meg="kunde"
-              navn={navn}
-              vedSendt={(tekst) => varsle(`Ny melding fra ${p.tittel} på Min side`, tekst)}
-            />
-          </Panel>
-        </Spalte>
-        <Spalte>
-          <Panel>
-            <h2>Oversikt</h2>
-            <Fakta>
-              <dt>Status</dt>
-              <dd>{KUNDESTATUS[p.status]}</dd>
-              {p.forventetLevering && (
-                <>
-                  <dt>Forventet levering</dt>
-                  <dd>{dato(p.forventetLevering)}</dd>
-                </>
-              )}
-              {p.drift && (
-                <>
-                  <dt>Drift</dt>
-                  <dd>
-                    {kr(p.drift.manedspris)}/mnd · {driftAktiv(p.drift) ? `fra ${dato(p.drift.fra)}` : 'ikke aktiv'}
-                  </dd>
-                </>
-              )}
-            </Fakta>
-          </Panel>
-          <Panel>
-            <h2>Tidslinje</h2>
-            <Tidslinje>
-              {[...p.tidslinje].reverse().map((h, i) => (
-                <li key={`${h.status}-${h.tid}-${i}`}>
-                  <strong>{KUNDESTATUS[h.status]}</strong>
-                  <span>{dato(h.tid)}</span>
+      <ToKolonner>
+        <Flate>
+          <Korthode>
+            <h2>Kommende frister</h2>
+            {frister.length > 0 && <Link to={fristside}>Hele året →</Link>}
+          </Korthode>
+          {frister.length > 0 ? (
+            <>
+              <Fristliste>
+                {frister.slice(0, 6).map((f) => {
+                  const dager = dagerTil(idag, f.dato)
+                  return (
+                    <li key={f.id}>
+                      <Dag>
+                        <b>{Number(f.dato.slice(8))}</b>
+                        <span>{fmt(f.dato, { month: 'short' }).replace('.', '')}</span>
+                      </Dag>
+                      <div>
+                        <a href={f.lenke} target="_blank" rel="noopener noreferrer">
+                          {f.tittel}
+                        </a>
+                        <p>{f.hva}</p>
+                      </div>
+                      <Merke data-snart={dager <= 7 ? '' : undefined}>{nar(dager)}</Merke>
+                    </li>
+                  )
+                })}
+              </Fristliste>
+              <Bunnlinje>
+                <Knapp variant="myk" ikon="pilNed" onClick={() => lastNedIcs(frister, bedrift?.navn ?? 'bedrift')}>
+                  Legg alle i kalenderen
+                </Knapp>
+                <span>{frister.length} frister de neste tolv månedene</span>
+              </Bunnlinje>
+            </>
+          ) : (
+            <Tomt>
+              <Icon navn="klokke" storrelse={22} tykkelse={1.8} />
+              <p>
+                {bedrift && !form
+                  ? 'Fristkalenderen har foreløpig regler for enkeltpersonforetak og aksjeselskap.'
+                  : 'Legg inn bedriften i profilen, så ser du mva, lønn, skatt og årsoppgjør her – flyttet riktig rundt helger og helligdager.'}
+              </p>
+              {!bedrift && <Link to="/min-side/profil">Legg inn bedriften →</Link>}
+            </Tomt>
+          )}
+        </Flate>
+
+        <Hoyre>
+          <Flate>
+            <Korthode>
+              <h2>Profilen</h2>
+              <Link to="/min-side/profil">{profil?.fullfort ? 'Endre' : 'Fyll inn'}</Link>
+            </Korthode>
+            {profil?.fullfort ? (
+              <Profilinfo>
+                {bedrift && (
+                  <>
+                    <strong>{bedrift.navn}</strong>
+                    {bedrift.orgnr && <span>Org.nr. {formaterOrgnr(bedrift.orgnr)}</span>}
+                  </>
+                )}
+                <span>
+                  {profil.person.navn}
+                  {profil.person.tittel && `, ${profil.person.tittel.toLowerCase()}`}
+                </span>
+                {profil.person.telefon && <span>{profil.person.telefon}</span>}
+                {(profil.person.epost || bedrift?.epost) && <span>{profil.person.epost || bedrift?.epost}</span>}
+              </Profilinfo>
+            ) : (
+              <Profilinfo>
+                <span>Navn, kontaktinfo og bedriften – brukes i signaturen, fristene og på tilbud.</span>
+              </Profilinfo>
+            )}
+          </Flate>
+
+          <Flate>
+            <Korthode>
+              <h2>Snarveier</h2>
+            </Korthode>
+            <Snarveier>
+              {(
+                [
+                  ['/logo', 'pluss', 'Lag ny logo'],
+                  [studio ? `/min-side/studio/${studio.id}` : '/logo', 'epost', 'E-postsignatur'],
+                  ['/min-side/verktoy/timepris' + (form ? `?drift=${form}` : ''), 'graf', 'Regn ut timepris'],
+                  ['/navnesjekk', 'sok', 'Sjekk et firmanavn'],
+                ] as Array<[string, IkonNavn, string]>
+              ).map(([til, ikon, navn]) => (
+                <li key={navn}>
+                  <Link to={til}>
+                    <Icon navn={ikon} storrelse={17} tykkelse={1.8} />
+                    {navn}
+                  </Link>
                 </li>
               ))}
-              {p.tilbudGodtatt && (
-                <li>
-                  <strong>Du godtok tilbudet</strong>
-                  <span>{dato(p.tilbudGodtatt)}</span>
-                </li>
-              )}
-              <li>
-                <strong>Henvendelsen kom inn</strong>
-              </li>
-            </Tidslinje>
-          </Panel>
-        </Spalte>
-      </Rutenett>
+            </Snarveier>
+          </Flate>
+        </Hoyre>
+      </ToKolonner>
     </>
   )
 }
 
-/** Fem steg fra mottatt til betalt, med det kunden står på uthevet. */
-function Fremdrift({ prosjekt }: { prosjekt: Prosjekt }) {
-  const her = STEG.findIndex((s) => s.statuser.includes(prosjekt.status))
-  return (
-    <Steg aria-label="Fremdrift">
-      {STEG.map((s, i) => (
-        <li key={s.navn} data-tilstand={i < her ? 'ferdig' : i === her ? 'her' : 'senere'} aria-current={i === her ? 'step' : undefined}>
-          <span aria-hidden="true">{i < her ? '✓' : i + 1}</span>
-          {s.navn}
-        </li>
-      ))}
-    </Steg>
-  )
-}
+/* ------------------------------------------------------------------ */
+/* Stil                                                                */
+/* ------------------------------------------------------------------ */
 
-function Tilbud({ prosjekt: p, varsle }: { prosjekt: Prosjekt; varsle: (emne: string, melding: string) => void }) {
-  const [lagrer, setLagrer] = useState(false)
-  const [feil, setFeil] = useState('')
-  const kanGodta = !p.tilbudGodtatt && p.status === 'tilbud'
-
-  async function godta() {
-    if (!confirm(`Godta tilbudet på ${kr(p.tilbud!.belop)} eks. mva.?`)) return
-    setLagrer(true)
-    setFeil('')
-    try {
-      await godtaTilbud(p.id)
-      varsle(`${p.tittel} godtok tilbudet`, `Tilbudet på ${kr(p.tilbud!.belop)} er godtatt på Min side.`)
-    } catch (e) {
-      console.error(e)
-      setFeil('Det gikk ikke å godta tilbudet akkurat nå. Prøv igjen, eller skriv til oss.')
-    } finally {
-      setLagrer(false)
-    }
-  }
-
-  return (
-    <Panel>
-      <h2>Tilbud</h2>
-      <Belop>
-        {kr(p.tilbud!.belop)} <small>eks. mva.</small>
-      </Belop>
-      {p.tilbud!.sendt && <Dempet as="p" style={{ margin: '0.25rem 0 0', fontSize: '0.875rem' }}>Sendt {dato(p.tilbud!.sendt)}</Dempet>}
-      {p.tilbudsbeskrivelse && <Beskrivelse>{p.tilbudsbeskrivelse}</Beskrivelse>}
-      {p.tilbudGodtatt ? (
-        <Godtatt role="status">✓ Du godtok tilbudet {dato(p.tilbudGodtatt)}. Vi tar kontakt om oppstart.</Godtatt>
-      ) : kanGodta ? (
-        <Knapp $hoved onClick={godta} disabled={lagrer} style={{ marginTop: '1rem' }}>
-          {lagrer ? 'Lagrer …' : 'Godta tilbudet'}
-        </Knapp>
-      ) : null}
-      {feil && <Feil role="alert">{feil}</Feil>}
-    </Panel>
-  )
-}
-
-function Faktura({ prosjekt: p }: { prosjekt: Prosjekt }) {
-  const f = p.faktura!
-  return (
-    <Panel>
-      <h2>Faktura</h2>
-      <Belop>
-        {kr(f.belop)} <small>eks. mva.</small>
-      </Belop>
-      <Fakta style={{ marginTop: '0.75rem' }}>
-        {f.dato && (
-          <>
-            <dt>Fakturert</dt>
-            <dd>{dato(f.dato)}</dd>
-          </>
-        )}
-        <dt>Status</dt>
-        <dd>{f.betalt ? `Betalt ${dato(f.betalt)}` : 'Ikke betalt ennå'}</dd>
-      </Fakta>
-    </Panel>
-  )
-}
-
-/* -------------------------------------------------------------------- stil */
-
-const Velkommen = styled.div`
-  margin: clamp(1rem, 3vw, 2rem) 0 clamp(2rem, 4vw, 3rem);
-
-  h1 {
-    margin: 0;
-    font-size: var(--fs-heading);
-    letter-spacing: var(--ls-heading);
-    line-height: 1.05;
-  }
-
-  p {
-    margin: 0.6rem 0 0;
-    font-size: var(--fs-lead);
-    color: ${({ theme }) => theme.colors.inkMuted};
-  }
-`
-
-const Seksjonstittel = styled.h2`
-  margin: 0 0 1rem;
-  font-size: var(--fs-title);
-  letter-spacing: var(--ls-title);
-`
-
-/** Tom tilstand for nettsiden: en invitasjon, ikke en feilmelding. */
-const Tomt = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  padding: clamp(1.5rem, 4vw, 2.5rem);
-  border-radius: 20px;
-  background: ${({ theme }) => theme.colors.sunken};
-
-  h3 {
-    margin: 0 0 0.5rem;
-    font-size: var(--fs-lead);
-    letter-spacing: var(--ls-lead);
-  }
-
-  p {
-    max-width: 52ch;
-    margin: 0;
-    line-height: 1.6;
-    color: ${({ theme }) => theme.colors.inkMuted};
-  }
-
-  small {
-    padding-top: 1.25rem;
-    border-top: 1px solid ${({ theme }) => theme.colors.border};
-    font-size: var(--fs-small);
-    line-height: 1.6;
-    color: ${({ theme }) => theme.colors.inkSubtle};
-  }
-`
-
-const Tomknapper = styled.div`
+const Oppstart = styled.div`
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-top: 1.25rem;
-`
-
-const Hovedlenke = styled(Link)`
-  display: inline-flex;
   align-items: center;
-  min-height: 44px;
-  padding: 0 1.25rem;
-  border-radius: 999px;
-  background: ${({ theme }) => theme.colors.accentVivid};
-  color: ${({ theme }) => theme.colors.accentOn};
-  font-weight: 500;
-  text-decoration: none;
+  justify-content: space-between;
+  gap: 1rem 1.5rem;
+  margin-bottom: 1rem;
+  padding: 1.1rem 1.25rem;
+  border-radius: ${({ theme }) => theme.borderRadius.medium};
+  background: ${({ theme }) => theme.colors.accentSoft};
+  color: ${({ theme }) => theme.colors.accentInk};
 
-  &:hover {
-    background: ${({ theme }) => theme.colors.accentVividHover};
+  strong {
+    font-size: var(--fs-body);
+    font-weight: 600;
+  }
+
+  p {
+    margin: 0.2rem 0 0;
+    font-size: var(--fs-small);
   }
 `
 
-const Sekundarlenke = styled(Link)`
-  display: inline-flex;
-  align-items: center;
-  min-height: 44px;
-  padding: 0 1.25rem;
-  border-radius: 999px;
+const Nokkeltall = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+
+  /* På telefon: en rad man sveiper i, i stedet for tre kort under hverandre. */
+  @media (max-width: 760px) {
+    grid-template-columns: none;
+    grid-auto-flow: column;
+    grid-auto-columns: 72%;
+    margin: 0 calc(-1 * clamp(1rem, 3vw, 2rem));
+    padding: 0 clamp(1rem, 3vw, 2rem);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    > * {
+      scroll-snap-align: start;
+    }
+  }
+`
+
+const Tall = styled(Link)`
+  display: grid;
+  align-content: start;
+  padding: 1.1rem 1.25rem;
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  border-radius: ${({ theme }) => theme.borderRadius.medium};
   background: ${({ theme }) => theme.colors.surface};
   color: ${({ theme }) => theme.colors.ink};
-  font-weight: 500;
   text-decoration: none;
-`
+  transition: border-color ${({ theme }) => theme.transitions.default};
 
-const Velger = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-  margin-bottom: 1.25rem;
-`
+  ${Etikett} {
+    margin-bottom: 0.4rem;
+  }
 
-const Valg = styled.button<{ $valgt: boolean }>`
-  padding: 0.4rem 0.8rem;
-  border: 1px solid ${({ theme, $valgt }) => ($valgt ? theme.colors.ink : theme.colors.border)};
-  border-radius: ${({ theme }) => theme.borderRadius.pill};
-  background: ${({ theme, $valgt }) => ($valgt ? theme.colors.ink : theme.colors.surface)};
-  color: ${({ theme, $valgt }) => ($valgt ? theme.colors.inkInverted : theme.colors.ink)};
-  font-family: inherit;
-  font-size: var(--fs-small);
-  font-weight: 600;
-  cursor: pointer;
-`
-
-const Hode = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.75rem 1rem;
-  margin-bottom: 1.25rem;
-
-  h1 {
-    margin: 0;
+  strong {
+    overflow: hidden;
     font-size: var(--fs-title);
-  }
-`
-
-const Status = styled.span<{ $avsluttet: boolean }>`
-  padding: 0.25rem 0.7rem;
-  border-radius: ${({ theme }) => theme.borderRadius.pill};
-  background: ${({ theme, $avsluttet }) => ($avsluttet ? theme.colors.sunken : theme.colors.successSoft)};
-  color: ${({ theme, $avsluttet }) => ($avsluttet ? theme.colors.inkSubtle : theme.colors.success)};
-  font-size: var(--fs-small);
-  font-weight: 600;
-`
-
-const Steg = styled.ol`
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 0.5rem;
-  margin: 0 0 1.5rem;
-  padding: 0;
-  list-style: none;
-
-  li {
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
-    padding-top: 0.6rem;
-    border-top: 3px solid ${({ theme }) => theme.colors.border};
-    font-size: var(--fs-small);
     font-weight: 600;
-    color: ${({ theme }) => theme.colors.inkSubtle};
+    letter-spacing: var(--ls-title);
+    font-variant-numeric: tabular-nums;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
-  li span {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 22px;
-    height: 22px;
-    border-radius: 50%;
-    background: ${({ theme }) => theme.colors.sunken};
-    font-size: var(--fs-micro);
+  strong[data-snart] {
+    color: ${({ theme }) => theme.colors.accent};
   }
 
-  li[data-tilstand='ferdig'] {
-    border-color: ${({ theme }) => theme.colors.success};
-    color: ${({ theme }) => theme.colors.ink};
+  span {
+    overflow: hidden;
+    margin-top: 0.15rem;
+    color: ${({ theme }) => theme.colors.inkMuted};
+    font-size: var(--fs-small);
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
-  li[data-tilstand='ferdig'] span {
-    background: ${({ theme }) => theme.colors.successSoft};
-    color: ${({ theme }) => theme.colors.success};
-  }
-
-  li[data-tilstand='her'] {
-    border-color: ${({ theme }) => theme.colors.ink};
-    color: ${({ theme }) => theme.colors.ink};
-  }
-
-  li[data-tilstand='her'] span {
-    background: ${({ theme }) => theme.colors.ink};
-    color: ${({ theme }) => theme.colors.inkInverted};
-  }
-
-  @media (max-width: 560px) {
-    li {
-      font-size: var(--fs-micro);
-    }
+  &:hover {
+    border-color: ${({ theme }) => theme.colors.borderStrong};
   }
 `
 
-const Rutenett = styled.div`
+const ToKolonner = styled.div`
   display: grid;
-  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
-  gap: 1rem;
+  grid-template-columns: minmax(0, 1.65fr) minmax(0, 1fr);
+  gap: 0.75rem;
   align-items: start;
+  margin-top: 0.75rem;
 
-  @media (max-width: 860px) {
+  @media (max-width: 1100px) {
     grid-template-columns: minmax(0, 1fr);
   }
 `
 
-const Spalte = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+const Hoyre = styled.div`
+  display: grid;
+  gap: 0.75rem;
 `
 
-const Belop = styled.p`
-  margin: 0;
-  font-size: var(--fs-title);
-  font-weight: 600;
-  letter-spacing: var(--ls-title);
+const Korthode = styled.div`
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
 
-  small {
+  h2 {
+    margin: 0;
+    font-size: var(--fs-body);
+    font-weight: 600;
+  }
+
+  a {
+    color: ${({ theme }) => theme.colors.accent};
     font-size: var(--fs-small);
     font-weight: 500;
-    color: ${({ theme }) => theme.colors.inkSubtle};
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
   }
 `
 
-const Beskrivelse = styled.p`
-  margin: 1rem 0 0;
-  font-size: var(--fs-body);
-  line-height: 1.6;
-  white-space: pre-wrap;
-  color: ${({ theme }) => theme.colors.inkMuted};
-`
-
-const Godtatt = styled.p`
-  margin: 1rem 0 0;
-  padding: 0.7rem 0.9rem;
-  border-radius: ${({ theme }) => theme.borderRadius.small};
-  background: ${({ theme }) => theme.colors.successSoft};
-  color: ${({ theme }) => theme.colors.success};
-  font-size: var(--fs-body);
-  font-weight: 600;
-`
-
-const Fakta = styled.dl`
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  gap: 0.45rem 1rem;
-  margin: 0;
-  font-size: var(--fs-body);
-
-  dt {
-    color: ${({ theme }) => theme.colors.inkSubtle};
-  }
-
-  dd {
-    margin: 0;
-  }
-`
-
-const Tidslinje = styled.ol`
+const Fristliste = styled.ol`
   margin: 0;
   padding: 0;
   list-style: none;
 
   li {
-    display: flex;
-    justify-content: space-between;
-    gap: 1rem;
-    padding: 0.5rem 0;
-    border-bottom: 1px solid ${({ theme }) => theme.colors.border};
-    font-size: var(--fs-body);
+    display: grid;
+    grid-template-columns: 2.75rem minmax(0, 1fr) auto;
+    gap: 0.9rem;
+    align-items: center;
+    padding: 0.7rem 0;
+    border-top: 1px solid ${({ theme }) => theme.colors.border};
   }
 
-  li:last-child {
-    border-bottom: 0;
+  a {
+    color: ${({ theme }) => theme.colors.ink};
+    font-size: var(--fs-small);
+    font-weight: 600;
+    text-decoration: none;
+
+    &:hover {
+      color: ${({ theme }) => theme.colors.accent};
+    }
+  }
+
+  p {
+    overflow: hidden;
+    margin: 0.1rem 0 0;
+    color: ${({ theme }) => theme.colors.inkSubtle};
+    font-size: var(--fs-micro);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+`
+
+const Dag = styled.div`
+  display: grid;
+  place-items: center;
+  height: 2.75rem;
+  border-radius: ${({ theme }) => theme.borderRadius.small};
+  background: ${({ theme }) => theme.colors.sunken};
+  line-height: 1;
+
+  b {
+    font-size: var(--fs-body);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
   }
 
   span {
-    flex-shrink: 0;
+    margin-top: -0.35rem;
     color: ${({ theme }) => theme.colors.inkSubtle};
+    font-size: var(--fs-micro);
+  }
+`
+
+const Merke = styled.span`
+  padding: 0.2rem 0.55rem;
+  border-radius: ${({ theme }) => theme.borderRadius.pill};
+  background: ${({ theme }) => theme.colors.sunken};
+  color: ${({ theme }) => theme.colors.inkMuted};
+  font-size: var(--fs-micro);
+  white-space: nowrap;
+
+  &[data-snart] {
+    background: ${({ theme }) => theme.colors.accentSoft};
+    color: ${({ theme }) => theme.colors.accentInk};
+    font-weight: 500;
+  }
+`
+
+const Bunnlinje = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid ${({ theme }) => theme.colors.border};
+
+  span {
+    color: ${({ theme }) => theme.colors.inkSubtle};
+    font-size: var(--fs-small);
+  }
+`
+
+const Tomt = styled.div`
+  display: grid;
+  justify-items: start;
+  gap: 0.5rem;
+  padding: 1.25rem 0 0.5rem;
+  border-top: 1px solid ${({ theme }) => theme.colors.border};
+  color: ${({ theme }) => theme.colors.inkSubtle};
+
+  p {
+    max-width: 46ch;
+    margin: 0;
+    color: ${({ theme }) => theme.colors.inkMuted};
+    font-size: var(--fs-small);
+    line-height: 1.55;
+  }
+
+  a {
+    color: ${({ theme }) => theme.colors.accent};
+    font-size: var(--fs-small);
+    font-weight: 500;
+    text-decoration: none;
+  }
+`
+
+const Profilinfo = styled.div`
+  display: grid;
+  gap: 0.2rem;
+
+  strong {
+    font-size: var(--fs-body);
+    font-weight: 600;
+  }
+
+  span {
+    overflow: hidden;
+    color: ${({ theme }) => theme.colors.inkMuted};
+    font-size: var(--fs-small);
+    text-overflow: ellipsis;
+  }
+`
+
+const Snarveier = styled.ul`
+  display: grid;
+  gap: 2px;
+  margin: 0 -0.5rem;
+  padding: 0;
+  list-style: none;
+
+  a {
+    display: flex;
+    gap: 0.65rem;
+    align-items: center;
+    min-height: 38px;
+    padding: 0 0.5rem;
+    border-radius: ${({ theme }) => theme.borderRadius.small};
+    color: ${({ theme }) => theme.colors.ink};
+    font-size: var(--fs-small);
+    font-weight: 500;
+    text-decoration: none;
+
+    svg {
+      color: ${({ theme }) => theme.colors.accent};
+    }
+
+    &:hover {
+      background: ${({ theme }) => theme.colors.sunken};
+    }
   }
 `

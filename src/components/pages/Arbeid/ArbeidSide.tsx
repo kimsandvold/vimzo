@@ -35,6 +35,7 @@ export default function ArbeidSide() {
   return (
     <>
       <Sidehode
+        motiv="galleri"
         smuler={[{ navn: 'Arbeid' }]}
         stikkord="Arbeid"
         tittel="Prosjekter, vist som de faktisk er"

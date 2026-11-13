@@ -91,6 +91,41 @@ Egne sider med typiske tall per bransje:
 - Hva skal en anleggsgartner ta i timen? https://vimzo.no/timepris/anleggsgartner — typisk 65 % fakturerbart, 34 arbeidsuker, 45 t/uke
 - Hva skal et renholdsfirma ta i timen? https://vimzo.no/timepris/renhold — typisk 70 % fakturerbart, 46 arbeidsuker, 40 t/uke
 
+## Fristkalenderen
+
+Gratis verktøy på https://vimzo.no/frister. Brukeren skriver inn organisasjonsnummeret; nettleseren slår opp
+bedriften i Enhetsregisteret (data.brreg.no) og foreslår selskapsform, mva-registrering og om bedriften
+har ansatte. Ut kommer alle skatte- og rapporteringsfrister de neste tolv månedene, og en kalenderfil
+(iCalendar) med varsel tre dager før hver frist. Ingenting lagres hos Vimzo.
+
+Reglene (sjekket mot Skatteetaten og Brønnøysundregistrene, november 2026):
+
+- Mva-melding, alminnelig tomånedlig termin: 10. februar, 10. april, 10. juni, 31. august, 10. oktober og 10. desember.
+  Årstermin (omsetning under 1 mill. kr): 10. mars året etter.
+- A-melding: den 5. hver måned, for lønn utbetalt måneden før.
+- Arbeidsgiveravgift: 15. januar, mars, mai, juli, september og november.
+- Forskuddstrekk: fra 2026 senest første virkedag etter at lønnen er utbetalt – ikke lenger annenhver måned.
+- Forskuddsskatt for enkeltpersonforetak: 15. mars, juni, september og desember.
+- Forskuddsskatt for aksjeselskap: 15. februar og 15. april året etter inntektsåret.
+- Skattemelding for næringsdrivende og selskaper: 31. mai.
+- Aksjeselskap: aksjonærregisteroppgaven 31. januar, ordinær generalforsamling innen 30. juni,
+  årsregnskap til Regnskapsregisteret 31. juli.
+- Faller en frist på lørdag, søndag eller helligdag, flyttes den til første virkedag etter.
+
+## Alle gratisverktøyene
+
+Samlet på https://vimzo.no/verktoy, gruppert etter hva de hjelper med:
+
+- [Når er fristene dine?](https://vimzo.no/frister): Mva, a-melding, forskuddsskatt og årsoppgjør for akkurat din bedrift – rett i kalenderen, med varsel.
+- [Hva skal du ta i timen?](https://vimzo.no/timepris): Lønn, faste kostnader og ubetalt tid, regnet om til timepris. Med typiske tall for ditt fag.
+- [Hvor mye må du fakturere?](https://vimzo.no/hva-ma-du-fakturere): Hva året krever i omsetning – og hvor mange timer du da faktisk må være på jobb.
+- [Hva koster en ansatt?](https://vimzo.no/hva-koster-en-ansatt): Lønn, feriepenger, arbeidsgiveravgift og pensjon. En ansatt koster 30–40 % mer enn lønnen.
+- [Er firmanavnet ledig?](https://vimzo.no/navnesjekk): Samme og lignende navn i Brønnøysundregistrene, og ledige .no-domener.
+- [Lag din egen logo](https://vimzo.no/logo): Design logoen selv på norsk. Å prøve koster ingenting.
+
+Med en gratis konto på Min side lagres bedriftsprofilen (orgnummer, adresse, kontaktinfo), og
+verktøyene åpnes ferdig utfylt. De neste fristene vises på Min side.
+
 ## Tjenester
 
 - Hele nettsiden, ferdig laget: Vi kjøper domenet i ditt navn, finner ut hvilke sider du trenger, designer siden og setter den på nett. Du bruker rundt to timer til sammen: én prat i starten og én gjennomlesing før vi publiserer.
@@ -136,6 +171,8 @@ publisering og innmelding hos Google.
 - [Timepriskalkulator](https://vimzo.no/timepris): gratis utregning av hva du må ta i timen som selvstendig næringsdrivende
 - [Hva koster en ansatt](https://vimzo.no/hva-koster-en-ansatt): full årskostnad for en ansatt, og hva hen må fakturere for å bære seg selv
 - [Hva må du fakturere](https://vimzo.no/hva-ma-du-fakturere): nødvendig omsetning per år og måned, og hvor mange timer det betyr
+- [Fristkalender](https://vimzo.no/frister): alle skatte- og rapporteringsfrister for bedriften ut fra organisasjonsnummeret, som kalender med varsel
+- [Gratis verktøy](https://vimzo.no/verktoy): oversikt over alle gratisverktøyene for små bedrifter
 - [Hva skal en snekker ta i timen?](https://vimzo.no/timepris/snekker): typiske kostnader og fakturerbar andel for en snekker
 - [Hva skal en rørlegger ta i timen?](https://vimzo.no/timepris/rorlegger): typiske kostnader og fakturerbar andel for en rørlegger
 - [Hva skal en elektriker ta i timen?](https://vimzo.no/timepris/elektriker): typiske kostnader og fakturerbar andel for en elektriker
@@ -166,6 +203,9 @@ Omtrent to timer til sammen. Du tar én prat med oss i starten om hva bedriften 
 
 ### Ordner dere domenet, eller må jeg kjøpe det selv?
 Vi ordner det. Vi finner et ledig domenenavn sammen med deg, kjøper det og registrerer det i ditt navn – ikke i vårt. Første år er inkludert i prisen, og etter det fornyer vi det for deg til omtrent 169 kroner i året. Vi setter også opp e-post på domenet.
+
+### Hva om jeg ikke blir fornøyd?
+Da betaler du ikke. Du ser den ferdige siden og godkjenner den før fakturaen kommer, og vi retter til du er fornøyd. Deler du betalingen over tolv måneder, starter første avdrag først når siden er godkjent.
 
 ### Kan jeg dele opp betalingen?
 Ja. Beløpet kan deles over tolv måneder, med 0 kroner i oppstart. Det er ingen renter og ingen kredittsjekk; påslaget er 4 %, og det står i tilbudet, så du ser nøyaktig hva forskjellen er.

@@ -14,14 +14,20 @@ import Icon from '../shared/Icon'
  * beslutningen tas. «Guider» står i foten; den er for søkemotorer og
  * AI-assistenter, ikke et steg på veien til å bestemme seg.
  *
+ * «Gratis verktøy» står i menyen fordi det er dem folk finner oss gjennom –
+ * en som har brukt fristkalenderen, skal finne timeprisen uten å lete i
+ * bunnteksten. Guidene ligger på verktøysiden og i bunnteksten, ikke i
+ * menyen: fire punkter er nok. «Arbeid» står i bunnteksten til det er flere
+ * prosjekter å vise – en menylenke til én case lover mer enn den holder.
+ *
  * «Lag logo» står sist. Det er et eget produkt – du kan kjøpe en logo
  * uten å bestille en nettside – og da skal det kunne finnes uten å lete,
  * men etter de tre spørsmålene om nettsiden, som er hovedsaken.
  */
 const LENKER = [
   { til: '/tjenester', navn: 'Tjenester' },
-  { til: '/arbeid', navn: 'Arbeid' },
   { til: '/priser', navn: 'Priser' },
+  { til: '/verktoy', navn: 'Gratis verktøy' },
   { til: '/logo', navn: 'Lag logo' },
 ] as const
 

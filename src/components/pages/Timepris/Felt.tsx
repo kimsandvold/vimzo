@@ -14,6 +14,9 @@ import { formaterTall } from '../../../lib/kroner'
 
 const Rad = styled.div`
   display: grid;
+  /* Uten disse tar feltet nettleserens standardbredde og flyter ut av smale kolonner. */
+  grid-template-columns: minmax(0, 1fr);
+  min-width: 0;
   gap: 0.3rem;
 `
 

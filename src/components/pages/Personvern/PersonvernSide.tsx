@@ -30,6 +30,7 @@ export default function PersonvernSide() {
   return (
     <>
       <Sidehode
+        motiv="guide"
         smuler={[{ navn: 'Personvern' }]}
         stikkord="Personvern"
         tittel="Hva vi samler inn, og hva vi ikke gjør"

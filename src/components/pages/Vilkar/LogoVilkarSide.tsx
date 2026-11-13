@@ -36,6 +36,7 @@ export default function LogoVilkarSide() {
   return (
     <>
       <Sidehode
+        motiv="guide"
         smuler={[{ navn: 'Kjøpsvilkår for logoverktøyet' }]}
         stikkord="Kjøpsvilkår"
         tittel="Kjøpsvilkår for logoverktøyet"

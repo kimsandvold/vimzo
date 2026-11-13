@@ -98,6 +98,7 @@ export default function ArrangementSide() {
   return (
     <>
       <Sidehode
+        motiv="kalender"
         smuler={[{ navn: 'Arrangementssider' }]}
         stikkord="Arrangementssider"
         tittel="En egen side til arrangementet"

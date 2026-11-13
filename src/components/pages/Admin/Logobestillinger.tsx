@@ -99,7 +99,6 @@ function Oversikt() {
     <>
       <Hode>
         <div>
-          <Tilbake to="/admin">← Saker</Tilbake>
           <h1>Logobestillinger</h1>
         </div>
       </Hode>
@@ -138,7 +137,15 @@ function Oversikt() {
           {synlige.map((b) => (
             <Linje key={b.id} $status={b.status}>
               <Hvem>
-                <strong>{b.bedrift || '(uten firmanavn)'}</strong>
+                <strong>
+                  {b.uid ? (
+                    <Link to={`/admin/kunde/${b.uid}`} title="Åpne kundekortet">
+                      {b.bedrift || '(uten firmanavn)'}
+                    </Link>
+                  ) : (
+                    b.bedrift || '(uten firmanavn)'
+                  )}
+                </strong>
                 <span>
                   {b.navn && `${b.navn} · `}
                   <a href={`mailto:${b.epost}`}>{b.epost}</a>
@@ -199,16 +206,6 @@ const Hode = styled.div`
     margin-top: 0.4rem;
     font-size: var(--fs-title);
     letter-spacing: var(--ls-title);
-  }
-`
-
-const Tilbake = styled(Link)`
-  font-size: var(--fs-small);
-  color: ${({ theme }) => theme.colors.inkSubtle};
-  text-decoration: none;
-
-  &:hover {
-    color: ${({ theme }) => theme.colors.ink};
   }
 `
 

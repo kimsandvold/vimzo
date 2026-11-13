@@ -271,7 +271,11 @@ function lesTall(p: URLSearchParams, navn: string, standard: number): number {
   return p.has(navn) && Number.isFinite(n) && n >= 0 ? n : standard
 }
 
-export default function FaktureringSide() {
+/**
+ * Selve kalkulatoren – skjema og kvittering. Brukes både her og på Min side
+ * (/min-side/verktoy), med tilstanden i adressefeltet begge steder.
+ */
+export function Faktureringskalkulator() {
   const [params, settParams] = useSearchParams()
 
   const grunnlag = useMemo<Omsetningsgrunnlag>(
@@ -299,8 +303,187 @@ export default function FaktureringSide() {
     [params, settParams],
   )
 
+  return (
+    <Rutenett>
+      <form onSubmit={(e) => e.preventDefault()}>
+        <Sammendrag etikett="Dette må du fakturere i måneden" tall={formaterKroner(k.omsetningPerManed)} />
+
+        <Bolk>
+          <h2>Hva du skal dekke inn</h2>
+          <Valg role="group" aria-label="Driftsform">
+            {DRIFTSFORMER.map((d) => (
+              <Valgknapp
+                key={d.verdi}
+                type="button"
+                $valgt={grunnlag.driftsform === d.verdi}
+                aria-pressed={grunnlag.driftsform === d.verdi}
+                onClick={() => endre('drift', d.verdi as Driftsform)}
+              >
+                <strong>{d.navn}</strong>
+                <small>{d.hint}</small>
+              </Valgknapp>
+            ))}
+          </Valg>
+
+          {grunnlag.driftsform === 'as' ? (
+            <Sonevalg>
+              Sone for arbeidsgiveravgift
+              <select value={grunnlag.agaSone} onChange={(e) => endre('sone', e.target.value)}>
+                {AGA_SONER.map((s) => (
+                  <option key={s.id} value={s.id}>
+                    {s.navn} – {s.sats} %
+                  </option>
+                ))}
+              </select>
+            </Sonevalg>
+          ) : null}
+
+          <Felter>
+            <Felt
+              navn={grunnlag.driftsform === 'as' ? 'Ønsket bruttolønn' : 'Ønsket overskudd før skatt'}
+              verdi={oreTilKroner(grunnlag.onsketInntekt)}
+              onEndre={(v) => endre('inntekt', v)}
+              enhet="kr/år"
+              hint={
+                grunnlag.driftsform === 'as'
+                  ? 'Feriepenger, arbeidsgiveravgift og pensjon legges på automatisk.'
+                  : 'Det du vil sitte igjen med. Skatten betaler du privat.'
+              }
+            />
+            <Felt
+              navn="Faste kostnader"
+              verdi={oreTilKroner(grunnlag.fasteKostnader)}
+              onEndre={(v) => endre('faste', v)}
+              enhet="kr/år"
+              hint="Lokale, forsikring, verktøy, bil, regnskap, telefon og markedsføring."
+            />
+          </Felter>
+        </Bolk>
+
+        <Bolk>
+          <h2>Slik jobber du</h2>
+          <Felter>
+            <Felt
+              navn="Timeprisen din"
+              verdi={oreTilKroner(grunnlag.timepris)}
+              onEndre={(v) => endre('timepris', v)}
+              enhet="kr/time"
+              hint="Eks. mva. Vet du ikke hva den bør være, start med timepriskalkulatoren."
+            />
+            <Felt
+              navn="Fakturerbar andel"
+              verdi={grunnlag.fakturerbarAndel}
+              onEndre={(v) => endre('fakturerbar', Math.min(100, v))}
+              enhet="%"
+              hint="Hvor stor del av tiden din du får betalt for. De færreste over 70 %."
+            />
+            <Felt
+              navn="Arbeidsuker i året"
+              verdi={grunnlag.arbeidsuker}
+              onEndre={(v) => endre('uker', Math.min(52, v))}
+              enhet="uker"
+              hint="52 minus ferie og helligdager."
+            />
+            <Felt
+              navn="Snittpris per oppdrag"
+              verdi={oreTilKroner(grunnlag.snittOppdrag)}
+              onEndre={(v) => endre('oppdrag', v)}
+              enhet="kr"
+              plassholder="valgfritt"
+              hint="Fyll inn, så regner vi om til antall oppdrag. Feltet kan stå tomt."
+            />
+          </Felter>
+        </Bolk>
+      </form>
+
+      <Kort aria-live="polite">
+        <Stikkord>Dette må du fakturere</Stikkord>
+        <StortTall>{formaterKroner(k.omsetningPerManed)}</StortTall>
+        <Under>
+          i måneden eks. mva. – {formaterKroner(k.nodvendigOmsetning)} i året.
+        </Under>
+
+        {k.arbeidstimerPerUke === null || k.fakturerbareTimerPerManed === null ? (
+          <Poeng>
+            Fyll inn timeprisen din og hvor stor del av tiden du får betalt for, så regner vi om
+            til timer og arbeidsuker.
+          </Poeng>
+        ) : (
+          <Poeng>
+            Det er <strong>{formaterTall(k.fakturerbareTimerPerManed)}</strong> fakturerbare
+            timer i måneden. For å få dem til, må du være på jobb{' '}
+            <strong>{k.arbeidstimerPerUke.toFixed(1).replace('.', ',')}</strong> timer i uka.
+          </Poeng>
+        )}
+
+        <Skille />
+
+        <Linje>
+          <span>Lønn koster</span>
+          <span>{formaterKroner(k.lonnskostnad.sum)}</span>
+        </Linje>
+        <Linje>
+          <span>Faste kostnader</span>
+          <span>{formaterKroner(grunnlag.fasteKostnader)}</span>
+        </Linje>
+        <Linje>
+          <span>Omsetning i året</span>
+          <span>{formaterKroner(k.nodvendigOmsetning)}</span>
+        </Linje>
+        {k.fakturerbareTimerPerAr === null ? null : (
+          <Linje>
+            <span>Fakturerbare timer i året</span>
+            <span>{formaterTall(k.fakturerbareTimerPerAr)} t</span>
+          </Linje>
+        )}
+        {k.fakturerbareTimerPerUke === null ? null : (
+          <Linje>
+            <span>Fakturerbare timer i uka</span>
+            <span>{formaterTall(k.fakturerbareTimerPerUke)} t</span>
+          </Linje>
+        )}
+        {k.oppdragPerAr === null || k.oppdragPerManed === null ? null : (
+          <>
+            <Linje>
+              <span>Oppdrag i året</span>
+              <span>{k.oppdragPerAr.toFixed(1).replace('.', ',')}</span>
+            </Linje>
+            <Linje>
+              <span>Oppdrag i måneden</span>
+              <span>{k.oppdragPerManed.toFixed(1).replace('.', ',')}</span>
+            </Linje>
+          </>
+        )}
+
+        <Deling>
+          <Del tittel={`Jeg må fakturere ${formaterKroner(k.omsetningPerManed)} i måneden`} />
+        </Deling>
+
+        <Bro>
+          <p>
+            Alle tallene over forutsetter at oppdragene kommer. Det er som regel nettsiden som
+            avgjør om de gjør det.
+          </p>
+          <Knapp til="/priser" variant="hvit">
+            Se hva en nettside koster
+          </Knapp>
+        </Bro>
+
+        <Kilde>
+          Veiledende tall, alle eks. mva. Satser gjeldende fra {SATSER_GJELDENDE_FRA}, kilde{' '}
+          <a href={SATSER_KILDE.url} target="_blank" rel="noreferrer">
+            {SATSER_KILDE.navn}
+          </a>
+          .
+        </Kilde>
+      </Kort>
+    </Rutenett>
+  )
+}
+
+export default function FaktureringSide() {
   useSEO({
-    title: 'Hvor mye må du fakturere for å gå rundt? Gratis kalkulator | Vimzo',
+    title: 'Hvor mye må du fakturere for å gå rundt? | Vimzo',
     description:
       'Regn ut hvor mye du må fakturere i året og i måneden for å dekke lønn og faste kostnader – ' +
       'og hvor mange timer det betyr at du må jobbe.',
@@ -321,6 +504,7 @@ export default function FaktureringSide() {
   return (
     <>
       <Sidehode
+        motiv="kalkulator"
         smuler={[{ navn: 'Hva må du fakturere' }]}
         stikkord="Gratis verktøy"
         tittel="Hvor mye må du fakturere for å gå rundt?"
@@ -345,180 +529,7 @@ export default function FaktureringSide() {
 
       <Seksjon $flate="tint" $tett>
         <Wrap>
-          <Rutenett>
-            <form onSubmit={(e) => e.preventDefault()}>
-              <Sammendrag etikett="Dette må du fakturere i måneden" tall={formaterKroner(k.omsetningPerManed)} />
-
-              <Bolk>
-                <h2>Hva du skal dekke inn</h2>
-                <Valg role="group" aria-label="Driftsform">
-                  {DRIFTSFORMER.map((d) => (
-                    <Valgknapp
-                      key={d.verdi}
-                      type="button"
-                      $valgt={grunnlag.driftsform === d.verdi}
-                      aria-pressed={grunnlag.driftsform === d.verdi}
-                      onClick={() => endre('drift', d.verdi as Driftsform)}
-                    >
-                      <strong>{d.navn}</strong>
-                      <small>{d.hint}</small>
-                    </Valgknapp>
-                  ))}
-                </Valg>
-
-                {grunnlag.driftsform === 'as' ? (
-                  <Sonevalg>
-                    Sone for arbeidsgiveravgift
-                    <select value={grunnlag.agaSone} onChange={(e) => endre('sone', e.target.value)}>
-                      {AGA_SONER.map((s) => (
-                        <option key={s.id} value={s.id}>
-                          {s.navn} – {s.sats} %
-                        </option>
-                      ))}
-                    </select>
-                  </Sonevalg>
-                ) : null}
-
-                <Felter>
-                  <Felt
-                    navn={grunnlag.driftsform === 'as' ? 'Ønsket bruttolønn' : 'Ønsket overskudd før skatt'}
-                    verdi={oreTilKroner(grunnlag.onsketInntekt)}
-                    onEndre={(v) => endre('inntekt', v)}
-                    enhet="kr/år"
-                    hint={
-                      grunnlag.driftsform === 'as'
-                        ? 'Feriepenger, arbeidsgiveravgift og pensjon legges på automatisk.'
-                        : 'Det du vil sitte igjen med. Skatten betaler du privat.'
-                    }
-                  />
-                  <Felt
-                    navn="Faste kostnader"
-                    verdi={oreTilKroner(grunnlag.fasteKostnader)}
-                    onEndre={(v) => endre('faste', v)}
-                    enhet="kr/år"
-                    hint="Lokale, forsikring, verktøy, bil, regnskap, telefon og markedsføring."
-                  />
-                </Felter>
-              </Bolk>
-
-              <Bolk>
-                <h2>Slik jobber du</h2>
-                <Felter>
-                  <Felt
-                    navn="Timeprisen din"
-                    verdi={oreTilKroner(grunnlag.timepris)}
-                    onEndre={(v) => endre('timepris', v)}
-                    enhet="kr/time"
-                    hint="Eks. mva. Vet du ikke hva den bør være, start med timepriskalkulatoren."
-                  />
-                  <Felt
-                    navn="Fakturerbar andel"
-                    verdi={grunnlag.fakturerbarAndel}
-                    onEndre={(v) => endre('fakturerbar', Math.min(100, v))}
-                    enhet="%"
-                    hint="Hvor stor del av tiden din du får betalt for. De færreste over 70 %."
-                  />
-                  <Felt
-                    navn="Arbeidsuker i året"
-                    verdi={grunnlag.arbeidsuker}
-                    onEndre={(v) => endre('uker', Math.min(52, v))}
-                    enhet="uker"
-                    hint="52 minus ferie og helligdager."
-                  />
-                  <Felt
-                    navn="Snittpris per oppdrag"
-                    verdi={oreTilKroner(grunnlag.snittOppdrag)}
-                    onEndre={(v) => endre('oppdrag', v)}
-                    enhet="kr"
-                    plassholder="valgfritt"
-                    hint="Fyll inn, så regner vi om til antall oppdrag. Feltet kan stå tomt."
-                  />
-                </Felter>
-              </Bolk>
-            </form>
-
-            <Kort aria-live="polite">
-              <Stikkord>Dette må du fakturere</Stikkord>
-              <StortTall>{formaterKroner(k.omsetningPerManed)}</StortTall>
-              <Under>
-                i måneden eks. mva. – {formaterKroner(k.nodvendigOmsetning)} i året.
-              </Under>
-
-              {k.arbeidstimerPerUke === null || k.fakturerbareTimerPerManed === null ? (
-                <Poeng>
-                  Fyll inn timeprisen din og hvor stor del av tiden du får betalt for, så regner vi om
-                  til timer og arbeidsuker.
-                </Poeng>
-              ) : (
-                <Poeng>
-                  Det er <strong>{formaterTall(k.fakturerbareTimerPerManed)}</strong> fakturerbare
-                  timer i måneden. For å få dem til, må du være på jobb{' '}
-                  <strong>{k.arbeidstimerPerUke.toFixed(1).replace('.', ',')}</strong> timer i uka.
-                </Poeng>
-              )}
-
-              <Skille />
-
-              <Linje>
-                <span>Lønn koster</span>
-                <span>{formaterKroner(k.lonnskostnad.sum)}</span>
-              </Linje>
-              <Linje>
-                <span>Faste kostnader</span>
-                <span>{formaterKroner(grunnlag.fasteKostnader)}</span>
-              </Linje>
-              <Linje>
-                <span>Omsetning i året</span>
-                <span>{formaterKroner(k.nodvendigOmsetning)}</span>
-              </Linje>
-              {k.fakturerbareTimerPerAr === null ? null : (
-                <Linje>
-                  <span>Fakturerbare timer i året</span>
-                  <span>{formaterTall(k.fakturerbareTimerPerAr)} t</span>
-                </Linje>
-              )}
-              {k.fakturerbareTimerPerUke === null ? null : (
-                <Linje>
-                  <span>Fakturerbare timer i uka</span>
-                  <span>{formaterTall(k.fakturerbareTimerPerUke)} t</span>
-                </Linje>
-              )}
-              {k.oppdragPerAr === null || k.oppdragPerManed === null ? null : (
-                <>
-                  <Linje>
-                    <span>Oppdrag i året</span>
-                    <span>{k.oppdragPerAr.toFixed(1).replace('.', ',')}</span>
-                  </Linje>
-                  <Linje>
-                    <span>Oppdrag i måneden</span>
-                    <span>{k.oppdragPerManed.toFixed(1).replace('.', ',')}</span>
-                  </Linje>
-                </>
-              )}
-
-              <Deling>
-                <Del tittel={`Jeg må fakturere ${formaterKroner(k.omsetningPerManed)} i måneden`} />
-              </Deling>
-
-              <Bro>
-                <p>
-                  Alle tallene over forutsetter at oppdragene kommer. Det er som regel nettsiden som
-                  avgjør om de gjør det.
-                </p>
-                <Knapp til="/priser" variant="hvit">
-                  Se hva en nettside koster
-                </Knapp>
-              </Bro>
-
-              <Kilde>
-                Veiledende tall, alle eks. mva. Satser gjeldende fra {SATSER_GJELDENDE_FRA}, kilde{' '}
-                <a href={SATSER_KILDE.url} target="_blank" rel="noreferrer">
-                  {SATSER_KILDE.navn}
-                </a>
-                .
-              </Kilde>
-            </Kort>
-          </Rutenett>
+          <Faktureringskalkulator />
         </Wrap>
       </Seksjon>
 

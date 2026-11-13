@@ -82,6 +82,7 @@ export default function TimeprisSide() {
   return (
     <>
       <Sidehode
+        motiv="kalkulator"
         smuler={[{ navn: 'Timepriskalkulator' }]}
         stikkord="Gratis verktøy"
         tittel="Hva må du egentlig ta i timen?"

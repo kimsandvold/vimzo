@@ -4,7 +4,7 @@ import { faq } from '../../../data/faq'
 import Helt from '../../hjem/Helt'
 import Inkludert from '../../hjem/Inkludert'
 import Priser from '../../hjem/Priser'
-import Verktoy from '../../hjem/Verktoy'
+import Lansering from '../../hjem/Lansering'
 import Sporsmal from '../../hjem/Sporsmal'
 import Avslutt from '../../hjem/Avslutt'
 
@@ -39,7 +39,7 @@ export default function ForsideSide() {
       <Helt />
       <Inkludert />
       <Priser />
-      <Verktoy />
+      <Lansering />
       <Sporsmal />
       <Avslutt />
     </>

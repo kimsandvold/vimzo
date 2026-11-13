@@ -100,6 +100,24 @@ export async function settStatus(sak: Sak, ny: Status, tid: number, ekstra: { be
   await oppdater(sak.id, felt)
 }
 
+/**
+ * Flytt mange saker til samme status på én gang – «Arkiver valgte» i
+ * oversikten. Hver sak får hendelsen i historikken, akkurat som når den
+ * flyttes for seg. Skrives i omganger på 400 (Firestore tar 500 per batch).
+ */
+export async function settStatusFlere(saker: readonly Sak[], ny: Status, ekstra: { grunn?: string } = {}) {
+  const [{ doc, writeBatch, serverTimestamp }, db] = await Promise.all([import('firebase/firestore'), hentDb()])
+  const tid = Date.now()
+  for (let i = 0; i < saker.length; i += 400) {
+    const batch = writeBatch(db)
+    for (const sak of saker.slice(i, i + 400)) {
+      const historikk = [...sak.historikk, { status: ny, tid, ...ekstra }].sort((a, b) => a.tid - b.tid)
+      batch.update(doc(db, SAMLING, sak.id), { status: ny, historikk, oppdatert: serverTimestamp() })
+    }
+    await batch.commit()
+  }
+}
+
 /** Fjern én hendelse fra historikken – for når en status ble satt ved en feil. */
 export async function fjernHendelse(sak: Sak, indeks: number) {
   const historikk = sak.historikk.filter((_, i) => i !== indeks)

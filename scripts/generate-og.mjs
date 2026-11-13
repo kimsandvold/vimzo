@@ -126,6 +126,20 @@ const KORT = [
     statTekst: 'i måneden, eks. mva.<br/>Det er 96 fakturerbare timer',
     bunn: 'Gratis kalkulator · Ingen innlogging',
   },
+  {
+    fil: 'frister.png',
+    tittel: 'Alle fristene dine.<br/><em>I kalenderen din.</em>',
+    stat: '42',
+    statTekst: 'frister i året for et AS<br/>med mva og ansatte',
+    bunn: 'Gratis fristkalender · Fra organisasjonsnummeret',
+  },
+  {
+    fil: 'verktoy.png',
+    tittel: 'Gratis verktøy for <em>små bedrifter</em>',
+    stat: '6',
+    statTekst: 'verktøy for frister, timepris,<br/>lønnsomhet, navn og logo',
+    bunn: 'Gratis · På norsk · Ingen innlogging',
+  },
 ]
 
 const MERKE = `

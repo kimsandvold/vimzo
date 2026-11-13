@@ -6,6 +6,7 @@ import Icon from '../shared/Icon'
 import { firma } from '../../data/firma'
 import { analyseKlar, apneSamtykke } from '../../lib/analytics'
 import { tjenester } from '../../data/tjenester'
+import { gratisverktoy } from '../../data/verktoy'
 
 /**
  * Foten er sidens siste sjanse til å svare på «hvem er dette egentlig».
@@ -58,37 +59,39 @@ export default function Footer() {
             </Spalte>
 
             <Spalte>
-              <h2>Nettstedet</h2>
+              <h2>Gratis verktøy</h2>
+              <ul>
+                {gratisverktoy.map((v) => (
+                  <li key={v.til}>
+                    <Link to={v.til}>{v.navn}</Link>
+                  </li>
+                ))}
+                <li>
+                  <Link to="/verktoy">Alle verktøyene →</Link>
+                </li>
+              </ul>
+            </Spalte>
+
+            <Spalte>
+              <h2>Vimzo</h2>
               <ul>
                 <li>
                   <Link to="/priser">Priser</Link>
                 </li>
                 <li>
-                  <Link to="/arrangement">Arrangementssider</Link>
+                  <Link to="/arbeid">Arbeid</Link>
                 </li>
                 <li>
-                  <Link to="/arbeid">Arbeid</Link>
+                  <Link to="/arrangement">Arrangementssider</Link>
                 </li>
                 <li>
                   <Link to="/guider">Guider</Link>
                 </li>
                 <li>
-                  <Link to="/logo">Lag logo</Link>
-                </li>
-                <li>
-                  <Link to="/navnesjekk">Navnesjekk</Link>
-                </li>
-                <li>
-                  <Link to="/timepris">Timepriskalkulator</Link>
-                </li>
-                <li>
-                  <Link to="/hva-koster-en-ansatt">Hva koster en ansatt?</Link>
-                </li>
-                <li>
-                  <Link to="/hva-ma-du-fakturere">Hva må du fakturere?</Link>
-                </li>
-                <li>
                   <Link to="/kontakt">Kontakt</Link>
+                </li>
+                <li>
+                  <Link to="/min-side">Min side</Link>
                 </li>
                 <li>
                   <Link to="/personvern">Personvern</Link>
@@ -96,12 +99,8 @@ export default function Footer() {
                 <li>
                   <Link to="/vilkar/logo">Kjøpsvilkår</Link>
                 </li>
-                <li>
-                  <Link to="/min-side">Min side (for kunder)</Link>
-                </li>
               </ul>
             </Spalte>
-
           </Spalter>
         </Topp>
 
@@ -143,7 +142,7 @@ const Fot = styled.footer`
 
 const Topp = styled.div`
   display: grid;
-  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1.8fr);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2.4fr);
   gap: 4rem;
   padding-bottom: 3.5rem;
 
@@ -191,8 +190,12 @@ const Kontaktrad = styled.div`
 
 const Spalter = styled.div`
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 2rem;
+
+  @media (max-width: 960px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 
   @media (max-width: ${({ theme }) => theme.breakpoints.smallMobile}) {
     grid-template-columns: repeat(2, minmax(0, 1fr));

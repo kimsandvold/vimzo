@@ -27,7 +27,7 @@ export const duGjor = [
 ] as const
 
 /**
- * Tryggheten, i fire punkter. Står rett under helten, fordi det er her
+ * Tryggheten, i fem punkter. Står rett under helten, fordi det er her
  * tvilen sitter: «hva om det blir dyrt, hva om jeg blir sittende fast, hva
  * om de forsvinner».
  */
@@ -37,6 +37,12 @@ export interface Trygghet {
 }
 
 export const trygghet: readonly Trygghet[] = [
+  {
+    tittel: 'Ingen betaling før du har godkjent siden',
+    tekst:
+      'Du ser og godkjenner den ferdige siden før fakturaen kommer. Deler du betalingen, starter ' +
+      'første avdrag først da.',
+  },
   {
     tittel: 'Fast pris, avtalt før vi begynner',
     tekst:

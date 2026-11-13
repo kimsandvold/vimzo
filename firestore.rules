@@ -6,7 +6,7 @@ rules_version = '2';
 // nettleseren er offentlig; uten disse reglene kunne hvem som helst lese
 // databasen.
 //
-// Seks samlinger:
+// Sju samlinger:
 //
 //  henvendelser/{id}  Den interne saken, med notater og alt. Bare admin.
 //                     Offentlige skjemaer kan OPPRETTE – aldri lese.
@@ -26,6 +26,11 @@ rules_version = '2';
 //                     (innlogget, riktig pris) og leser sine egne. Admin
 //                     flytter status: levert → fakturert → betalt. Filene
 //                     lastes ned med en gang, så ordren starter som levert.
+//
+//  profiler/{uid}     Profilen på Min side: kontoen, personen og (valgfritt)
+//                     bedriften. Én per konto, med uid som id, registrert ved
+//                     første innlogging. Bare eieren (og admin) kan lese;
+//                     bare eieren kan skrive.
 //
 //  signaturbilder/{id}  Logobildet i kundens e-postsignatur. Offentlig å
 //                     hente ett av, bare profileieren kan skrive.
@@ -248,6 +253,67 @@ service cloud.firestore {
       allow get: if true;
       allow create, update: if profilEier() && gyldigBilde();
       allow delete: if erAdmin();
+    }
+
+    // Profilen på Min side. Feltene og lengdene her er de samme som i
+    // src/lib/profil.ts – hold dem like.
+    match /profiler/{uid} {
+      function kort(m, felt, maks) {
+        return m[felt] is string && m[felt].size() <= maks;
+      }
+
+      function gyldigPerson(p) {
+        return p is map
+          && p.keys().hasOnly(['navn', 'tittel', 'telefon', 'epost'])
+          && kort(p, 'navn', 200) && kort(p, 'tittel', 120)
+          && kort(p, 'telefon', 120) && kort(p, 'epost', 200);
+      }
+
+      function gyldigBedrift(b) {
+        return b == null || (b is map
+          && b.keys().hasOnly(['orgnr', 'navn', 'formkode', 'adresse', 'postnr', 'poststed', 'telefon', 'epost', 'nettside', 'kontonummer'])
+          && kort(b, 'orgnr', 9) && kort(b, 'navn', 200) && kort(b, 'formkode', 10)
+          && kort(b, 'adresse', 200) && kort(b, 'postnr', 4) && kort(b, 'poststed', 120)
+          && kort(b, 'telefon', 120) && kort(b, 'epost', 200) && kort(b, 'nettside', 300)
+          && kort(b, 'kontonummer', 11));
+      }
+
+      function gyldigeFrister(f) {
+        return f == null || (f is map
+          && f.keys().hasOnly(['mva', 'lonn', 'lonningsdag'])
+          && f.mva in ['ingen', 'tomaaned', 'aar']
+          && f.lonn is bool
+          && f.lonningsdag is int && f.lonningsdag >= 1 && f.lonningsdag <= 31);
+      }
+
+      // Kontoen: uid og e-post må være den innloggedes egen, så ingen kan
+      // registrere en profil i en annens navn.
+      function gyldigKonto(k) {
+        return k is map
+          && k.keys().hasOnly(['uid', 'epost', 'navn'])
+          && k.uid == request.auth.uid
+          && k.epost == request.auth.token.email
+          && kort(k, 'navn', 200);
+      }
+
+      function gyldigProfil() {
+        let d = request.resource.data;
+        return d.keys().hasOnly(['konto', 'person', 'bedrift', 'frister', 'fullfort', 'opprettet', 'oppdatert'])
+          && gyldigKonto(d.konto)
+          && gyldigPerson(d.person)
+          && gyldigBedrift(d.bedrift)
+          && gyldigeFrister(d.frister)
+          && d.fullfort is bool
+          && d.oppdatert == request.time;
+      }
+
+      allow read: if erAdmin() || (innlogget() && request.auth.uid == uid);
+      allow create: if innlogget() && request.auth.uid == uid && gyldigProfil()
+        && request.resource.data.opprettet == request.time;
+      // Opprettet-datoen står fast etter første lagring.
+      allow update: if innlogget() && request.auth.uid == uid && gyldigProfil()
+        && request.resource.data.get('opprettet', null) == resource.data.get('opprettet', null);
+      allow delete: if innlogget() && request.auth.uid == uid;
     }
 
     // Alt annet er stengt.

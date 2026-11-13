@@ -3,6 +3,8 @@ import Belop, { Ramme } from '../../shared/Belop'
 import Icon from '../../shared/Icon'
 import { ANTALL_AVDRAG } from '../../../data/pakker'
 import { foreslaDomene, type Estimat as EstimatData, type Svar } from '../../../data/kalkulator'
+import Eksempelside from './Eksempelside'
+import { eksempelnavn } from '../../../data/eksempelsider'
 
 /**
  * Estimatet ved siden av kalkulatoren.
@@ -31,7 +33,8 @@ export default function Estimat({
   /** Hopp til omfangssteget – kortet peker dit før det har et tall å vise. */
   onVelgOmfang: () => void
 }) {
-  const adresse = svar.domene.trim() || foreslaDomene(svar.navn) || 'hansen-ror.no'
+  const adresse =
+    svar.domene.trim() || foreslaDomene(svar.navn) || foreslaDomene(eksempelnavn(svar.bransje.id)) || 'hansen-ror.no'
 
   return (
     <Flate aria-live="polite">
@@ -78,8 +81,9 @@ export default function Estimat({
         </>
       ) : (
         <>
-          <Venter>Prisen kommer her.</Venter>
-          <Kontekst>Velg hvor mye som skal fram på siden.</Kontekst>
+          {/* Før prisen: en eksempelside for bransjen, i stedet for en tom rute. */}
+          <Eksempelside bransje={svar.bransje.id} navn={svar.navn} />
+          <Kontekst>Velg hvor mye som skal fram på siden, så kommer prisen.</Kontekst>
           <Velg type="button" onClick={onVelgOmfang}>
             Velg omfang
             <Icon navn="pilHoyre" storrelse={15} tykkelse={2} />
@@ -440,16 +444,6 @@ const Kontekst = styled.p`
   font-size: var(--fs-small);
   line-height: 1.5;
   color: ${({ theme }) => theme.colors.inkMuted};
-`
-
-/** Tallets plass før det finnes et tall. Ord, ikke sifre – det er et spørsmål. */
-const Venter = styled.p`
-  margin: 0;
-  font-size: var(--fs-title);
-  font-weight: 600;
-  line-height: 1.15;
-  letter-spacing: var(--ls-title);
-  color: ${({ theme }) => theme.colors.ink};
 `
 
 const Velg = styled.button`

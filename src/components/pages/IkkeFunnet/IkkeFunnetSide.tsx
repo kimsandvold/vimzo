@@ -13,6 +13,7 @@ export default function IkkeFunnetSide() {
   return (
     <>
       <Sidehode
+        motiv="sok"
         stikkord="404"
         tittel="Her var det tomt."
         ingress="Siden du lette etter finnes ikke – eller den har flyttet. Si fra, så retter vi lenken."

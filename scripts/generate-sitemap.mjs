@@ -23,6 +23,7 @@ async function lastTs(sti) {
 }
 
 const { guider } = await lastTs('src/data/guider.ts')
+const { gratisverktoy } = await lastTs('src/data/verktoy.ts')
 const { cases } = await lastTs('src/data/cases.ts')
 const { pakker, driftsnivaer, tilleggstjenester, timepris, ANTALL_AVDRAG } = await lastTs('src/data/pakker.ts')
 const { tjenester } = await lastTs('src/data/tjenester.ts')
@@ -57,6 +58,8 @@ const faste = [
   { sti: '/navnesjekk', prioritet: '0.7', frekvens: 'monthly', endret: '2026-11-10' },
   { sti: '/timepris', prioritet: '0.8', frekvens: 'monthly', endret: '2026-11-13' },
   { sti: '/hva-koster-en-ansatt', prioritet: '0.8', frekvens: 'monthly', endret: '2026-11-13' },
+  { sti: '/frister', prioritet: '0.8', frekvens: 'monthly', endret: '2026-11-13' },
+  { sti: '/verktoy', prioritet: '0.8', frekvens: 'monthly', endret: '2026-11-13' },
   { sti: '/hva-ma-du-fakturere', prioritet: '0.8', frekvens: 'monthly', endret: '2026-11-13' },
   { sti: '/kontakt', prioritet: '0.8', frekvens: 'yearly', endret: '2026-11-10' },
   { sti: '/personvern', prioritet: '0.2', frekvens: 'yearly', endret: '2026-11-10' },
@@ -195,6 +198,36 @@ Egne sider med typiske tall per bransje:
 
 ${BRANSJEPROFILER.map((b) => `- ${b.tittel} ${SITE_URL}/timepris/${b.slug} — typisk ${b.typisk.fakturerbarAndel} % fakturerbart, ${b.typisk.arbeidsuker} arbeidsuker, ${b.typisk.timerPerUke} t/uke`).join('\n')}
 
+## Fristkalenderen
+
+Gratis verktøy på ${SITE_URL}/frister. Brukeren skriver inn organisasjonsnummeret; nettleseren slår opp
+bedriften i Enhetsregisteret (data.brreg.no) og foreslår selskapsform, mva-registrering og om bedriften
+har ansatte. Ut kommer alle skatte- og rapporteringsfrister de neste tolv månedene, og en kalenderfil
+(iCalendar) med varsel tre dager før hver frist. Ingenting lagres hos Vimzo.
+
+Reglene (sjekket mot Skatteetaten og Brønnøysundregistrene, november 2026):
+
+- Mva-melding, alminnelig tomånedlig termin: 10. februar, 10. april, 10. juni, 31. august, 10. oktober og 10. desember.
+  Årstermin (omsetning under 1 mill. kr): 10. mars året etter.
+- A-melding: den 5. hver måned, for lønn utbetalt måneden før.
+- Arbeidsgiveravgift: 15. januar, mars, mai, juli, september og november.
+- Forskuddstrekk: fra 2026 senest første virkedag etter at lønnen er utbetalt – ikke lenger annenhver måned.
+- Forskuddsskatt for enkeltpersonforetak: 15. mars, juni, september og desember.
+- Forskuddsskatt for aksjeselskap: 15. februar og 15. april året etter inntektsåret.
+- Skattemelding for næringsdrivende og selskaper: 31. mai.
+- Aksjeselskap: aksjonærregisteroppgaven 31. januar, ordinær generalforsamling innen 30. juni,
+  årsregnskap til Regnskapsregisteret 31. juli.
+- Faller en frist på lørdag, søndag eller helligdag, flyttes den til første virkedag etter.
+
+## Alle gratisverktøyene
+
+Samlet på ${SITE_URL}/verktoy, gruppert etter hva de hjelper med:
+
+${gratisverktoy.map((v) => `- [${v.navn}](${SITE_URL}${v.til}): ${v.tekst}`).join('\n')}
+
+Med en gratis konto på Min side lagres bedriftsprofilen (orgnummer, adresse, kontaktinfo), og
+verktøyene åpnes ferdig utfylt. De neste fristene vises på Min side.
+
 ## Tjenester
 
 ${tjenester.map((t) => `- ${t.navn}${t.gruppe === 'tillegg' ? ' (tillegg)' : ''}: ${t.tekst}`).join('\n')}
@@ -229,6 +262,8 @@ publisering og innmelding hos Google.
 - [Timepriskalkulator](${SITE_URL}/timepris): gratis utregning av hva du må ta i timen som selvstendig næringsdrivende
 - [Hva koster en ansatt](${SITE_URL}/hva-koster-en-ansatt): full årskostnad for en ansatt, og hva hen må fakturere for å bære seg selv
 - [Hva må du fakturere](${SITE_URL}/hva-ma-du-fakturere): nødvendig omsetning per år og måned, og hvor mange timer det betyr
+- [Fristkalender](${SITE_URL}/frister): alle skatte- og rapporteringsfrister for bedriften ut fra organisasjonsnummeret, som kalender med varsel
+- [Gratis verktøy](${SITE_URL}/verktoy): oversikt over alle gratisverktøyene for små bedrifter
 ${BRANSJEPROFILER.map((b) => `- [${b.tittel}](${SITE_URL}/timepris/${b.slug}): typiske kostnader og fakturerbar andel for ${b.ubestemt}`).join('\n')}
 - [Kjøpsvilkår for logoverktøyet](${SITE_URL}/vilkar/logo)
 - [Maskinlesbare priser](${SITE_URL}/priser.json): alle priser som JSON, datert

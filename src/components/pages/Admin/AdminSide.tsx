@@ -3,9 +3,8 @@ import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 import { AdminRamme, Dempet, IngenTilgang, Knapp, StatusMerke } from './felles'
 import { dato, idag, kr } from './format'
-import { lyttSaker } from '../../../lib/henvendelser'
-import { lyttAlleProsjekter } from '../../../lib/prosjekter'
-import { lyttLogobestillinger } from '../../../lib/logobestillinger'
+import { lyttSaker, settStatusFlere } from '../../../lib/henvendelser'
+import { lyttAlleProsjekter, synkProsjekt } from '../../../lib/prosjekter'
 import type { Prosjekt } from '../../../data/prosjekt'
 import { KILDER, STATUSER, driftAktiv, status as statusinfo, type Sak, type Status } from '../../../data/saker'
 import { formaterRamme } from '../../../data/pakker'
@@ -32,8 +31,11 @@ function Oversikt() {
   const [prosjekter, setProsjekter] = useState<Map<string, Prosjekt>>(new Map())
   const [filter, setFilter] = useState<Filter>('aktive')
   const [sok, setSok] = useState('')
-  /** Logobestillinger som venter på faktura – vises på knappen i hodet. */
-  const [nyeLogo, setNyeLogo] = useState(0)
+  /** Avkryssede saker, for masseoppdatering. */
+  const [valgt, setValgt] = useState<Set<string>>(new Set())
+  const [sistKlikket, setSistKlikket] = useState<number | null>(null)
+  const [flytter, setFlytter] = useState(false)
+  const [melding, setMelding] = useState('')
 
   useEffect(() => {
     let stopp = () => {}
@@ -51,19 +53,6 @@ function Oversikt() {
     let aktiv = true
     lyttAlleProsjekter(
       (liste) => setProsjekter(new Map(liste.map((p) => [p.id, p]))),
-      () => {},
-    ).then((s) => (aktiv ? (stopp = s) : s()))
-    return () => {
-      aktiv = false
-      stopp()
-    }
-  }, [])
-
-  useEffect(() => {
-    let stopp = () => {}
-    let aktiv = true
-    lyttLogobestillinger(
-      (liste) => setNyeLogo(liste.filter((b) => b.status === 'ny' || b.status === 'levert').length),
       () => {},
     ).then((s) => (aktiv ? (stopp = s) : s()))
     return () => {
@@ -123,6 +112,50 @@ function Oversikt() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [saker, filter, sok, dagen, prosjekter])
 
+  /** Klikk velger én; shift-klikk velger alt mellom forrige og denne. */
+  function velg(indeks: number, id: string, shift: boolean) {
+    setValgt((forrige) => {
+      const neste = new Set(forrige)
+      const pa = !forrige.has(id)
+      if (shift && sistKlikket !== null) {
+        const [fra, til] = [Math.min(sistKlikket, indeks), Math.max(sistKlikket, indeks)]
+        synlige.slice(fra, til + 1).forEach((s) => (pa ? neste.add(s.id) : neste.delete(s.id)))
+      } else if (pa) neste.add(id)
+      else neste.delete(id)
+      return neste
+    })
+    setSistKlikket(indeks)
+  }
+
+  const valgteSaker = synlige.filter((s) => valgt.has(s.id))
+  const alleValgt = synlige.length > 0 && valgteSaker.length === synlige.length
+
+  async function flyttValgte(ny: Status) {
+    const liste = valgteSaker
+    if (liste.length === 0) return
+    const navn = statusinfo(ny).navn.toLowerCase()
+    if (!window.confirm(`Flytte ${liste.length} ${liste.length === 1 ? 'sak' : 'saker'} til «${navn}»?`)) return
+    setFlytter(true)
+    setMelding('')
+    try {
+      await settStatusFlere(liste, ny, ny === 'lukket' ? { grunn: 'Arkivert fra oversikten' } : {})
+      // Saker med kundetilgang skal vise den nye statusen på Min side også.
+      await Promise.all(
+        liste
+          .filter((s) => prosjekter.has(s.id))
+          .map((s) => synkProsjekt({ ...s, status: ny, historikk: [...s.historikk, { status: ny, tid: Date.now() }] }).catch(() => {})),
+      )
+      setValgt(new Set())
+      setMelding(`${liste.length} ${liste.length === 1 ? 'sak' : 'saker'} flyttet til «${navn}».`)
+      window.setTimeout(() => setMelding(''), 4000)
+    } catch (e) {
+      console.error(e)
+      setMelding('Noe gikk galt – ingen eller bare noen av sakene ble flyttet. Prøv igjen.')
+    } finally {
+      setFlytter(false)
+    }
+  }
+
   if (feil) return <IngenTilgang feil={feil} />
   if (!saker) return <Dempet>Henter saker …</Dempet>
 
@@ -140,9 +173,6 @@ function Oversikt() {
       <Hode>
         <h1>Saker</h1>
         <HodeKnapper>
-          <Knapp as={Link} to="/admin/logo">
-            Logobestillinger{nyeLogo > 0 && <Teller>{nyeLogo}</Teller>}
-          </Knapp>
           <Knapp as={Link} to="/admin/ny" $hoved>
             + Ny sak
           </Knapp>
@@ -199,8 +229,35 @@ function Oversikt() {
         <Tom>{saker.length === 0 ? 'Ingen henvendelser ennå. De dukker opp her så snart noen sender et skjema.' : 'Ingen saker her.'}</Tom>
       ) : (
         <Liste>
-          {synlige.map((s) => (
-            <li key={s.id}>
+          <Listehode>
+            <Avkryss>
+              <input
+                type="checkbox"
+                checked={alleValgt}
+                ref={(el) => {
+                  if (el) el.indeterminate = valgteSaker.length > 0 && !alleValgt
+                }}
+                onChange={() => setValgt(alleValgt ? new Set() : new Set(synlige.map((s) => s.id)))}
+                aria-label="Velg alle synlige saker"
+              />
+            </Avkryss>
+            <span>
+              {valgteSaker.length > 0
+                ? `${valgteSaker.length} av ${synlige.length} valgt`
+                : `${synlige.length} ${synlige.length === 1 ? 'sak' : 'saker'} · kryss av for å arkivere flere på én gang (shift-klikk velger et område)`}
+            </span>
+          </Listehode>
+          {synlige.map((s, i) => (
+            <li key={s.id} data-valgt={valgt.has(s.id) ? '' : undefined}>
+              <Avkryss>
+                <input
+                  type="checkbox"
+                  checked={valgt.has(s.id)}
+                  onChange={() => {}}
+                  onClick={(e) => velg(i, s.id, e.shiftKey)}
+                  aria-label={`Velg ${s.bedrift || s.navn || s.epost}`}
+                />
+              </Avkryss>
               <Rad to={`/admin/sak/${s.id}`}>
                 <Hvem>
                   <strong>{s.bedrift || s.navn || '(uten navn)'}</strong>
@@ -235,6 +292,39 @@ function Oversikt() {
           ))}
         </Liste>
       )}
+
+      {(valgteSaker.length > 0 || melding) && (
+        <Handlingslinje role="region" aria-label="Handlinger for valgte saker">
+          {valgteSaker.length > 0 ? (
+            <>
+              <strong>
+                {valgteSaker.length} {valgteSaker.length === 1 ? 'sak' : 'saker'} valgt
+              </strong>
+              <Knapp type="button" $hoved disabled={flytter} onClick={() => flyttValgte('lukket')}>
+                {flytter ? 'Flytter …' : 'Arkiver (ikke aktuell)'}
+              </Knapp>
+              <select
+                value=""
+                disabled={flytter}
+                onChange={(e) => e.target.value && flyttValgte(e.target.value as Status)}
+                aria-label="Flytt valgte til status"
+              >
+                <option value="">Flytt til …</option>
+                {STATUSER.map((st) => (
+                  <option key={st.id} value={st.id}>
+                    {st.navn}
+                  </option>
+                ))}
+              </select>
+              <button type="button" className="avbryt" onClick={() => setValgt(new Set())}>
+                Fjern valg
+              </button>
+            </>
+          ) : (
+            <span role="status">{melding}</span>
+          )}
+        </Handlingslinje>
+      )}
     </>
   )
 }
@@ -256,22 +346,6 @@ const HodeKnapper = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
-`
-
-/** Antall nye logobestillinger, som et lite merke på knappen. */
-const Teller = styled.span`
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 1.4rem;
-  height: 1.4rem;
-  margin-left: 0.5rem;
-  padding: 0 0.35rem;
-  border-radius: 999px;
-  background: ${({ theme }) => theme.colors.accentVivid};
-  color: ${({ theme }) => theme.colors.accentOn};
-  font-size: var(--fs-micro);
-  font-weight: 600;
 `
 
 const Tall = styled.div`
@@ -385,6 +459,94 @@ const Liste = styled.ul`
 
   li + li {
     border-top: 1px solid ${({ theme }) => theme.colors.border};
+  }
+
+  > li:not(:first-child) {
+    display: flex;
+  }
+
+  > li > a {
+    flex: 1;
+    min-width: 0;
+    padding-left: 0;
+  }
+
+  > li[data-valgt] {
+    background: ${({ theme }) => theme.colors.accentSoft};
+  }
+`
+
+const Listehode = styled.li`
+  display: flex;
+  align-items: center;
+  padding: 0.35rem 1rem 0.35rem 0;
+  background: ${({ theme }) => theme.colors.paper};
+  color: ${({ theme }) => theme.colors.inkSubtle};
+  font-size: var(--fs-micro);
+`
+
+const Avkryss = styled.label`
+  display: grid;
+  flex: none;
+  place-items: center;
+  align-self: stretch;
+  width: 2.75rem;
+  cursor: pointer;
+
+  input {
+    width: 17px;
+    height: 17px;
+    margin: 0;
+    accent-color: ${({ theme }) => theme.colors.accentVivid};
+    cursor: pointer;
+  }
+`
+
+/** Ligger fast nederst når noe er valgt – som i Gmail. */
+const Handlingslinje = styled.div`
+  position: sticky;
+  bottom: 1rem;
+  z-index: 4;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  width: fit-content;
+  max-width: 100%;
+  margin: 1rem auto 0;
+  padding: 0.6rem 0.75rem 0.6rem 1.1rem;
+  border-radius: ${({ theme }) => theme.borderRadius.pill};
+  background: ${({ theme }) => theme.colors.deep};
+  color: ${({ theme }) => theme.colors.inkInverted};
+  box-shadow: ${({ theme }) => theme.shadows.lg};
+  font-size: var(--fs-small);
+
+  strong {
+    margin-right: 0.25rem;
+    font-weight: 600;
+  }
+
+  select {
+    min-height: 40px;
+    padding: 0 0.75rem;
+    border: 1px solid ${({ theme }) => theme.colors.borderInverted};
+    border-radius: ${({ theme }) => theme.borderRadius.pill};
+    background: ${({ theme }) => theme.colors.deepRaised};
+    color: ${({ theme }) => theme.colors.inkInverted};
+    font: inherit;
+  }
+
+  .avbryt {
+    padding: 0 0.5rem;
+    border: 0;
+    background: none;
+    color: ${({ theme }) => theme.colors.inkInvertedMuted};
+    font: inherit;
+    cursor: pointer;
+
+    &:hover {
+      color: ${({ theme }) => theme.colors.inkInverted};
+    }
   }
 `
 

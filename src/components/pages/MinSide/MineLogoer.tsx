@@ -1,10 +1,9 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 import Icon from '../../shared/Icon'
-import { useAdmin as useKonto } from '../Admin/kontekst'
 import { dato } from '../Admin/format'
-import { erKundens, lyttMineDesign, slettDesign, type LagretDesign } from '../../../lib/logodesign'
+import { erKundens, slettDesign, velgStudiologo, type LagretDesign } from '../../../lib/logodesign'
 import { PRODUKTER } from '../../../data/logoprodukter'
 
 /**
@@ -18,31 +17,10 @@ import { PRODUKTER } from '../../../data/logoprodukter'
  * verktøyet eller slettes. Nedlastingen selv skjer i logoverktøyet, som har
  * alt som trengs for å lage filene – her lenker vi dit.
  */
-export default function MineLogoer() {
-  const { bruker } = useKonto()
-  const [liste, setListe] = useState<LagretDesign[] | null>(null)
-  const [feil, setFeil] = useState(false)
-
-  useEffect(() => {
-    let stopp = () => {}
-    let aktiv = true
-    lyttMineDesign(bruker.uid, setListe, () => setFeil(true)).then((s) => (aktiv ? (stopp = s) : s()))
-    return () => {
-      aktiv = false
-      stopp()
-    }
-  }, [bruker.uid])
-
+export default function MineLogoer({ liste, feil }: { liste: LagretDesign[] | null; feil: boolean }) {
   const antallKjopt = useMemo(() => (liste ?? []).filter(erKundens).length, [liste])
 
-  // Studioet for signatur og SoMe åpnes med logoen som har profilen –
-  // ellers den sist kjøpte, ellers den sist endrede (da vises det låst).
-  const studiologo = useMemo(() => {
-    const l = liste ?? []
-    return (
-      l.find((d) => d.frigitt || (d.bestillingId && d.produkt === 'profil')) ?? l.find(erKundens) ?? l[0] ?? null
-    )
-  }, [liste])
+  const studiologo = useMemo(() => velgStudiologo(liste), [liste])
 
   async function slett(d: LagretDesign) {
     if (!window.confirm(`Slette utkastet «${d.navn || 'Uten navn'}»? Det kan ikke angres.`)) return
@@ -50,9 +28,8 @@ export default function MineLogoer() {
   }
 
   return (
-    <Seksjon aria-labelledby="mine-logoer">
+    <Seksjon aria-label="Mine logoer">
       <Hode>
-        <h2 id="mine-logoer">Mine logoer</h2>
         {liste && liste.length > 0 && (
           <span>
             {liste.length} {liste.length === 1 ? 'logo' : 'logoer'}
@@ -132,9 +109,7 @@ export default function MineLogoer() {
 
 /* ------------------------------------------------------------------ stil */
 
-const Seksjon = styled.section`
-  margin-bottom: clamp(2.5rem, 5vw, 3.5rem);
-`
+const Seksjon = styled.section``
 
 const Hode = styled.div`
   display: flex;

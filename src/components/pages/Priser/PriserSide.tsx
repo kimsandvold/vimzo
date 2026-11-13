@@ -67,6 +67,7 @@ export default function PriserSide() {
   return (
     <>
       <Sidehode
+        motiv="pris"
         smuler={[{ navn: 'Priser' }]}
         stikkord="Priser"
         tittel="Hva en nettside koster hos oss"

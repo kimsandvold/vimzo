@@ -42,6 +42,7 @@ export default function GuiderSide() {
   return (
     <>
       <Sidehode
+        motiv="guide"
         smuler={[{ navn: 'Guider' }]}
         stikkord="Guider"
         tittel="Det vi får spørsmål om, skrevet ned én gang"

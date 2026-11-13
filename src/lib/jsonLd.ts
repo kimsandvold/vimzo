@@ -320,6 +320,32 @@ export function timeprisLd(sti: string, navn: string, beskrivelse: string): Reco
   }
 }
 
+export function fristerLd(): Record<string, unknown> {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'WebApplication',
+    '@id': `${URL_BASE}/frister#verktoy`,
+    name: 'Fristkalender for bedrifter',
+    url: `${URL_BASE}/frister`,
+    applicationCategory: 'BusinessApplication',
+    operatingSystem: 'Nettleser',
+    inLanguage: 'nb-NO',
+    isAccessibleForFree: true,
+    provider: { '@id': ORG_ID },
+    description:
+      'Finner alle skatte- og rapporteringsfrister for en norsk bedrift ut fra organisasjonsnummeret, ' +
+      'og legger dem i kalenderen med varsel.',
+    featureList: [
+      'Slår opp bedriften i Enhetsregisteret',
+      'Mva-melding, a-melding, arbeidsgiveravgift og forskuddstrekk',
+      'Forskuddsskatt, skattemelding, aksjonærregisteroppgave og årsregnskap',
+      'Flytter frister som faller på helg og helligdag',
+      'Kalenderfil for iPhone, Outlook og Google Kalender med varsel',
+    ],
+    offers: { '@type': 'Offer', price: 0, priceCurrency: 'NOK' },
+  }
+}
+
 /** Framgangsmåten, som fire steg. Brukes sammen med `timeprisLd`. */
 export function timeprisHowToLd(navn: string): Record<string, unknown> {
   return {
@@ -351,5 +377,23 @@ export function timeprisHowToLd(navn: string): Record<string, unknown> {
         text: 'Lønnskostnad pluss faste kostnader, delt på fakturerbare timer, gir minste timepris. Bufferen oppå dekker dårlige år, sykdom og nytt utstyr.',
       },
     ],
+  }
+}
+
+/** /verktoy: lista over gratisverktøyene, som en ItemList søkemotorer og KI-assistenter kan lese. */
+export function verktoyListeLd(liste: readonly { til: string; navn: string; tekst: string }[]): Record<string, unknown> {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    '@id': `${URL_BASE}/verktoy#liste`,
+    name: 'Gratis verktøy for små bedrifter',
+    numberOfItems: liste.length,
+    itemListElement: liste.map((v, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      url: `${URL_BASE}${v.til}`,
+      name: v.navn,
+      description: v.tekst,
+    })),
   }
 }

@@ -63,6 +63,18 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://vimzo.no/frister</loc>
+    <lastmod>2026-11-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://vimzo.no/verktoy</loc>
+    <lastmod>2026-11-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://vimzo.no/hva-ma-du-fakturere</loc>
     <lastmod>2026-11-13</lastmod>
     <changefreq>monthly</changefreq>

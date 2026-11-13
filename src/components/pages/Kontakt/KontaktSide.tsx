@@ -140,6 +140,7 @@ export default function KontaktSide() {
   return (
     <>
       <Sidehode
+        motiv="samtale"
         smuler={[{ navn: 'Kontakt' }]}
         stikkord="Kontakt"
         tittel="Fortell kort hva bedriften gjør"

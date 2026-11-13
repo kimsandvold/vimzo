@@ -247,7 +247,11 @@ function lesTall(p: URLSearchParams, navn: string, standard: number): number {
   return p.has(navn) && Number.isFinite(n) && n >= 0 ? n : standard
 }
 
-export default function AnsattSide() {
+/**
+ * Selve kalkulatoren – skjema og kvittering. Brukes både her og på Min side
+ * (/min-side/verktoy), med tilstanden i adressefeltet begge steder.
+ */
+export function Ansattkalkulator() {
   const [params, settParams] = useSearchParams()
 
   const grunnlag = useMemo<Ansattgrunnlag>(
@@ -274,6 +278,157 @@ export default function AnsattSide() {
     [params, settParams],
   )
 
+  return (
+    <Rutenett>
+      <form onSubmit={(e) => e.preventDefault()}>
+        <Sammendrag etikett="Dette koster den ansatte" tall={formaterKroner(k.sumPerAr)} />
+
+        <Bolk>
+          <h2>Lønn og satser</h2>
+          <Sonevalg>
+            Sone for arbeidsgiveravgift
+            <select value={grunnlag.agaSone} onChange={(e) => endre('sone', e.target.value)}>
+              {AGA_SONER.map((s) => (
+                <option key={s.id} value={s.id}>
+                  {s.navn} – {s.sats} %{s.hint ? ` (${s.hint})` : ''}
+                </option>
+              ))}
+            </select>
+          </Sonevalg>
+          <Felter>
+            <Felt
+              navn="Bruttolønn"
+              verdi={oreTilKroner(grunnlag.bruttolonn)}
+              onEndre={(v) => endre('lonn', v)}
+              enhet="kr/år"
+              hint="Beløpet på lønnsslippen, før skatt."
+            />
+            <Felt
+              navn="Feriepenger"
+              verdi={grunnlag.feriepengesats}
+              onEndre={(v) => endre('ferie', v)}
+              enhet="%"
+              hint="10,2 % er lovens minimum. 12 % tilsvarer fem uker ferie."
+            />
+            <Felt
+              navn="Tjenestepensjon"
+              verdi={grunnlag.pensjonssats}
+              onEndre={(v) => endre('otp', v)}
+              enhet="%"
+              hint="2 % er minimumskravet. Høyere sats gir også høyere arbeidsgiveravgift."
+            />
+            <Felt
+              navn="Andre kostnader"
+              verdi={oreTilKroner(grunnlag.andreKostnader)}
+              onEndre={(v) => endre('annet', v)}
+              enhet="kr/år"
+              hint="Arbeidsplass, PC, verktøy, forsikring, kurs og programvare."
+            />
+          </Felter>
+        </Bolk>
+
+        <Bolk>
+          <h2>Hva den ansatte skal gjøre</h2>
+          <Felter>
+            <Felt
+              navn="Arbeidstimer i året"
+              verdi={grunnlag.arbeidstimer}
+              onEndre={(v) => endre('timer', v)}
+              enhet="timer"
+              hint="En full stilling er rundt 1 750 timer etter ferie og helligdager."
+            />
+            <Felt
+              navn="Fakturerbar andel"
+              verdi={grunnlag.fakturerbarAndel}
+              onEndre={(v) => endre('fakturerbar', Math.min(100, v))}
+              enhet="%"
+              hint="Hvor mye av tiden som kan faktureres videre. Sett 0 for en stilling som ikke fakturerer."
+            />
+          </Felter>
+        </Bolk>
+      </form>
+
+      <Kort aria-live="polite">
+        <Stikkord>Dette koster den ansatte</Stikkord>
+        <StortTall>{formaterKroner(k.sumPerAr)}</StortTall>
+        <Under>
+          i året, eller {formaterKroner(k.sumPerManed)} i måneden. Det er{' '}
+          {Math.round((k.faktor - 1) * 100)} % mer enn lønnen.
+        </Under>
+
+        {k.nullpunktTimepris === null ? (
+          <Poeng>
+            Stillingen fakturerer ingenting. Da er den en ren kostnad som må dekkes av det
+            resten av bedriften tjener – {formaterKroner(k.sumPerManed)} i måneden.
+          </Poeng>
+        ) : (
+          <Poeng>
+            For å bære sin egen kostnad må den ansatte fakturere{' '}
+            <strong>{formaterKroner(k.nullpunktTimepris)}</strong> i timen, på{' '}
+            {formaterTall(k.fakturerbareTimer)} fakturerbare timer. Alt over det er fortjeneste.
+          </Poeng>
+        )}
+
+        <Skille />
+
+        <Linje>
+          <span>Bruttolønn</span>
+          <span>{formaterKroner(k.bruttolonn)}</span>
+        </Linje>
+        <Linje>
+          <span>Feriepenger</span>
+          <span>{formaterKroner(k.feriepenger)}</span>
+        </Linje>
+        <Linje>
+          <span>Tjenestepensjon</span>
+          <span>{formaterKroner(k.pensjon)}</span>
+        </Linje>
+        <Linje>
+          <span>Arbeidsgiveravgift</span>
+          <span>{formaterKroner(k.arbeidsgiveravgift)}</span>
+        </Linje>
+        <Linje>
+          <span>Andre kostnader</span>
+          <span>{formaterKroner(k.andreKostnader)}</span>
+        </Linje>
+        <Linje $sum>
+          <span>Sum per år</span>
+          <span>{formaterKroner(k.sumPerAr)}</span>
+        </Linje>
+        {k.kostnadPerArbeidstime === null ? null : (
+          <Linje>
+            <span>Per arbeidstime</span>
+            <span>{formaterKroner(k.kostnadPerArbeidstime)}</span>
+          </Linje>
+        )}
+
+        <Deling>
+          <Del tittel={`Hva en ansatt koster: ${formaterKroner(k.sumPerAr)} i året`} />
+        </Deling>
+
+        <Bro>
+          <p>
+            Skal den ansatte ha noe å gjøre, må telefonen ringe. Det er som regel nettsiden som
+            avgjør om den gjør det.
+          </p>
+          <Knapp til="/priser" variant="hvit">
+            Se hva en nettside koster
+          </Knapp>
+        </Bro>
+
+        <Kilde>
+          Veiledende tall. Satser gjeldende fra {SATSER_GJELDENDE_FRA}, kilde{' '}
+          <a href={SATSER_KILDE.url} target="_blank" rel="noreferrer">
+            {SATSER_KILDE.navn}
+          </a>
+          . Sjekk alltid egne forutsetninger med regnskapsføreren din.
+        </Kilde>
+      </Kort>
+    </Rutenett>
+  )
+}
+
+export default function AnsattSide() {
   useSEO({
     title: 'Hva koster en ansatt? Gratis kalkulator | Vimzo',
     description:
@@ -296,6 +451,7 @@ export default function AnsattSide() {
   return (
     <>
       <Sidehode
+        motiv="kalkulator"
         smuler={[{ navn: 'Hva koster en ansatt' }]}
         stikkord="Gratis verktøy"
         tittel="Hva koster en ansatt?"
@@ -320,152 +476,7 @@ export default function AnsattSide() {
 
       <Seksjon $flate="tint" $tett>
         <Wrap>
-          <Rutenett>
-            <form onSubmit={(e) => e.preventDefault()}>
-              <Sammendrag etikett="Dette koster den ansatte" tall={formaterKroner(k.sumPerAr)} />
-
-              <Bolk>
-                <h2>Lønn og satser</h2>
-                <Sonevalg>
-                  Sone for arbeidsgiveravgift
-                  <select value={grunnlag.agaSone} onChange={(e) => endre('sone', e.target.value)}>
-                    {AGA_SONER.map((s) => (
-                      <option key={s.id} value={s.id}>
-                        {s.navn} – {s.sats} %{s.hint ? ` (${s.hint})` : ''}
-                      </option>
-                    ))}
-                  </select>
-                </Sonevalg>
-                <Felter>
-                  <Felt
-                    navn="Bruttolønn"
-                    verdi={oreTilKroner(grunnlag.bruttolonn)}
-                    onEndre={(v) => endre('lonn', v)}
-                    enhet="kr/år"
-                    hint="Beløpet på lønnsslippen, før skatt."
-                  />
-                  <Felt
-                    navn="Feriepenger"
-                    verdi={grunnlag.feriepengesats}
-                    onEndre={(v) => endre('ferie', v)}
-                    enhet="%"
-                    hint="10,2 % er lovens minimum. 12 % tilsvarer fem uker ferie."
-                  />
-                  <Felt
-                    navn="Tjenestepensjon"
-                    verdi={grunnlag.pensjonssats}
-                    onEndre={(v) => endre('otp', v)}
-                    enhet="%"
-                    hint="2 % er minimumskravet. Høyere sats gir også høyere arbeidsgiveravgift."
-                  />
-                  <Felt
-                    navn="Andre kostnader"
-                    verdi={oreTilKroner(grunnlag.andreKostnader)}
-                    onEndre={(v) => endre('annet', v)}
-                    enhet="kr/år"
-                    hint="Arbeidsplass, PC, verktøy, forsikring, kurs og programvare."
-                  />
-                </Felter>
-              </Bolk>
-
-              <Bolk>
-                <h2>Hva den ansatte skal gjøre</h2>
-                <Felter>
-                  <Felt
-                    navn="Arbeidstimer i året"
-                    verdi={grunnlag.arbeidstimer}
-                    onEndre={(v) => endre('timer', v)}
-                    enhet="timer"
-                    hint="En full stilling er rundt 1 750 timer etter ferie og helligdager."
-                  />
-                  <Felt
-                    navn="Fakturerbar andel"
-                    verdi={grunnlag.fakturerbarAndel}
-                    onEndre={(v) => endre('fakturerbar', Math.min(100, v))}
-                    enhet="%"
-                    hint="Hvor mye av tiden som kan faktureres videre. Sett 0 for en stilling som ikke fakturerer."
-                  />
-                </Felter>
-              </Bolk>
-            </form>
-
-            <Kort aria-live="polite">
-              <Stikkord>Dette koster den ansatte</Stikkord>
-              <StortTall>{formaterKroner(k.sumPerAr)}</StortTall>
-              <Under>
-                i året, eller {formaterKroner(k.sumPerManed)} i måneden. Det er{' '}
-                {Math.round((k.faktor - 1) * 100)} % mer enn lønnen.
-              </Under>
-
-              {k.nullpunktTimepris === null ? (
-                <Poeng>
-                  Stillingen fakturerer ingenting. Da er den en ren kostnad som må dekkes av det
-                  resten av bedriften tjener – {formaterKroner(k.sumPerManed)} i måneden.
-                </Poeng>
-              ) : (
-                <Poeng>
-                  For å bære sin egen kostnad må den ansatte fakturere{' '}
-                  <strong>{formaterKroner(k.nullpunktTimepris)}</strong> i timen, på{' '}
-                  {formaterTall(k.fakturerbareTimer)} fakturerbare timer. Alt over det er fortjeneste.
-                </Poeng>
-              )}
-
-              <Skille />
-
-              <Linje>
-                <span>Bruttolønn</span>
-                <span>{formaterKroner(k.bruttolonn)}</span>
-              </Linje>
-              <Linje>
-                <span>Feriepenger</span>
-                <span>{formaterKroner(k.feriepenger)}</span>
-              </Linje>
-              <Linje>
-                <span>Tjenestepensjon</span>
-                <span>{formaterKroner(k.pensjon)}</span>
-              </Linje>
-              <Linje>
-                <span>Arbeidsgiveravgift</span>
-                <span>{formaterKroner(k.arbeidsgiveravgift)}</span>
-              </Linje>
-              <Linje>
-                <span>Andre kostnader</span>
-                <span>{formaterKroner(k.andreKostnader)}</span>
-              </Linje>
-              <Linje $sum>
-                <span>Sum per år</span>
-                <span>{formaterKroner(k.sumPerAr)}</span>
-              </Linje>
-              {k.kostnadPerArbeidstime === null ? null : (
-                <Linje>
-                  <span>Per arbeidstime</span>
-                  <span>{formaterKroner(k.kostnadPerArbeidstime)}</span>
-                </Linje>
-              )}
-
-              <Deling>
-                <Del tittel={`Hva en ansatt koster: ${formaterKroner(k.sumPerAr)} i året`} />
-              </Deling>
-
-              <Bro>
-                <p>
-                  Skal den ansatte ha noe å gjøre, må telefonen ringe. Det er som regel nettsiden som
-                  avgjør om den gjør det.
-                </p>
-                <Knapp til="/priser" variant="hvit">
-                  Se hva en nettside koster
-                </Knapp>
-              </Bro>
-
-              <Kilde>
-                Veiledende tall. Satser gjeldende fra {SATSER_GJELDENDE_FRA}, kilde{' '}
-                <a href={SATSER_KILDE.url} target="_blank" rel="noreferrer">
-                  {SATSER_KILDE.navn}
-                </a>
-                . Sjekk alltid egne forutsetninger med regnskapsføreren din.
-              </Kilde>
-            </Kort>
-          </Rutenett>
+          <Ansattkalkulator />
         </Wrap>
       </Seksjon>
 

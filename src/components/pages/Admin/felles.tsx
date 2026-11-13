@@ -7,6 +7,20 @@ import Logo from '../../shared/Logo'
 import { useSEO } from '../../../hooks/useSEO'
 import { firebaseKlar, hentAuth } from '../../../lib/firebase'
 import { status as statusinfo, type Status, type Statusinfo } from '../../../data/saker'
+import Icon, { type IkonNavn } from '../../shared/Icon'
+import {
+  Arbeidsflate,
+  Avatar,
+  Firma,
+  Gruppe,
+  Lenke as MenyLenke,
+  Liste,
+  Rutenett as MenyRutenett,
+  Sidemeny,
+  Teller,
+} from '../../shared/Kontomeny'
+import { lyttLogobestillinger } from '../../../lib/logobestillinger'
+import { lyttAlleProfiler } from '../../../lib/profil'
 
 /* ------------------------------------------------------------- innlogging */
 
@@ -25,9 +39,84 @@ export function AdminRamme({ tittel, children }: { tittel: string; children: Rea
       merke="Vimzo admin"
       ingress="Henvendelser, tilbud og kunder. Bare for administrator."
       hjem={{ til: '/admin', tekst: 'Admin' }}
+      lerret="sunken"
+      bred
     >
-      {children}
+      <AdminMeny>{children}</AdminMeny>
     </KontoRamme>
+  )
+}
+
+/**
+ * Sidemenyen i admin – samme form som på Min side (shared/Kontomeny).
+ *
+ * Telleren på Logobestillinger er bestillinger som venter på faktura; på
+ * Kunder er det kontoer registrert de siste sju dagene.
+ */
+function AdminMeny({ children }: { children: ReactNode }) {
+  const { bruker } = useAdmin()
+  const [venter, setVenter] = useState(0)
+  const [nyeKunder, setNyeKunder] = useState(0)
+
+  useEffect(() => {
+    let stopp: Array<() => void> = []
+    let aktiv = true
+    const uke = Date.now() - 7 * 86_400_000
+    Promise.all([
+      lyttLogobestillinger((l) => setVenter(l.filter((b) => b.status === 'ny' || b.status === 'levert').length), () => {}),
+      lyttAlleProfiler((l) => setNyeKunder(l.filter((p) => p.opprettet > uke).length), () => {}),
+    ]).then((s) => (aktiv ? (stopp = s) : s.forEach((f) => f())))
+    return () => {
+      aktiv = false
+      stopp.forEach((f) => f())
+    }
+  }, [])
+
+  const punkter: Array<{ til: string; navn: string; ikon: IkonNavn; eksakt?: boolean; teller?: number }> = [
+    { til: '/admin', navn: 'Saker', ikon: 'samtale', eksakt: true },
+    { til: '/admin/kunder', navn: 'Kunder', ikon: 'visittkort', teller: nyeKunder },
+    { til: '/admin/logo', navn: 'Logobestillinger', ikon: 'penn', teller: venter },
+  ]
+
+  return (
+    <MenyRutenett>
+      <Sidemeny aria-label="Admin">
+        <Firma>
+          <Avatar aria-hidden="true">V</Avatar>
+          <div>
+            <strong>Vimzo admin</strong>
+            <span>{bruker.email}</span>
+          </div>
+        </Firma>
+        <Liste>
+          {punkter.map((m) => (
+            <li key={m.til}>
+              <MenyLenke to={m.til} end={m.eksakt}>
+                <Icon navn={m.ikon} storrelse={18} tykkelse={1.8} />
+                {m.navn}
+                {m.teller ? <Teller>{m.teller}</Teller> : null}
+              </MenyLenke>
+            </li>
+          ))}
+        </Liste>
+        <Gruppe>Snarveier</Gruppe>
+        <Liste>
+          <li>
+            <MenyLenke to="/admin/ny">
+              <Icon navn="pluss" storrelse={18} tykkelse={1.8} />
+              Ny sak
+            </MenyLenke>
+          </li>
+          <li>
+            <MenyLenke to="/">
+              <Icon navn="globus" storrelse={18} tykkelse={1.8} />
+              Til nettsiden
+            </MenyLenke>
+          </li>
+        </Liste>
+      </Sidemeny>
+      <Arbeidsflate>{children}</Arbeidsflate>
+    </MenyRutenett>
   )
 }
 
@@ -48,6 +137,8 @@ export function KontoRamme({
   hjem,
   lenker = [],
   tillatRegistrering = false,
+  lerret = 'paper',
+  bred = false,
   children,
 }: {
   seoTittel: string
@@ -57,6 +148,10 @@ export function KontoRamme({
   /** Ekstra lenker i toppstripa, f.eks. «Lag logo» på Min side. */
   lenker?: { til: string; tekst: string }[]
   tillatRegistrering?: boolean
+  /** Bakgrunnen bak innholdet. Min side bruker grå, med hvite kort oppå. */
+  lerret?: 'paper' | 'sunken'
+  /** Bredere innhold – for Min side med sidemeny. */
+  bred?: boolean
   children: ReactNode
 }) {
   const [bruker, setBruker] = useState<User | null | undefined>(firebaseKlar ? undefined : null)
@@ -270,7 +365,7 @@ export function KontoRamme({
 
   return (
     <Kontekst.Provider value={{ bruker, loggUt }}>
-      <Side>
+      <Side $lerret={lerret}>
         <Topp>
           <Venstre>
             <Link to="/" aria-label="Vimzo – til forsiden">
@@ -291,7 +386,7 @@ export function KontoRamme({
             <Lenkeknapp onClick={loggUt}>Logg ut</Lenkeknapp>
           </Hoyre>
         </Topp>
-        <Innhold>{children}</Innhold>
+        <Innhold $bred={bred}>{children}</Innhold>
       </Side>
     </Kontekst.Provider>
   )
@@ -409,10 +504,10 @@ function GoogleLogo() {
 
 /* -------------------------------------------------------------------- stil */
 
-const Side = styled.div`
+const Side = styled.div<{ $lerret: 'paper' | 'sunken' }>`
   min-height: 100vh;
   margin-top: calc(-1 * var(--nav-hoyde));
-  background: ${({ theme }) => theme.colors.paper};
+  background: ${({ theme, $lerret }) => theme.colors[$lerret]};
   color: ${({ theme }) => theme.colors.ink};
 `
 
@@ -499,8 +594,8 @@ const Logolenke = styled(Link)`
   text-decoration: none;
 `
 
-export const Innhold = styled.main`
-  max-width: 1200px;
+export const Innhold = styled.main<{ $bred?: boolean }>`
+  max-width: ${({ $bred }) => ($bred ? '1360px' : '1200px')};
   margin: 0 auto;
   padding: clamp(1.25rem, 3vw, 2.25rem) clamp(1rem, 3vw, 2rem) 4rem;
 `
@@ -563,9 +658,9 @@ export const Knapp = styled.button<{ $hoved?: boolean; $fare?: boolean }>`
   gap: 0.5rem;
   min-height: 44px;
   padding: 0 1.25rem;
-  border: 0;
+  border: 1px solid ${({ theme }) => theme.colors.border};
   border-radius: ${({ theme }) => theme.borderRadius.pill};
-  background: ${({ theme }) => theme.colors.sunken};
+  background: ${({ theme }) => theme.colors.surface};
   color: ${({ theme }) => theme.colors.ink};
   font-family: inherit;
   font-size: var(--fs-small);
@@ -575,7 +670,7 @@ export const Knapp = styled.button<{ $hoved?: boolean; $fare?: boolean }>`
   transition: background ${({ theme }) => theme.transitions.default};
 
   &:hover:not(:disabled) {
-    background: ${({ theme }) => theme.colors.border};
+    background: ${({ theme }) => theme.colors.sunken};
   }
 
   &:disabled {
@@ -586,6 +681,7 @@ export const Knapp = styled.button<{ $hoved?: boolean; $fare?: boolean }>`
   ${({ $hoved, theme }) =>
     $hoved &&
     css`
+      border-color: transparent;
       background: ${theme.colors.accentVivid};
       color: ${theme.colors.accentOn};
 
@@ -597,6 +693,7 @@ export const Knapp = styled.button<{ $hoved?: boolean; $fare?: boolean }>`
   ${({ $fare, theme }) =>
     $fare &&
     css`
+      border-color: transparent;
       background: ${theme.colors.errorSoft};
       color: ${theme.colors.error};
 
