@@ -67,3 +67,51 @@ export const verktoyNotat =
   'Vi bygger verktøyet inn i siden – ingen tredjepartstjeneste med månedsavgift og ingen ' +
   'innlogging. Tar verktøyet imot opplysninger fra kundene dine, lagres de i Europa hos ' +
   'leverandører vi har databehandleravtale med.'
+
+/**
+ * De frie verktøyene vi har bygget og lagt ut.
+ *
+ * Lista over er eksempler på hva vi kan lage for en kunde. Denne er beviset:
+ * fem verktøy som faktisk ligger ute, som hvem som helst kan prøve nå.
+ *
+ * De står på forsiden fordi det er den siden som har mest vekt å gi videre.
+ * Lå de bare i bunnteksten – slik de gjorde til å begynne med – ville de hatt
+ * én sidedekkende standardlenke hver, og det teller nesten ingenting.
+ *
+ * Navnet ER lenketeksten, og det skal være spørsmålet verktøyet svarer på.
+ * «Timepriskalkulator» forteller en søkemotor hva siden heter; «Hva skal du
+ * ta i timen?» forteller den hva siden svarer på.
+ */
+export interface Gratisverktoy {
+  til: string
+  navn: string
+  tekst: string
+}
+
+export const gratisverktoy: readonly Gratisverktoy[] = [
+  {
+    til: '/timepris',
+    navn: 'Hva skal du ta i timen?',
+    tekst: 'Lønn, faste kostnader og ubetalt tid, regnet om til timepris. Med typiske tall for ditt fag.',
+  },
+  {
+    til: '/hva-ma-du-fakturere',
+    navn: 'Hvor mye må du fakturere?',
+    tekst: 'Hva året krever i omsetning – og hvor mange timer du da faktisk må være på jobb.',
+  },
+  {
+    til: '/hva-koster-en-ansatt',
+    navn: 'Hva koster en ansatt?',
+    tekst: 'Lønn, feriepenger, arbeidsgiveravgift og pensjon. En ansatt koster 30–40 % mer enn lønnen.',
+  },
+  {
+    til: '/navnesjekk',
+    navn: 'Er firmanavnet ledig?',
+    tekst: 'Samme og lignende navn i Brønnøysundregistrene, og ledige .no-domener.',
+  },
+  {
+    til: '/logo',
+    navn: 'Lag din egen logo',
+    tekst: 'Design logoen selv på norsk. Å prøve koster ingenting.',
+  },
+]

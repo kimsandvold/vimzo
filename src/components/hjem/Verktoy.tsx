@@ -1,6 +1,8 @@
 import styled from 'styled-components'
-import { Hode, Innsig, Pil, Seksjon, Stikkord, Tittel, Wrap } from '../../ui'
-import { verktoy } from '../../data/verktoy'
+import { Link } from 'react-router-dom'
+import { Hode, Innsig, Seksjon, Stikkord, Tittel, Wrap } from '../../ui'
+import { gratisverktoy, verktoy } from '../../data/verktoy'
+import Icon from '../shared/Icon'
 
 /**
  * Regneverktøyene, satt som en liste – ikke som kort.
@@ -20,10 +22,7 @@ export default function Verktoy() {
               <Stikkord>Regneverktøy · bygget for det du selger</Stikkord>
               <Tittel $niva="medium">La kunden regne ut prisen selv.</Tittel>
             </div>
-            <Snarveier>
-              <Pil til="/navnesjekk">Er firmanavnet ledig?</Pil>
-              <Pil til="/logo">Lag din egen logo</Pil>
-            </Snarveier>
+
           </Hode>
         </Innsig>
 
@@ -39,16 +38,118 @@ export default function Verktoy() {
             </li>
           ))}
         </Liste>
+
+        <Innsig>
+          <Egne>
+            <h3>Fem vi har bygget – prøv dem gratis</h3>
+            <p>
+              Ingen innlogging, ingenting lagres. De ligger her fordi de er nyttige, og fordi de
+              viser hva et regneverktøy kan gjøre på en side.
+            </p>
+          </Egne>
+        </Innsig>
+
+        <Rutenett>
+          {gratisverktoy.map((v, i) => (
+            <li key={v.til}>
+              <Innsig forsinkelse={i * 40}>
+                <Verktoykort to={v.til}>
+                  <span className="navn">
+                    {v.navn}
+                    <Icon navn="pilHoyre" storrelse="1em" tykkelse={2} />
+                  </span>
+                  <span className="tekst">{v.tekst}</span>
+                </Verktoykort>
+              </Innsig>
+            </li>
+          ))}
+        </Rutenett>
       </Wrap>
     </Seksjon>
   )
 }
 
-/** De to gratisverktøyene, side om side – eller under hverandre på mobil. */
-const Snarveier = styled.div`
+const Egne = styled.div`
+  margin: clamp(3rem, 6vw, 4.5rem) 0 1.75rem;
+
+  h3 {
+    margin: 0;
+    font-size: ${({ theme }) => theme.fontSizes.title};
+    letter-spacing: -0.028em;
+  }
+
+  p {
+    margin: 0.6rem 0 0;
+    max-width: 52ch;
+    color: ${({ theme }) => theme.colors.inkMuted};
+    font-size: ${({ theme }) => theme.fontSizes.small};
+  }
+`
+
+/**
+ * Verktøyene som kort, ikke som en lenkerad.
+ *
+ * Hvert kort er én lenke med beskrivende lenketekst og en setning om hva
+ * verktøyet svarer på. Det gir leseren nok til å velge, og søkemotoren nok
+ * til å forstå hva som ligger i den andre enden.
+ */
+const Rutenett = styled.ul`
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+`
+
+const Verktoykort = styled(Link)`
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem 1.75rem;
+  flex-direction: column;
+  gap: 0.35rem;
+  height: 100%;
+  padding: 1.1rem 1.25rem;
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  border-radius: ${({ theme }) => theme.borderRadius.large};
+  background: ${({ theme }) => theme.colors.paper};
+  color: ${({ theme }) => theme.colors.ink};
+  text-decoration: none;
+  transition:
+    border-color ${({ theme }) => theme.transitions.default},
+    transform ${({ theme }) => theme.transitions.default};
+
+  .navn {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-weight: 600;
+    color: ${({ theme }) => theme.colors.accent};
+  }
+
+  .navn svg {
+    width: 15px;
+    height: 15px;
+    transition: transform ${({ theme }) => theme.transitions.default};
+  }
+
+  .tekst {
+    color: ${({ theme }) => theme.colors.inkMuted};
+    font-size: ${({ theme }) => theme.fontSizes.small};
+    line-height: 1.5;
+  }
+
+  &:hover {
+    border-color: ${({ theme }) => theme.colors.accent};
+  }
+
+  &:hover .navn svg {
+    transform: translateX(3px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    &:hover .navn svg {
+      transform: none;
+    }
+  }
 `
 
 const Liste = styled.ul`

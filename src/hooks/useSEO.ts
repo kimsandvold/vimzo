@@ -73,9 +73,26 @@ export function useSEO({ title, description, ogImage, ogImageAlt, noindex, jsonL
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const stabilJsonLd = useMemo(() => jsonLd, [jsonLdNokkel])
 
+  /**
+   * Rull til toppen ved SIDEBYTTE – ikke når spørrestrengen endrer seg.
+   *
+   * Dette lå tidligere i effekten under, som også lytter på `search`. Det
+   * gikk bra så lenge spørrestrengen ble satt én gang. Kalkulatorene lagrer
+   * tilstanden sin i adressefeltet og skriver til den ved hvert tastetrykk –
+   * og siden `scroll-behavior` er `smooth`, startet hvert tegn en myk
+   * rulleanimasjon mot toppen mens man fylte ut et felt.
+   *
+   * `behavior: 'instant'` overstyrer den myke rullingen for akkurat dette
+   * kallet. Myk rulling hører til ankerlenker inne på en side; ved sidebytte
+   * er den feil – da ser man den nye siden fly forbi i et halvt sekund før
+   * man havner på toppen av den.
+   */
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' })
+  }, [pathname])
+
   useEffect(() => {
     document.title = title
-    window.scrollTo(0, 0)
 
     settMeta('description', description)
     settMeta('og:title', title, 'property')

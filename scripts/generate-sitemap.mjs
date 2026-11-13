@@ -28,25 +28,45 @@ const { pakker, driftsnivaer, tilleggstjenester, timepris, ANTALL_AVDRAG } = awa
 const { tjenester } = await lastTs('src/data/tjenester.ts')
 const { faq } = await lastTs('src/data/faq.ts')
 const { PRODUKTER, OPPGRADERING } = await lastTs('src/data/logoprodukter.ts')
+const { BRANSJEPROFILER } = await lastTs('src/data/timeprisbransjer.ts')
+const { FERIEPENGESATS, OTP_SATS, AGA_SONER, SATSER_GJELDENDE_FRA } = await lastTs('src/data/timepris.ts')
 
 const idag = new Date().toISOString().slice(0, 10)
 
 // --- 1. Sitemap ------------------------------------------------------------
 
-/** Faste sider. Prioritet speiler hvor viktig siden er for salg, ikke smak. */
+/**
+ * Faste sider. Prioritet speiler hvor viktig siden er for salg, ikke smak.
+ *
+ * `endret` er datoen siden sist ble endret på ekte, og den skrives for hånd.
+ * Tidligere fikk alle sider byggedatoen, og da påsto sitemap-en at hele
+ * nettstedet var endret hver gang vi bygde. Søkemotorer lærer seg fort å
+ * overse `lastmod` fra et domene som gjør det – og da mister vi signalet
+ * nettopp når vi faktisk har endret noe.
+ *
+ * Regel: bump datoen når innholdet på siden endres, ikke når koden rundt gjør det.
+ */
 const faste = [
-  { sti: '/', prioritet: '1.0', frekvens: 'weekly' },
-  { sti: '/tjenester', prioritet: '0.9', frekvens: 'monthly' },
-  { sti: '/priser', prioritet: '0.9', frekvens: 'monthly' },
-  { sti: '/arrangement', prioritet: '0.8', frekvens: 'monthly' },
-  { sti: '/arbeid', prioritet: '0.7', frekvens: 'monthly' },
-  { sti: '/guider', prioritet: '0.7', frekvens: 'weekly' },
-  { sti: '/logo', prioritet: '0.8', frekvens: 'monthly' },
-  { sti: '/navnesjekk', prioritet: '0.7', frekvens: 'monthly' },
-  { sti: '/kontakt', prioritet: '0.8', frekvens: 'yearly' },
-  { sti: '/personvern', prioritet: '0.2', frekvens: 'yearly' },
-  { sti: '/vilkar/logo', prioritet: '0.2', frekvens: 'yearly' },
+  { sti: '/', prioritet: '1.0', frekvens: 'weekly', endret: '2026-11-13' },
+  { sti: '/tjenester', prioritet: '0.9', frekvens: 'monthly', endret: '2026-11-10' },
+  { sti: '/priser', prioritet: '0.9', frekvens: 'monthly', endret: '2026-11-10' },
+  { sti: '/arrangement', prioritet: '0.8', frekvens: 'monthly', endret: '2026-11-10' },
+  { sti: '/arbeid', prioritet: '0.7', frekvens: 'monthly', endret: '2026-11-10' },
+  { sti: '/guider', prioritet: '0.7', frekvens: 'weekly', endret: '2026-11-13' },
+  { sti: '/logo', prioritet: '0.8', frekvens: 'monthly', endret: '2026-11-10' },
+  { sti: '/navnesjekk', prioritet: '0.7', frekvens: 'monthly', endret: '2026-11-10' },
+  { sti: '/timepris', prioritet: '0.8', frekvens: 'monthly', endret: '2026-11-13' },
+  { sti: '/hva-koster-en-ansatt', prioritet: '0.8', frekvens: 'monthly', endret: '2026-11-13' },
+  { sti: '/hva-ma-du-fakturere', prioritet: '0.8', frekvens: 'monthly', endret: '2026-11-13' },
+  { sti: '/kontakt', prioritet: '0.8', frekvens: 'yearly', endret: '2026-11-10' },
+  { sti: '/personvern', prioritet: '0.2', frekvens: 'yearly', endret: '2026-11-10' },
+  { sti: '/vilkar/logo', prioritet: '0.2', frekvens: 'yearly', endret: '2026-11-10' },
 ]
+
+/** Bransjesidene ble publisert samtidig. Bump når innholdet i en profil endres. */
+const BRANSJE_ENDRET = '2026-11-13'
+/** Leverte prosjekter endres i praksis ikke etter at de er lagt ut. */
+const CASE_ENDRET = '2026-11-10'
 
 const blokk = ({ sti, prioritet, frekvens, dato = idag }) =>
   `  <url>
@@ -61,11 +81,14 @@ const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.w3.org/1999/sitemap-image/1.1 http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 ${[
-  ...faste.map(blokk),
+  ...faste.map(({ sti, prioritet, frekvens, endret }) => blokk({ sti, prioritet, frekvens, dato: endret })),
   ...guider.map((g) =>
     blokk({ sti: `/guider/${g.slug}`, prioritet: '0.6', frekvens: 'monthly', dato: g.oppdatert || g.publisert }),
   ),
-  ...cases.map((c) => blokk({ sti: `/arbeid/${c.slug}`, prioritet: '0.5', frekvens: 'yearly' })),
+  ...cases.map((c) => blokk({ sti: `/arbeid/${c.slug}`, prioritet: '0.5', frekvens: 'yearly', dato: CASE_ENDRET })),
+  ...BRANSJEPROFILER.map((b) =>
+    blokk({ sti: `/timepris/${b.slug}`, prioritet: '0.7', frekvens: 'monthly', dato: BRANSJE_ENDRET }),
+  ),
 ].join('\n')}
 </urlset>
 `
@@ -135,6 +158,43 @@ lisens, og viser logoen fotorealistisk på skilt, visittkort, vindu og klær.
 - Logoen kan velges i nettsidekalkulatoren på forsiden. Da faktureres den sammen med nettsiden, ikke før siden er ferdig.
 - Kunden får tidsubegrenset bruksrett. Symboler og skrifter har åpne lisenser, så det gis ikke enerett til selve symbolet.
 
+## Timepriskalkulatoren
+
+Gratis verktøy på ${SITE_URL}/timepris. Ingen innlogging, ingenting lagres, ingen informasjonskapsler –
+tallene ligger i adressefeltet, så et resultat kan bokmerkes og deles.
+
+Regnestykket: lønnskostnad pluss faste kostnader, delt på fakturerbare timer, pluss en buffer.
+
+- Enkeltpersonforetak: «ønsket inntekt» er overskuddet før skatt. Skatt betales privat av eieren og inngår ikke.
+- Aksjeselskap: «ønsket inntekt» er bruttolønn. Selskapet betaler i tillegg feriepenger (${FERIEPENGESATS} %),
+  obligatorisk tjenestepensjon (${OTP_SATS} %) og arbeidsgiveravgift (sonebestemt, ${AGA_SONER[0].sats} % i
+  sone 1, beregnet av lønn, feriepenger og pensjonsinnskudd til sammen). 600 000 kr i lønn koster
+  selskapet rundt 780 000 kr.
+- Fakturerbar andel: befaring, tilbud, innkjøp, kjøring, rydding og regnskap er ikke fakturerbart.
+  De fleste selvstendige ligger mellom 55 og 70 %. Ved 65 % må timeprisen være 54 % høyere enn
+  arbeidstimene alene tilsier.
+- Timeprisen oppgis eks. mva. og rundes opp til nærmeste tier.
+- Satser gjeldende fra ${SATSER_GJELDENDE_FRA}. Kilde: Skatteetaten.
+
+### Hva koster en ansatt (${SITE_URL}/hva-koster-en-ansatt)
+
+Full årskostnad: bruttolønn + feriepenger + obligatorisk tjenestepensjon + arbeidsgiveravgift + andre
+kostnader (arbeidsplass, utstyr, forsikring, kurs). Arbeidsgiveravgiften beregnes av lønn, feriepenger
+OG pensjonsinnskudd. En ansatt koster typisk 30–40 % mer enn lønnen: 600 000 kr i lønn gir rundt
+780 000 kr i rene lønnskostnader, og over 830 000 kr med arbeidsplass og utstyr. Verktøyet viser også
+hva den ansatte må fakturere per time for å gå i null.
+
+### Hva må du fakturere (${SITE_URL}/hva-ma-du-fakturere)
+
+Nødvendig omsetning = lønnskostnad + faste kostnader, alt eks. mva. Delt på timeprisen gir antall
+fakturerbare timer; delt på den fakturerbare andelen gir antall timer du faktisk må være på jobb.
+Et enkeltpersonforetak som vil ta ut 600 000 kr og har 150 000 kr i faste kostnader, må fakturere
+750 000 kr i året. Et aksjeselskap må over 930 000 kr for samme uttak.
+
+Egne sider med typiske tall per bransje:
+
+${BRANSJEPROFILER.map((b) => `- ${b.tittel} ${SITE_URL}/timepris/${b.slug} — typisk ${b.typisk.fakturerbarAndel} % fakturerbart, ${b.typisk.arbeidsuker} arbeidsuker, ${b.typisk.timerPerUke} t/uke`).join('\n')}
+
 ## Tjenester
 
 ${tjenester.map((t) => `- ${t.navn}${t.gruppe === 'tillegg' ? ' (tillegg)' : ''}: ${t.tekst}`).join('\n')}
@@ -166,6 +226,10 @@ publisering og innmelding hos Google.
 - [Guider](${SITE_URL}/guider): fagartikler om nettsider, pris og AI-synlighet
 - [Lag logo](${SITE_URL}/logo): logoverktøy på norsk – design gratis etter innlogging, kjøp logo (${kr(PRODUKTER.logo.pris)} kr) eller logo med visuell profil (${kr(PRODUKTER.profil.pris)} kr)
 - [Navnesjekk](${SITE_URL}/navnesjekk): gratis sjekk av om et firmanavn er ledig – samme og lignende navn i Brønnøysundregistrene, og ledige .no-domener
+- [Timepriskalkulator](${SITE_URL}/timepris): gratis utregning av hva du må ta i timen som selvstendig næringsdrivende
+- [Hva koster en ansatt](${SITE_URL}/hva-koster-en-ansatt): full årskostnad for en ansatt, og hva hen må fakturere for å bære seg selv
+- [Hva må du fakturere](${SITE_URL}/hva-ma-du-fakturere): nødvendig omsetning per år og måned, og hvor mange timer det betyr
+${BRANSJEPROFILER.map((b) => `- [${b.tittel}](${SITE_URL}/timepris/${b.slug}): typiske kostnader og fakturerbar andel for ${b.ubestemt}`).join('\n')}
 - [Kjøpsvilkår for logoverktøyet](${SITE_URL}/vilkar/logo)
 - [Maskinlesbare priser](${SITE_URL}/priser.json): alle priser som JSON, datert
 ${guider.map((g) => `- [${g.tittel}](${SITE_URL}/guider/${g.slug}): ${g.ingress}`).join('\n')}
@@ -229,6 +293,7 @@ const blokkTilTekst = (b) => {
   if (b.type === 'liste') return b.punkter.map((p) => `- ${p}`).join('\n')
   if (b.type === 'nummerert') return b.punkter.map((p, i) => `${i + 1}. ${p}`).join('\n')
   if (b.type === 'faktaboks') return `> **${b.tittel}**\n> ${b.tekst}`
+  if (b.type === 'verktoy') return `${b.tekst} → [${b.lenketekst}](${SITE_URL}${b.til})`
   if (b.type === 'tabell')
     return [
       `| ${b.kolonner.join(' | ')} |`,
@@ -262,6 +327,6 @@ Generert fra kildekoden ${idag}. Oppdateres automatisk ved hvert bygg.
 await writeFile('public/llms-full.txt', llmsFull, 'utf-8')
 console.log(`[llms] public/llms-full.txt oppdatert (${(Buffer.byteLength(llmsFull) / 1024).toFixed(1)} kB)`)
 
-const antall = faste.length + guider.length + cases.length
+const antall = faste.length + guider.length + cases.length + BRANSJEPROFILER.length
 console.log(`[sitemap] ${antall} URL-er skrevet til public/sitemap.xml`)
 console.log(`[llms] public/llms.txt oppdatert (${(llms.length / 1024).toFixed(1)} kB)`)

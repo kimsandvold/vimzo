@@ -49,6 +49,48 @@ lisens, og viser logoen fotorealistisk på skilt, visittkort, vindu og klær.
 - Logoen kan velges i nettsidekalkulatoren på forsiden. Da faktureres den sammen med nettsiden, ikke før siden er ferdig.
 - Kunden får tidsubegrenset bruksrett. Symboler og skrifter har åpne lisenser, så det gis ikke enerett til selve symbolet.
 
+## Timepriskalkulatoren
+
+Gratis verktøy på https://vimzo.no/timepris. Ingen innlogging, ingenting lagres, ingen informasjonskapsler –
+tallene ligger i adressefeltet, så et resultat kan bokmerkes og deles.
+
+Regnestykket: lønnskostnad pluss faste kostnader, delt på fakturerbare timer, pluss en buffer.
+
+- Enkeltpersonforetak: «ønsket inntekt» er overskuddet før skatt. Skatt betales privat av eieren og inngår ikke.
+- Aksjeselskap: «ønsket inntekt» er bruttolønn. Selskapet betaler i tillegg feriepenger (12 %),
+  obligatorisk tjenestepensjon (2 %) og arbeidsgiveravgift (sonebestemt, 14.1 % i
+  sone 1, beregnet av lønn, feriepenger og pensjonsinnskudd til sammen). 600 000 kr i lønn koster
+  selskapet rundt 780 000 kr.
+- Fakturerbar andel: befaring, tilbud, innkjøp, kjøring, rydding og regnskap er ikke fakturerbart.
+  De fleste selvstendige ligger mellom 55 og 70 %. Ved 65 % må timeprisen være 54 % høyere enn
+  arbeidstimene alene tilsier.
+- Timeprisen oppgis eks. mva. og rundes opp til nærmeste tier.
+- Satser gjeldende fra 2026-01-01. Kilde: Skatteetaten.
+
+### Hva koster en ansatt (https://vimzo.no/hva-koster-en-ansatt)
+
+Full årskostnad: bruttolønn + feriepenger + obligatorisk tjenestepensjon + arbeidsgiveravgift + andre
+kostnader (arbeidsplass, utstyr, forsikring, kurs). Arbeidsgiveravgiften beregnes av lønn, feriepenger
+OG pensjonsinnskudd. En ansatt koster typisk 30–40 % mer enn lønnen: 600 000 kr i lønn gir rundt
+780 000 kr i rene lønnskostnader, og over 830 000 kr med arbeidsplass og utstyr. Verktøyet viser også
+hva den ansatte må fakturere per time for å gå i null.
+
+### Hva må du fakturere (https://vimzo.no/hva-ma-du-fakturere)
+
+Nødvendig omsetning = lønnskostnad + faste kostnader, alt eks. mva. Delt på timeprisen gir antall
+fakturerbare timer; delt på den fakturerbare andelen gir antall timer du faktisk må være på jobb.
+Et enkeltpersonforetak som vil ta ut 600 000 kr og har 150 000 kr i faste kostnader, må fakturere
+750 000 kr i året. Et aksjeselskap må over 930 000 kr for samme uttak.
+
+Egne sider med typiske tall per bransje:
+
+- Hva skal en snekker ta i timen? https://vimzo.no/timepris/snekker — typisk 65 % fakturerbart, 46 arbeidsuker, 40 t/uke
+- Hva skal en rørlegger ta i timen? https://vimzo.no/timepris/rorlegger — typisk 62 % fakturerbart, 46 arbeidsuker, 40 t/uke
+- Hva skal en elektriker ta i timen? https://vimzo.no/timepris/elektriker — typisk 60 % fakturerbart, 46 arbeidsuker, 40 t/uke
+- Hva skal en maler ta i timen? https://vimzo.no/timepris/maler — typisk 65 % fakturerbart, 46 arbeidsuker, 40 t/uke
+- Hva skal en anleggsgartner ta i timen? https://vimzo.no/timepris/anleggsgartner — typisk 65 % fakturerbart, 34 arbeidsuker, 45 t/uke
+- Hva skal et renholdsfirma ta i timen? https://vimzo.no/timepris/renhold — typisk 70 % fakturerbart, 46 arbeidsuker, 40 t/uke
+
 ## Tjenester
 
 - Hele nettsiden, ferdig laget: Vi kjøper domenet i ditt navn, finner ut hvilke sider du trenger, designer siden og setter den på nett. Du bruker rundt to timer til sammen: én prat i starten og én gjennomlesing før vi publiserer.
@@ -91,6 +133,15 @@ publisering og innmelding hos Google.
 - [Guider](https://vimzo.no/guider): fagartikler om nettsider, pris og AI-synlighet
 - [Lag logo](https://vimzo.no/logo): logoverktøy på norsk – design gratis etter innlogging, kjøp logo (490 kr) eller logo med visuell profil (990 kr)
 - [Navnesjekk](https://vimzo.no/navnesjekk): gratis sjekk av om et firmanavn er ledig – samme og lignende navn i Brønnøysundregistrene, og ledige .no-domener
+- [Timepriskalkulator](https://vimzo.no/timepris): gratis utregning av hva du må ta i timen som selvstendig næringsdrivende
+- [Hva koster en ansatt](https://vimzo.no/hva-koster-en-ansatt): full årskostnad for en ansatt, og hva hen må fakturere for å bære seg selv
+- [Hva må du fakturere](https://vimzo.no/hva-ma-du-fakturere): nødvendig omsetning per år og måned, og hvor mange timer det betyr
+- [Hva skal en snekker ta i timen?](https://vimzo.no/timepris/snekker): typiske kostnader og fakturerbar andel for en snekker
+- [Hva skal en rørlegger ta i timen?](https://vimzo.no/timepris/rorlegger): typiske kostnader og fakturerbar andel for en rørlegger
+- [Hva skal en elektriker ta i timen?](https://vimzo.no/timepris/elektriker): typiske kostnader og fakturerbar andel for en elektriker
+- [Hva skal en maler ta i timen?](https://vimzo.no/timepris/maler): typiske kostnader og fakturerbar andel for en maler
+- [Hva skal en anleggsgartner ta i timen?](https://vimzo.no/timepris/anleggsgartner): typiske kostnader og fakturerbar andel for en anleggsgartner
+- [Hva skal et renholdsfirma ta i timen?](https://vimzo.no/timepris/renhold): typiske kostnader og fakturerbar andel for et renholdsfirma
 - [Kjøpsvilkår for logoverktøyet](https://vimzo.no/vilkar/logo)
 - [Maskinlesbare priser](https://vimzo.no/priser.json): alle priser som JSON, datert
 - [Slik blir bedriften din synlig når kundene spør ChatGPT](https://vimzo.no/guider/synlig-i-ai-sok): Stadig flere starter søket i en AI-assistent i stedet for i Google. Her er hva som faktisk avgjør om bedriften din blir nevnt i svaret.
@@ -274,7 +325,7 @@ Det finnes ingen Search Console for AI-svar ennå. Den praktiske metoden er å s
 ## Hva koster en nettside for en liten bedrift i Norge?
 
 Kilde: https://vimzo.no/guider/hva-koster-en-nettside
-Forfatter: Vimzo · Publisert 2026-10-28
+Forfatter: Vimzo · Publisert 2026-10-28 · Oppdatert 2026-11-13
 
 **Kort svar:** En profesjonell nettside for en liten norsk bedrift koster typisk mellom 15 000 og 60 000 kroner eks. mva., avhengig av antall sider og av om leverandøren også skriver innholdet. Løpende kostnader er normalt 1 500–6 000 kroner i året for en statisk side, og 6 000–20 000 kroner i året for en WordPress-side med lisenser og vedlikehold. Den største enkeltposten er nesten alltid innhold – tekst og bilder – ikke selve koden.
 
@@ -302,9 +353,13 @@ Det er lett å tro at man betaler for kode. I de fleste småbedriftsprosjekter g
 
 Når et tilbud er påfallende billig, er det som regel én av disse postene som er tatt bort – og nesten alltid innhold eller testing.
 
+En nyttig måte å veie prisen på: regn den om til dine egne timer. Tar du 700 kroner i timen, er en side til 14 900 omtrent 21 fakturerbare timer. Vet du ikke hva du bør ta i timen, er det verdt å finne ut av først. → [Hva skal du ta i timen?](https://vimzo.no/timepris)
+
 ### Den løpende kostnaden er den som overrasker
 
 Mange sammenligner tilbud på oppstartspris alene og oppdager årskostnaden etterpå. Forskjellen mellom en statisk side og en WordPress-side er særlig stor her, fordi den ene har et system som må holdes i live og den andre ikke har det.
+
+Alle faste årskostnader må dekkes av det du fakturerer, enten de står på en nettsideregning eller et forsikringsbrev. Her ser du hva summen av dem krever av omsetning. → [Hvor mye må du fakturere for å gå rundt?](https://vimzo.no/hva-ma-du-fakturere)
 
 | Post | Statisk side | WordPress |
 | --- | --- | --- |
@@ -339,7 +394,7 @@ Du får fast pris skriftlig før vi begynner, og den står selv om arbeidet tar 
 ## WordPress eller håndkodet nettside – hva passer en liten bedrift?
 
 Kilde: https://vimzo.no/guider/wordpress-eller-handkodet
-Forfatter: Vimzo · Publisert 2026-11-04
+Forfatter: Vimzo · Publisert 2026-11-04 · Oppdatert 2026-11-13
 
 **Kort svar:** WordPress passer når innholdet endres ofte av flere personer, og når du trenger funksjonalitet som allerede finnes ferdig – nettbutikk, medlemssider, booking. En håndkodet, statisk side passer når nettstedet har ti til tretti sider som endres noen ganger i året, og når fart, sikkerhet og lav årlig kostnad betyr mer enn å kunne redigere selv. For de fleste norske småbedrifter er det siste tilfellet.
 
@@ -369,6 +424,8 @@ Da er det dumt å bygge alt fra bunnen. Økosystemet er WordPress sin virkelige 
 
 Den typiske norske småbedriftssiden har en forside, noen tjenestesider, en om-side og en kontaktside. Den endres kanskje fire ganger i året. For den siden betaler du for et helt publiseringssystem du nesten ikke bruker – og du arver alle ulempene: oppdateringer, lisenser, sikkerhetshull og en side som blir tregere for hver plugin noen la til i et øyeblikks godt humør.
 
+Timene du bruker på å vedlikeholde systemet selv, er ikke gratis – de er timer du kunne fakturert. Sett en krone på dem før du avgjør hva som er billigst. → [Hva koster en time av din tid?](https://vimzo.no/timepris)
+
 > **Argumentet om å redigere selv**
 > Det brukes oftere enn det benyttes. Og det er ikke bare et spørsmål om tid: å skrive innhold som både leser godt og rangerer er et fag, og sider som eieren skal fylle selv mellom alt annet, forfaller nesten alltid. Vår erfaring er at det blir både billigere og bedre å betale for timene som faktisk brukes, når de brukes.
 
@@ -388,4 +445,4 @@ På to punkter har en statisk side en reell fordel. Core Web Vitals – Googles 
 Lander du på at du trenger WordPress, er det et godt svar. Lander du på at du har ti sider som skal være raske, trygge og billige i drift – da er det vi bygger.
 
 ---
-Generert fra kildekoden 2026-11-10. Oppdateres automatisk ved hvert bygg.
+Generert fra kildekoden 2026-11-13. Oppdateres automatisk ved hvert bygg.

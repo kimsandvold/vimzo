@@ -12,7 +12,9 @@
     "preview": "NODE_OPTIONS=--max-http-header-size=65536 vite preview",
     "og": "node scripts/generate-og.mjs",
     "bilde": "node scripts/optimaliser-bilde.mjs",
-    "indexnow": "node scripts/indexnow.mjs"
+    "indexnow": "node scripts/indexnow.mjs",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "firebase": "^12.19.0",
@@ -52,6 +54,7 @@
     "puppeteer": "^25.2.0",
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.46.4",
-    "vite": "^7.2.4"
+    "vite": "^7.2.4",
+    "vitest": "^4.1.12"
   }
 }

@@ -156,6 +156,12 @@ function Blokkvisning({ blokk }: { blokk: Blokk }) {
           <p>{blokk.tekst}</p>
         </Faktaboks>
       )
+    case 'verktoy':
+      return (
+        <Verktoylenke>
+          {blokk.tekst} <Link to={blokk.til}>{blokk.lenketekst}</Link>
+        </Verktoylenke>
+      )
     case 'tabell':
       return (
         <Tabellramme tabIndex={0} role="region" aria-label={`Tabell: ${blokk.kolonner.filter(Boolean).join(', ')}`}>
@@ -290,6 +296,20 @@ const Nummerliste = styled.ol`
   li::marker {
     font-family: ${({ theme }) => theme.fonts.mono};
     color: ${({ theme }) => theme.colors.accent};
+  }
+`
+
+/** Verktøylenken. Samme ro som faktaboksen, men med aksenten på kanten. */
+const Verktoylenke = styled.p`
+  padding: 1.1rem 1.4rem !important;
+  margin: 1.75rem 0 !important;
+  border-left: 3px solid ${({ theme }) => theme.colors.accent};
+  border-radius: 0 ${({ theme }) => theme.borderRadius.medium} ${({ theme }) => theme.borderRadius.medium} 0;
+  background: ${({ theme }) => theme.colors.accentSoft};
+  color: ${({ theme }) => theme.colors.accentInk} !important;
+
+  a {
+    font-weight: 600;
   }
 `
 

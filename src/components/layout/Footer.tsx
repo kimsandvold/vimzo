@@ -79,6 +79,15 @@ export default function Footer() {
                   <Link to="/navnesjekk">Navnesjekk</Link>
                 </li>
                 <li>
+                  <Link to="/timepris">Timepriskalkulator</Link>
+                </li>
+                <li>
+                  <Link to="/hva-koster-en-ansatt">Hva koster en ansatt?</Link>
+                </li>
+                <li>
+                  <Link to="/hva-ma-du-fakturere">Hva må du fakturere?</Link>
+                </li>
+                <li>
                   <Link to="/kontakt">Kontakt</Link>
                 </li>
                 <li>

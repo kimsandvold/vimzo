@@ -18,6 +18,16 @@ export type Blokk =
   | { type: 'nummerert'; punkter: readonly string[] }
   | { type: 'faktaboks'; tittel: string; tekst: string }
   | { type: 'tabell'; kolonner: readonly string[]; rader: readonly (readonly string[])[] }
+  /**
+   * En lenke til et av verktøyene, midt i brødteksten.
+   *
+   * Kontekstuelle lenker i løpende tekst er verdt langt mer enn en lenke i
+   * bunnteksten – både for leseren, som får den der spørsmålet oppstår, og
+   * for søkemotorene, som leser lenketeksten som et løfte om hva som ligger
+   * i den andre enden. Derfor skal `lenketekst` være spørsmålet verktøyet
+   * svarer på, aldri «les mer» eller «klikk her».
+   */
+  | { type: 'verktoy'; tekst: string; til: string; lenketekst: string }
 
 export interface Seksjon {
   overskrift: string
@@ -239,6 +249,7 @@ export const guider: readonly Guide[] = [
       'Fra null til et par hundre tusen. Her er hva som faktisk ligger bak prislappen, og ' +
       'hva en liten bedrift bør regne med å betale – både i oppstart og per år.',
     publisert: '2026-10-28',
+    oppdatert: '2026-11-13',
     lesetid: 8,
     kategori: 'Pris',
     kortsvar:
@@ -312,6 +323,15 @@ export const guider: readonly Guide[] = [
               'Når et tilbud er påfallende billig, er det som regel én av disse postene som er ' +
               'tatt bort – og nesten alltid innhold eller testing.',
           },
+          {
+            type: 'verktoy',
+            tekst:
+              'En nyttig måte å veie prisen på: regn den om til dine egne timer. Tar du 700 kroner ' +
+              'i timen, er en side til 14 900 omtrent 21 fakturerbare timer. Vet du ikke hva du ' +
+              'bør ta i timen, er det verdt å finne ut av først.',
+            til: '/timepris',
+            lenketekst: 'Hva skal du ta i timen?',
+          },
         ],
       },
       {
@@ -323,6 +343,15 @@ export const guider: readonly Guide[] = [
               'Mange sammenligner tilbud på oppstartspris alene og oppdager årskostnaden ' +
               'etterpå. Forskjellen mellom en statisk side og en WordPress-side er særlig stor ' +
               'her, fordi den ene har et system som må holdes i live og den andre ikke har det.',
+          },
+          {
+            type: 'verktoy',
+            tekst:
+              'Alle faste årskostnader må dekkes av det du fakturerer, enten de står på en ' +
+              'nettsideregning eller et forsikringsbrev. Her ser du hva summen av dem krever av ' +
+              'omsetning.',
+            til: '/hva-ma-du-fakturere',
+            lenketekst: 'Hvor mye må du fakturere for å gå rundt?',
           },
           {
             type: 'tabell',
@@ -399,6 +428,7 @@ export const guider: readonly Guide[] = [
       'WordPress driver rundt 40 % av verdens nettsteder. Det betyr ikke at det er riktig ' +
       'for en bedrift med fem ansatte og ti sider.',
     publisert: '2026-11-04',
+    oppdatert: '2026-11-13',
     lesetid: 6,
     kategori: 'Teknikk',
     kortsvar:
@@ -464,6 +494,14 @@ export const guider: readonly Guide[] = [
               'betaler du for et helt publiseringssystem du nesten ikke bruker – og du arver ' +
               'alle ulempene: oppdateringer, lisenser, sikkerhetshull og en side som blir ' +
               'tregere for hver plugin noen la til i et øyeblikks godt humør.',
+          },
+          {
+            type: 'verktoy',
+            tekst:
+              'Timene du bruker på å vedlikeholde systemet selv, er ikke gratis – de er timer du ' +
+              'kunne fakturert. Sett en krone på dem før du avgjør hva som er billigst.',
+            til: '/timepris',
+            lenketekst: 'Hva koster en time av din tid?',
           },
           {
             type: 'faktaboks',

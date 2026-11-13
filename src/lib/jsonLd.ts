@@ -1,6 +1,5 @@
 import { firma } from '../data/firma'
 import { prisFor, type Tjeneste } from '../data/tjenester'
-import type { Sporsmal } from '../data/faq'
 import type { Guide } from '../data/guider'
 import { pakker } from '../data/pakker'
 import { PRODUKTER } from '../data/logoprodukter'
@@ -139,7 +138,15 @@ export function tjenesteLd(t: Tjeneste): Record<string, unknown> {
   }
 }
 
-export function faqLd(sporsmal: readonly Sporsmal[]): Record<string, unknown> {
+/**
+ * Spørsmål og svar som `FAQPage`.
+ *
+ * Tar imot hva som helst med `sporsmal` og `svar` – ikke bare `Sporsmal` fra
+ * `faq.ts`. Timeprissidene har sine egne spørsmål som hører til bransjen og
+ * ikke til den generelle FAQ-en, og de skal ikke tvinges inn i et `tema`
+ * den delte lista eier.
+ */
+export function faqLd(sporsmal: readonly { sporsmal: string; svar: string }[]): Record<string, unknown> {
   return {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
@@ -274,6 +281,75 @@ export function logoverktoyLd(): Record<string, unknown> {
         PRODUKTER.profil.pris,
         'Logofilene pluss visuell profil, filer til sosiale medier og eksempler i bruk.',
       ),
+    ],
+  }
+}
+
+/**
+ * Timepriskalkulatoren.
+ *
+ * `WebApplication` for selve verktøyet, og `HowTo` for framgangsmåten – det
+ * siste fordi «hvordan regner jeg ut timeprisen min» er et stegvis spørsmål,
+ * og fordi en assistent da kan gjengi stegene i stedet for å finne på egne.
+ *
+ * `slug` er satt på bransjesidene, og gir verktøyet en egen identitet per
+ * bransje. Uten det ville alle sidene pekt på samme `@id`, og da hadde vi
+ * fortalt Google at de er samme side – akkurat det vi vil unngå.
+ */
+export function timeprisLd(sti: string, navn: string, beskrivelse: string): Record<string, unknown> {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'WebApplication',
+    '@id': `${URL_BASE}${sti}#verktoy`,
+    name: navn,
+    url: `${URL_BASE}${sti}`,
+    applicationCategory: 'BusinessApplication',
+    operatingSystem: 'Nettleser',
+    inLanguage: 'nb-NO',
+    isAccessibleForFree: true,
+    provider: { '@id': ORG_ID },
+    description: beskrivelse,
+    featureList: [
+      'Regner ut minste og anbefalt timepris fra dine egne tall',
+      'Skiller mellom enkeltpersonforetak og aksjeselskap',
+      'Tar hensyn til feriepenger, arbeidsgiveravgift og obligatorisk tjenestepensjon',
+      'Viser hvor mye ubetalt tid koster deg i timeprisen',
+      'Sammenligner med det du tar i dag',
+    ],
+    offers: { '@type': 'Offer', price: 0, priceCurrency: 'NOK' },
+  }
+}
+
+/** Framgangsmåten, som fire steg. Brukes sammen med `timeprisLd`. */
+export function timeprisHowToLd(navn: string): Record<string, unknown> {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'HowTo',
+    name: navn,
+    inLanguage: 'nb-NO',
+    totalTime: 'PT5M',
+    estimatedCost: { '@type': 'MonetaryAmount', currency: 'NOK', value: 0 },
+    step: [
+      {
+        '@type': 'HowToStep',
+        name: 'Bestem hva du vil sitte igjen med',
+        text: 'I et enkeltpersonforetak er dette overskuddet før skatt. I et aksjeselskap er det bruttolønnen din, og da kommer feriepenger, arbeidsgiveravgift og pensjon i tillegg.',
+      },
+      {
+        '@type': 'HowToStep',
+        name: 'Summer de faste kostnadene for et helt år',
+        text: 'Lokale, forsikring, verktøy, bil, regnskap, telefon og markedsføring. Alt som løper enten du har oppdrag eller ikke.',
+      },
+      {
+        '@type': 'HowToStep',
+        name: 'Regn ut hvor mange timer du faktisk kan fakturere',
+        text: 'Arbeidsuker ganger timer per uke, ganget med den andelen du får betalt for. Befaring, tilbud, innkjøp, kjøring og rydding er ikke fakturerbart. De færreste kommer over 70 prosent.',
+      },
+      {
+        '@type': 'HowToStep',
+        name: 'Del summen på de fakturerbare timene, og legg på en buffer',
+        text: 'Lønnskostnad pluss faste kostnader, delt på fakturerbare timer, gir minste timepris. Bufferen oppå dekker dårlige år, sykdom og nytt utstyr.',
+      },
     ],
   }
 }

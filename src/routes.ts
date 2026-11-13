@@ -23,6 +23,10 @@ export const LAZY_RUTER: Array<{ path: string; Side: LazyPage }> = [
   { path: '/logo/profil', Side: lazyPage(() => import('./components/pages/Logo/ProfilSide')) },
   { path: '/logo/profil/:id', Side: lazyPage(() => import('./components/pages/Logo/ProfilSide')) },
   { path: '/navnesjekk', Side: lazyPage(() => import('./components/pages/Navnesjekk/NavnesjekkSide')) },
+  { path: '/timepris', Side: lazyPage(() => import('./components/pages/Timepris/TimeprisSide')) },
+  { path: '/timepris/:bransje', Side: lazyPage(() => import('./components/pages/Timepris/TimeprisBransjeSide')) },
+  { path: '/hva-koster-en-ansatt', Side: lazyPage(() => import('./components/pages/Ansatt/AnsattSide')) },
+  { path: '/hva-ma-du-fakturere', Side: lazyPage(() => import('./components/pages/Fakturere/FaktureringSide')) },
   { path: '/kontakt', Side: lazyPage(() => import('./components/pages/Kontakt/KontaktSide')) },
   // Kundenes Min side og admin: ikke i sitemap, ikke forhåndsrendret, noindex.
   { path: '/min-side/studio/:id', Side: lazyPage(() => import('./components/pages/Logo/StudioSide')) },
